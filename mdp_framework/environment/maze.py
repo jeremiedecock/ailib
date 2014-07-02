@@ -33,7 +33,7 @@ class Environment(environment.Environment):
     S. J. Russell and P. Norvig, "Intelligence artificielle",
     Pearson Education France, 2e édition, pp. 685-686, 2006.
 
-    The optimal policy when R(s)=-0.04 (for non terminal states) is:
+    The optimal policy when R(s)=-0.04 (for non terminal states) and discard_factor=1 is:
     → → → +  
     ↑   ↑ - 
     ↑ ← ← ←
@@ -244,7 +244,7 @@ class Environment(environment.Environment):
 
 
     def displayValueFunction(self, value_utility_dict, iteration=None):
-        text_dict = {state:"{0:0.2f}".format(value_utility_dict[state]) for state in self.stateSet}
+        text_dict = {state:"{0:0.3f}".format(value_utility_dict[state]) for state in self.stateSet}
 
         min_value = min([value_utility_dict[state] for state in self.stateSet])
         max_value = max([value_utility_dict[state] for state in self.stateSet])
@@ -307,7 +307,7 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
     assert num_col > 0
     assert num_row > 0
     
-    SQUARE_SIZE = 64  # pixels
+    SQUARE_SIZE = 96  # pixels
     BORDER_WIDTH = 3  # pixels
 
     suffixe = "_{0}".format(title) if title is not None else ""

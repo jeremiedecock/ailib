@@ -25,8 +25,7 @@ from . import agent
 
 class Agent(agent.Agent):
 
-    def __init__(self, environment, discount_factor= 0.5):
-        # TODO: fix a bug: utility values are incorrect... cf. book p.692
+    def __init__(self, environment, discount_factor= 1):
 
         self.environment = environment
         self.discountFactor = discount_factor # TODO: in environment ???
