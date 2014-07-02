@@ -21,9 +21,24 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from . import environment
+# TODO: improve this ?
+if __name__ == '__main__':
+    import environment
+else:
+    from . import environment
 
 class Environment(environment.Environment):
+    """
+    This environment is taken from the following book:
+    S. J. Russell and P. Norvig, "Intelligence artificielle",
+    Pearson Education France, 2e édition, pp. 685-686, 2006.
+
+    The optimal policy when R(s)=-0.04 (for non terminal states) is:
+    Policy:
+    → → → +  
+    ↑   ↑ - 
+    ↑ ← ← ←
+    """
 
     # self.stateSet
     # self.actionSet
@@ -31,8 +46,22 @@ class Environment(environment.Environment):
     # self.finalStateSet
 
     def __init__(self, initial_state = (0,0)):
+
+        # maze size
+        self.numCol = 4
+        self.numRow = 3
+
+        # forbidden states
+        self.forbiddenStateSet = {(1,1)}
+
+        # set of final states
+        self.finalStateSet = {(3,2), (3,1)}
+
         # set of states
-        self.stateSet = {(x,y) for x in range(4) for y in range(3)} - {(1,1)}
+        self.stateSet = {(col, row) for col in range(self.numCol) for row in range(self.numRow)} - self.forbiddenStateSet
+
+        assert len(self.forbiddenStateSet & self.stateSet) == 0  # check whether forbiddenStateSet and stateSet are disjoint sets
+        assert self.finalStateSet <= self.stateSet               # is finalStateSet subset of stateSet ?
 
         # set of actions
         # A = {'←', '→', '↓', '↑'}
@@ -42,32 +71,30 @@ class Environment(environment.Environment):
         assert initial_state in self.stateSet
         self.initialState = initial_state
 
-        # set of final states
-        self.finalStateSet = {(3,2), (3,1)}
-
 
     def reward(self, current_state, action=None, next_state=None):
         assert current_state in self.stateSet
-        if action is not None:
-            assert action in self.actionSet
-        if next_state is not None:
-            assert next_state in self.stateSet
 
-        # TODO
-        if next_state is not None:
-            if next_state == (3,2):
-                reward = 1
-            elif next_state == (3,1):
-                reward = -1
-            else:
-                reward = -0.04
+        #if action is not None:
+        #    assert action in self.actionSet
+        #if next_state is not None:
+        #    assert next_state in self.stateSet
+        #
+        ## TODO: which version should I considere ? R(s) or R(s,a,s') ?
+        #if next_state is not None:
+        #    if next_state == (3,2):
+        #        reward = 1.
+        #    elif next_state == (3,1):
+        #        reward = -1.
+        #    else:
+        #        reward = -0.04
+        #else:
+        if current_state == (3,2):
+            reward = 1.
+        elif current_state == (3,1):
+            reward = -1.
         else:
-            if current_state == (3,2):
-                reward = 1
-            elif current_state == (3,1):
-                reward = -1
-            else:
-                reward = -0.04
+            reward = -0.04
 
         return reward
 
@@ -78,12 +105,12 @@ class Environment(environment.Environment):
 
         next_state_proba = {state:0. for state in self.stateSet}
 
-        x, y = current_state
+        col, row = current_state
 
-        s_up = (x, y+1)
-        s_down = (x, y-1)
-        s_left = (x-1, y)
-        s_right = (x+1, y)
+        s_up = (col, row+1)
+        s_down = (col, row-1)
+        s_left = (col-1, row)
+        s_right = (col+1, row)
         
         # TODO: make it shorter
         if action == 'up': 
@@ -172,51 +199,207 @@ class Environment(environment.Environment):
         return next_state_proba
 
 
-    def display(self, state):
-        assert state in self.stateSet
-
-        # ASCII version (TODO: cairo version)
-        display_list = ['x' if (x,y) == state else '.' for y in range(3) for x in range(4)]
-        display_list = [display_list[i:i+4] for i in range(0, len(display_list), 4)]
-        display_list[1][1] = '#'
-        display_list[2][3] = '+'
-        display_list[1][3] = '-'
-
-        for y in reversed(range(3)):
-            for x in range(4):
-                print(display_list[y][x], end="")
-            print()
-
 
     ### DEBUG FUNCTIONS ###
 
 
-    def displayTransitionProbas(self, next_state_proba):
-        # ASCII version (TODO: cairo version)
-        display_list = [next_state_proba[(x,y)] if (x,y) != (1,1) else 0. for y in range(3) for x in range(4)]
+    def displayStateAction(self, current_state, current_action=None, iteration=None):
+        assert current_state in self.stateSet
 
-        # make the 2D list
-        display_list = [display_list[i:i+4] for i in range(0, len(display_list), 4)]
+        text_dict = {}
 
-        for y in reversed(range(3)):
-            for x in range(4):
-                print(display_list[y][x], end=" ")
-            print()
+        if current_action is not None:
+            char_dict = {'left':'←', 'right':'→', 'down':'↓', 'up':'↑', ' ':' '}
+            text_dict[current_state] = char_dict[current_action]
+
+        min_reward = min([self.reward(state) for state in self.stateSet])
+        max_reward = max([self.reward(state) for state in self.stateSet])
+        min_color = 0.15
+        max_color = 0.85
+        scale_color = lambda reward: (float(reward * -1. - min_reward)  / float(max_reward - min_reward)) * (max_color - min_color) + min_color
+
+        color_dict = {state: (0, 0, 1, scale_color(self.reward(state))) for state in self.stateSet}
+
+        inner_square_dict = {current_state: (1, 0, 0, 1)}
+
+        title = "iteration_{0}".format(iteration) if iteration is not None else None
+        display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, title=title)
 
 
-    def displayPolicy(self, policy):
-        # ASCII version (TODO: cairo version)
+    def displayReward(self):
+
+        # Cairo version
+
+        text_dict = {state:str(self.reward(state)) for state in self.stateSet}
+
+        min_reward = min([self.reward(state) for state in self.stateSet])
+        max_reward = max([self.reward(state) for state in self.stateSet])
+        min_color = 0.15
+        max_color = 0.85
+        scale_color = lambda reward: (float(reward * -1. - min_reward)  / float(max_reward - min_reward)) * (max_color - min_color) + min_color
+
+        color_dict = {state: (0, 0, 1, scale_color(self.reward(state))) for state in self.stateSet}
+
+        bold_set = self.finalStateSet | {self.initialState}
+        inner_square_dict = {state: (1, 0, 0, 1) for state in self.finalStateSet}
+        inner_square_dict[self.initialState] = (0, 0, 1, 1)
+
+        title = "rewards"
+        display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, bold_set=bold_set, title=title)
+
+
+    def displayValueFunction(self, value_utility_dict, iteration=None):
+
+        # Cairo version
+
+        text_dict = {state:"{0:0.2f}".format(value_utility_dict[state]) for state in self.stateSet}
+
+        min_value = min([value_utility_dict[state] for state in self.stateSet])
+        max_value = max([value_utility_dict[state] for state in self.stateSet])
+        min_color = 0.15
+        max_color = 0.85
+        scale_color = lambda value: (float(value * -1. - min_value)  / float(max_value - min_value)) * (max_color - min_color) + min_color
+
+        color_dict = {state: (0, 0, 1, scale_color(value_utility_dict[state])) for state in self.stateSet}
+
+        bold_set = self.finalStateSet | {self.initialState}
+        inner_square_dict = {state: (1, 0, 0, 1) for state in self.finalStateSet}
+        inner_square_dict[self.initialState] = (0, 0, 1, 1)
+
+        title = "value_function"
+        if iteration != None:
+            title += "_" + str(iteration)
+        display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, bold_set=bold_set, title=title)
+
+
+    def displayPolicy(self, agent, iteration=None):
+        # Cairo version
+
         char_dict = {'left':'←', 'right':'→', 'down':'↓', 'up':'↑', ' ':' '}
-        display_list = [policy[(x,y)] if (x,y) not in {(1,1), (3,1), (3,2)} else ' ' for y in range(3) for x in range(4)]
-        display_list = [char_dict[s] for s in display_list]
+        text_dict = {state:char_dict[agent.getAction(state)] for state in self.stateSet - self.finalStateSet}
+
+        min_reward = min([self.reward(state) for state in self.stateSet])
+        max_reward = max([self.reward(state) for state in self.stateSet])
+        min_color = 0.15
+        max_color = 0.85
+        scale_color = lambda reward: (float(reward * -1. - min_reward)  / float(max_reward - min_reward)) * (max_color - min_color) + min_color
+
+        color_dict = {state: (0, 0, 1, scale_color(self.reward(state))) for state in self.stateSet}
+
+        bold_set = self.finalStateSet | {self.initialState}
+        inner_square_dict = {state: (1, 0, 0, 1) for state in self.finalStateSet}
+        inner_square_dict[self.initialState] = (0, 0, 1, 1)
+
+        title = "policy"
+        if iteration != None:
+            title += "_" + str(iteration)
+        display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, bold_set=bold_set, title=title)
+
+
+    def displayTransitionProbas(self, next_state_proba):
+        # TODO: cairo
+        # ASCII version (TODO: cairo version)
+        display_list = [next_state_proba[(col,row)] if (col,row) not in self.forbiddenStateSet else 0. for row in range(self.numRow) for col in range(self.numCol)]
 
         # make the 2D list
-        display_list = [display_list[i:i+4] for i in range(0, len(display_list), 4)]
+        display_list = [display_list[i:i+self.numCol] for i in range(0, len(display_list), self.numCol)]
 
-        for y in reversed(range(3)):
-            for x in range(4):
-                print(display_list[y][x], end=" ")
+        for row in reversed(range(self.numRow)):
+            for col in range(self.numCol):
+                print(display_list[row][col], end=" ")
             print()
+
+
+def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, bold_set=set(), inner_square_dict=dict(), title=None):
+    assert num_col > 0
+    assert num_row > 0
+    
+    SQUARE_SIZE = 64  # pixels
+    BORDER_WIDTH = 3  # pixels
+
+    suffixe = "_{0}".format(title) if title is not None else ""
+    file_name = "maze" + suffixe + ".svg"
+
+    res_width = num_col * SQUARE_SIZE   # pixels
+    res_height = num_row * SQUARE_SIZE + (0 if title is None else 32) # pixels 
+
+    import cairo
+
+    # Image surfaces provide the ability to render to memory buffers either
+    # allocated by cairo or by the calling code.
+    # List of supported surfaces: http://www.cairographics.org/manual/cairo-surfaces.html
+    surface = cairo.SVGSurface(file_name, res_width, res_height)
+
+    # cairo.Context is the object that you send your drawing commands to.
+    context = cairo.Context(surface)
+
+    # background
+    context.set_source_rgb(1, 1, 1)
+    context.rectangle(0, 0, res_width, res_height)
+    context.fill()
+
+    for col in range(num_col):
+        for row in range(num_row):
+
+            cairo_col = col
+            cairo_row = num_row - 1 - row   # cairo use an inverted system of coordinate : (0,0) point is at the top left
+
+            # fill...
+
+            if (col, row) in color_dict:
+                context.set_source_rgba(*color_dict[(col, row)])
+            else:
+                context.set_source_rgba(0, 0, 0, 0.9)
+
+            context.rectangle(SQUARE_SIZE * cairo_col, SQUARE_SIZE * cairo_row, SQUARE_SIZE, SQUARE_SIZE)
+            context.fill_preserve()                # preserve path for stroke
+
+            # ...and stroke
+
+            context.set_source_rgb(0, 0, 0)
+            context.set_line_width(BORDER_WIDTH)
+            context.stroke()
+
+            # inner square
+
+            if (col, row) in inner_square_dict:
+                context.set_source_rgba(*inner_square_dict[(col, row)])
+                context.rectangle(SQUARE_SIZE * cairo_col + BORDER_WIDTH, SQUARE_SIZE * cairo_row + BORDER_WIDTH, SQUARE_SIZE - 2. * BORDER_WIDTH, SQUARE_SIZE - 2. * BORDER_WIDTH)
+                context.stroke()
+
+            # text
+            if (col, row) in text_dict:
+                context.set_source_rgb(0, 0, 0)
+
+                if (col, row) in bold_set:
+                    context.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                else:
+                    context.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                context.set_font_size(16.0)
+
+                (x, y, text_width, text_height, dx, dy) = context.text_extents(text_dict[(col, row)])
+
+                square_center = (SQUARE_SIZE * cairo_col + (SQUARE_SIZE/2.), SQUARE_SIZE * cairo_row + (SQUARE_SIZE/2.))
+
+                context.move_to(square_center[0] - text_width/2., square_center[1] + text_height/2.)
+                context.show_text(text_dict[(col, row)])
+                context.move_to(0, 0)
+
+    # title
+    if title is not None:
+        context.set_source_rgb(0, 0, 0)
+        context.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+
+        (x, y, text_width, text_height, dx, dy) = context.text_extents(title)
+
+        pos_center = (res_width / 2., res_height - 16)
+        context.move_to(pos_center[0] - text_width/2., pos_center[1] + text_height/2.)
+        context.show_text(title)
+
+
+    ### WRITE THE SVG FILE ###
+
+    surface.finish()
 
 
 ### TEST ###
@@ -238,24 +421,25 @@ class Agent():
 def test():
 
     # test display
-    state = (0,0)
-    environment = Environment(initial_state = state)
-    environment.display(state)
+    initial_state = (0,0)
+    environment = Environment(initial_state = initial_state)
+    agent = Agent()
+
+    environment.displayReward()
+    environment.displayPolicy(agent)
 
     # test reward
     print()
-    for state in {(x,y) for x in range(4) for y in range(3)} - {(1,1)}:
-        print(state, environment.reward((0,0), 'up', state))
+    for state in {(col,row) for col in range(environment.numCol) for row in range(environment.numRow)} - environment.forbiddenStateSet:
+        print(state, environment.reward(state))
 
     # test transition
     for state in {(0,0), (1,0), (0,1)}:
-        print()
-        environment.display(state)
         for action in environment.actionSet:
             print()
             print(state, action)
             next_state_proba = environment.transition(state, action)
-            environment.displayTrnasitionProbas(next_state_proba)
+            environment.displayTransitionProbas(next_state_proba)
     
 
 if __name__ == '__main__':

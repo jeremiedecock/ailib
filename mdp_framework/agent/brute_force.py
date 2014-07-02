@@ -88,7 +88,6 @@ class Agent(agent.Agent):
                 print("{0}% ({1}/{2})".format(float(policy_it)/number_of_possible_policies * 100., policy_it, number_of_possible_policies))
 
             self.policy = {p[0]:p[1] for p in zip(S, pi)}
-            #environment.displayPolicy(self.policy)
 
             # Evaluate the policy (stochastic environment)
             utility_list = []

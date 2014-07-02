@@ -26,8 +26,12 @@ from . import agent
 class Agent(agent.Agent):
 
     def __init__(self, environment, discount_factor= 0.5):
+        # TODO: fix a bug: utility values are incorrect... cf. book p.692
+
         self.environment = environment
         self.discountFactor = discount_factor # TODO: in environment ???
+
+        # Init value utility
         self.valueUtility = {state:0. for state in self.environment.stateSet}
 
         # Iteratively update self.valueUtility with the following function
@@ -38,7 +42,15 @@ class Agent(agent.Agent):
             for state, value in self.valueUtility.items():
                 (action, action_meu) = self.actionMaximumExpectedUtility(state)
                 value_utility[state] = self.environment.reward(state) + self.discountFactor * action_meu
+
+            #TODO : final state shoud keep their value (TODO: improve writing)
+            for state in environment.finalStateSet:
+                value_utility[state] = self.environment.reward(state)
+
             self.valueUtility = value_utility
+
+            environment.displayValueFunction(value_utility, iteration=it)
+
             it += 1  # TODO
 
         # Build the policy

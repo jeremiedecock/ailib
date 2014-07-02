@@ -35,22 +35,24 @@ def main():
     environment = Environment(initial_state = initial_state)
     agent = Agent(environment)
 
+    environment.displayReward()
+    environment.displayPolicy(agent)
+
     # Do the simulation
     (state_list, action_list, reward_list) = environment.simulate(agent)
 
-    environment.display(initial_state)
-    for (state, action) in zip(state_list[1:], action_list):
-        print()
-        print(action)
-        print()
-        environment.display(state)
+    # Display states
+    print("States:", state_list)
+    print("Actions:", action_list)
+    print("Rewards:", reward_list)
+
+    for iteration, (state, action) in enumerate(zip(state_list, action_list)):
+        environment.displayStateAction(current_state=state, current_action=action, iteration=iteration)
+        print("{0}: {1} {2} {3}".format(iteration, state, action, state_list[iteration+1]))
+
+    environment.displayStateAction(current_state=state_list[-1], iteration=len(state_list)-1)
 
     print("Global reward =", sum(reward_list))
-
-    # display the policy
-    print("Policy:")
-    environment.displayPolicy(agent.policy)
-
 
 if __name__ == '__main__':
     main()

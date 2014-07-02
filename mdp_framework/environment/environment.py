@@ -29,7 +29,7 @@ class Environment(object):
     def reward(self, current_state, action=None, next_state=None):
         raise NotImplementedError
 
-    def transition(self, current_state, action):
+    def transition(self, current_state, action, next_state):
         raise NotImplementedError
 
     # doTransition is common to all Environment classes
@@ -38,7 +38,6 @@ class Environment(object):
         assert action in self.actionSet
 
         next_state_proba = self.transition(current_state, action)
-
 
         # randomly generate the next state acording to the next_state_proba distribution
         state_proba_list = [item for item in next_state_proba.items()]
@@ -58,7 +57,7 @@ class Environment(object):
         return (next_state, reward)
 
 
-    def display(self, state):
+    def display(self, state=None):
         raise NotImplementedError
 
 
@@ -73,15 +72,16 @@ class Environment(object):
         reward_list = []
 
         state = initial_state
-        finished = False
 
-        while(state not in self.finalStateSet and len(action_list)<max_it):
+        while(state not in self.finalStateSet and len(action_list) < max_it):
             action = agent.getAction(state)
             (state, reward) = self.doTransition(state, action)
 
             state_list.append(state)
             action_list.append(action)
-            reward_list.append(reward)
+            #reward_list.append(reward)  # TODO
+
+        reward_list = [self.reward(state) for state in state_list]  # TODO
 
         return (state_list, action_list, reward_list)
 
