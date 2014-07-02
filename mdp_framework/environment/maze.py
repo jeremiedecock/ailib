@@ -34,10 +34,10 @@ class Environment(environment.Environment):
     Pearson Education France, 2e édition, pp. 685-686, 2006.
 
     The optimal policy when R(s)=-0.04 (for non terminal states) is:
-    Policy:
     → → → +  
     ↑   ↑ - 
     ↑ ← ← ←
+    (see p.688)
     """
 
     # self.stateSet
@@ -46,7 +46,6 @@ class Environment(environment.Environment):
     # self.finalStateSet
 
     def __init__(self, initial_state = (0,0)):
-
         # maze size
         self.numCol = 4
         self.numRow = 3
@@ -199,8 +198,7 @@ class Environment(environment.Environment):
         return next_state_proba
 
 
-
-    ### DEBUG FUNCTIONS ###
+    # DEBUG FUNCTIONS #########################################################
 
 
     def displayStateAction(self, current_state, current_action=None, iteration=None):
@@ -227,9 +225,6 @@ class Environment(environment.Environment):
 
 
     def displayReward(self):
-
-        # Cairo version
-
         text_dict = {state:str(self.reward(state)) for state in self.stateSet}
 
         min_reward = min([self.reward(state) for state in self.stateSet])
@@ -249,9 +244,6 @@ class Environment(environment.Environment):
 
 
     def displayValueFunction(self, value_utility_dict, iteration=None):
-
-        # Cairo version
-
         text_dict = {state:"{0:0.2f}".format(value_utility_dict[state]) for state in self.stateSet}
 
         min_value = min([value_utility_dict[state] for state in self.stateSet])
@@ -273,8 +265,6 @@ class Environment(environment.Environment):
 
 
     def displayPolicy(self, agent, iteration=None):
-        # Cairo version
-
         char_dict = {'left':'←', 'right':'→', 'down':'↓', 'up':'↑', ' ':' '}
         text_dict = {state:char_dict[agent.getAction(state)] for state in self.stateSet - self.finalStateSet}
 
@@ -296,21 +286,24 @@ class Environment(environment.Environment):
         display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, bold_set=bold_set, title=title)
 
 
-    def displayTransitionProbas(self, next_state_proba):
-        # TODO: cairo
-        # ASCII version (TODO: cairo version)
-        display_list = [next_state_proba[(col,row)] if (col,row) not in self.forbiddenStateSet else 0. for row in range(self.numRow) for col in range(self.numCol)]
+    def displayTransitionProbabilityDistribution(self, current_state, current_action):
+        """
+        Display the probability mass function for a given (state, action).
+        """
+        char_dict = {'left':'←', 'right':'→', 'down':'↓', 'up':'↑', ' ':' '}
+        next_state_proba_distribution = self.transition(current_state, current_action)
 
-        # make the 2D list
-        display_list = [display_list[i:i+self.numCol] for i in range(0, len(display_list), self.numCol)]
+        text_dict = {next_state:str(next_state_proba_distribution[next_state]) for next_state in self.stateSet}
+        text_sub_dict = {current_state: char_dict[current_action]}
+        color_dict = {next_state: (0, 0, 1, next_state_proba_distribution[next_state]) for next_state in self.stateSet}
+        bold_set = {current_state}
+        inner_square_dict = {current_state: (1, 0, 0, 1)}
 
-        for row in reversed(range(self.numRow)):
-            for col in range(self.numCol):
-                print(display_list[row][col], end=" ")
-            print()
+        title = "p.m.f._" + str(current_state[0]) + "_" + str(current_state[1]) + "_" + current_action
+        display_maze_with_cairo(self.numCol, self.numRow, text_dict=text_dict, color_dict=color_dict, inner_square_dict=inner_square_dict, bold_set=bold_set, text_sub_dict=text_sub_dict, title=title)
 
 
-def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, bold_set=set(), inner_square_dict=dict(), title=None):
+def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, bold_set=set(), inner_square_dict=dict(), text_sub_dict=dict(), title=None):
     assert num_col > 0
     assert num_row > 0
     
@@ -345,7 +338,6 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
             cairo_row = num_row - 1 - row   # cairo use an inverted system of coordinate : (0,0) point is at the top left
 
             # fill...
-
             if (col, row) in color_dict:
                 context.set_source_rgba(*color_dict[(col, row)])
             else:
@@ -355,13 +347,11 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
             context.fill_preserve()                # preserve path for stroke
 
             # ...and stroke
-
             context.set_source_rgb(0, 0, 0)
             context.set_line_width(BORDER_WIDTH)
             context.stroke()
 
             # inner square
-
             if (col, row) in inner_square_dict:
                 context.set_source_rgba(*inner_square_dict[(col, row)])
                 context.rectangle(SQUARE_SIZE * cairo_col + BORDER_WIDTH, SQUARE_SIZE * cairo_row + BORDER_WIDTH, SQUARE_SIZE - 2. * BORDER_WIDTH, SQUARE_SIZE - 2. * BORDER_WIDTH)
@@ -385,6 +375,23 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
                 context.show_text(text_dict[(col, row)])
                 context.move_to(0, 0)
 
+            if (col, row) in text_sub_dict:
+                context.set_source_rgb(0, 0, 0)
+
+                if (col, row) in bold_set:
+                    context.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_BOLD)
+                else:
+                    context.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+                context.set_font_size(12.0)
+
+                (x, y, text_width, text_height, dx, dy) = context.text_extents(text_sub_dict[(col, row)])
+
+                square_center = (SQUARE_SIZE * cairo_col + (SQUARE_SIZE/2.), SQUARE_SIZE * cairo_row + (SQUARE_SIZE * 3./4.))
+
+                context.move_to(square_center[0] - text_width/2., square_center[1] + text_height/2.)
+                context.show_text(text_sub_dict[(col, row)])
+                context.move_to(0, 0)
+
     # title
     if title is not None:
         context.set_source_rgb(0, 0, 0)
@@ -397,12 +404,11 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
         context.show_text(title)
 
 
-    ### WRITE THE SVG FILE ###
-
+    # write the svg file
     surface.finish()
 
 
-### TEST ###
+# TEST ########################################################################
 
 
 class Agent():
@@ -434,12 +440,14 @@ def test():
         print(state, environment.reward(state))
 
     # test transition
-    for state in {(0,0), (1,0), (0,1)}:
+    for state in environment.stateSet - environment.finalStateSet:
         for action in environment.actionSet:
-            print()
-            print(state, action)
-            next_state_proba = environment.transition(state, action)
-            environment.displayTransitionProbas(next_state_proba)
+            environment.displayTransitionProbabilityDistribution(state, action)
+
+            # Check the probability mass function
+            # TODO: check the equality of 2 floats is ackward...
+            probability_distribution = environment.transition(state, action)
+            assert sum(probability_distribution.values()) == 1.
     
 
 if __name__ == '__main__':
