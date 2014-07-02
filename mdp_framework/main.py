@@ -23,27 +23,33 @@
 
 
 from environment.maze import Environment
-from environment.maze import Agent
-#from agent.test import Agent
+#from environment.maze import Agent
+#from agent.brute_force import Agent
+from agent.value_iteration import Agent
 
 def main():
     """Main function"""
 
-    finished = False
-    state = (0,0)
-    utility = 0.
+    initial_state = (0,0)
 
-    environment = Environment(initial_state = state)
-    agent = Agent()
+    environment = Environment(initial_state = initial_state)
+    agent = Agent(environment)
 
-    while(state not in environment.finalStateSet):
-        action = agent.getAction(state)
-        (state, reward) = environment.doTransition(state, action)
-        utility += reward
-        environment.display(state)
+    # Do the simulation
+    (state_list, action_list, reward_list) = environment.simulate(agent)
+
+    environment.display(initial_state)
+    for (state, action) in zip(state_list[1:], action_list):
         print()
+        print(action)
+        print()
+        environment.display(state)
 
-    print("Global reward =", utility)
+    print("Global reward =", sum(reward_list))
+
+    # display the policy
+    print("Policy:")
+    environment.displayPolicy(agent.policy)
 
 
 if __name__ == '__main__':

@@ -21,17 +21,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from . import agent
-
-class Agent(agent.Agent):
-
-    def __init__(self):
-        self.policy = {}
+class Agent(object):
 
     def getAction(self, state):
-        action = self.policy[state]
-        return action
+        """
+        Returns the action to be performed by the agent for a given state.
+        """
+        raise NotImplementedError
 
-
-if __name__ == '__main__':
-    pass

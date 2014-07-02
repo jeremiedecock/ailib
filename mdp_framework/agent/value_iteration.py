@@ -21,6 +21,60 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from . import agent
+
+class Agent(agent.Agent):
+
+    def __init__(self, environment, discount_factor= 0.5):
+        self.environment = environment
+        self.discountFactor = discount_factor # TODO: in environment ???
+        self.valueUtility = {state:0. for state in self.environment.stateSet}
+
+        # Iteratively update self.valueUtility with the following function
+        # U_{t+1}(s) := R(\s) + \gamma \max_{a} \sum_{s'} T(s, a, s') U_t(s')
+        it = 0 # TODO
+        while it < 30: # TODO
+            value_utility = {}
+            for state, value in self.valueUtility.items():
+                (action, action_meu) = self.actionMaximumExpectedUtility(state)
+                value_utility[state] = self.environment.reward(state) + self.discountFactor * action_meu
+            self.valueUtility = value_utility
+            it += 1  # TODO
+
+        # Build the policy
+        self.policy = {}
+        for state in self.environment.stateSet:
+            (action, action_meu) = self.actionMaximumExpectedUtility(state)
+            self.policy[state] = action
+
+
+    def actionMaximumExpectedUtility(self, state):
+        """
+        Compute \pi^*(s) = \arg\max_{a} \sum_{s'} T(s, a, s') U_i(s')
+        and         U(s) =     \max_{a} \sum_{s'} T(s, a, s') U_i(s')
+        """
+
+        best_action = None
+        best_action_utility = float("-inf")
+
+        for action in self.environment.actionSet:
+            expected_action_utility = 0.
+            for next_state in self.environment.stateSet:
+                expected_action_utility += self.environment.transition(state, action)[next_state] * self.valueUtility[next_state]
+            if expected_action_utility > best_action_utility:
+                best_action = action
+                best_action_utility = expected_action_utility
+
+        return (best_action, best_action_utility)
+
+
+    def getAction(self, state):
+        """
+        Returns the action to be performed by the agent for a given state.
+        """
+        (action, action_meu) = self.actionMaximumExpectedUtility(state)
+        return action
+
 
 if __name__ == '__main__':
     pass

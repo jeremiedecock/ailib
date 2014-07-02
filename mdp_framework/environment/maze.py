@@ -21,11 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import numpy as np
-from scipy.stats import rv_discrete
-import random
+from . import environment
 
-class Environment:
+class Environment(environment.Environment):
 
     # self.stateSet
     # self.actionSet
@@ -37,6 +35,7 @@ class Environment:
         self.stateSet = {(x,y) for x in range(4) for y in range(3)} - {(1,1)}
 
         # set of actions
+        # A = {'←', '→', '↓', '↑'}
         self.actionSet = {'up', 'down', 'left', 'right'}
 
         # initial state
@@ -47,16 +46,28 @@ class Environment:
         self.finalStateSet = {(3,2), (3,1)}
 
 
-    def reward(self, current_state, action, next_state):
+    def reward(self, current_state, action=None, next_state=None):
         assert current_state in self.stateSet
-        assert action in self.actionSet
+        if action is not None:
+            assert action in self.actionSet
+        if next_state is not None:
+            assert next_state in self.stateSet
 
-        if next_state == (3,2):
-            reward = 1
-        elif next_state == (3,1):
-            reward = -1
+        # TODO
+        if next_state is not None:
+            if next_state == (3,2):
+                reward = 1
+            elif next_state == (3,1):
+                reward = -1
+            else:
+                reward = -0.04
         else:
-            reward = -0.04
+            if current_state == (3,2):
+                reward = 1
+            elif current_state == (3,1):
+                reward = -1
+            else:
+                reward = -0.04
 
         return reward
 
@@ -161,32 +172,6 @@ class Environment:
         return next_state_proba
 
 
-    # doTransition is common to all Environment classes
-    def doTransition(self, current_state, action):
-        assert current_state in self.stateSet
-        assert action in self.actionSet
-
-        next_state_proba = self.transition(current_state, action)
-
-
-        # randomly generate the next state acording to the next_state_proba distribution
-        state_proba_list = [item for item in next_state_proba.items()]
-        state_list = [item[0] for item in state_proba_list]
-        proba_list = [item[1] for item in state_proba_list]
-
-        # A Scipy probability distribution
-        distrib = rv_discrete(values=(range(len(state_list)), proba_list))
-
-        # One sample
-        next_state_index = distrib.rvs()
-
-        next_state = state_list[next_state_index]
-
-        reward = self.reward(current_state, action, next_state)
-
-        return (next_state, reward)
-
-
     def display(self, state):
         assert state in self.stateSet
 
@@ -206,9 +191,26 @@ class Environment:
     ### DEBUG FUNCTIONS ###
 
 
-    def display_probas(self, next_state_proba):
+    def displayTransitionProbas(self, next_state_proba):
         # ASCII version (TODO: cairo version)
         display_list = [next_state_proba[(x,y)] if (x,y) != (1,1) else 0. for y in range(3) for x in range(4)]
+
+        # make the 2D list
+        display_list = [display_list[i:i+4] for i in range(0, len(display_list), 4)]
+
+        for y in reversed(range(3)):
+            for x in range(4):
+                print(display_list[y][x], end=" ")
+            print()
+
+
+    def displayPolicy(self, policy):
+        # ASCII version (TODO: cairo version)
+        char_dict = {'left':'←', 'right':'→', 'down':'↓', 'up':'↑', ' ':' '}
+        display_list = [policy[(x,y)] if (x,y) not in {(1,1), (3,1), (3,2)} else ' ' for y in range(3) for x in range(4)]
+        display_list = [char_dict[s] for s in display_list]
+
+        # make the 2D list
         display_list = [display_list[i:i+4] for i in range(0, len(display_list), 4)]
 
         for y in reversed(range(3)):
@@ -253,7 +255,7 @@ def test():
             print()
             print(state, action)
             next_state_proba = environment.transition(state, action)
-            environment.display_probas(next_state_proba)
+            environment.displayTrnasitionProbas(next_state_proba)
     
 
 if __name__ == '__main__':
