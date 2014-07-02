@@ -28,17 +28,20 @@ class Agent(agent.Agent):
     def __init__(self, environment, discount_factor=1):
 
         self.environment = environment
-        self.discountFactor = discount_factor # TODO: in environment or in agent ???
+        self.discountFactor = discount_factor                                  # TODO: in environment or in agent ???
 
         # Init value utility to 0
         self.valueUtility = {state:0. for state in self.environment.stateSet}
+
 
         # Iteratively update self.valueUtility with the following function
         # V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
         iteration = 0
         while iteration < 30: # TODO
-            next_value_utility = {}
-            for state, value in self.valueUtility.items():
+            next_value_utility = {}      # init V'
+
+            # For all s
+            for state in self.environment.stateSet:
                 if state in environment.finalStateSet:
                     # If s is a final state then V_i(s)=R(s) for all i      (TODO: this is not explicitely written in most references...)
                     next_value_utility[state] = self.environment.reward(state)
@@ -49,6 +52,7 @@ class Agent(agent.Agent):
 
                     # Compute V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
                     next_value_utility[state] = self.environment.reward(state) + self.discountFactor * action_meu
+
 
             self.valueUtility = next_value_utility
 
