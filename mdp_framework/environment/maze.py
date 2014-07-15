@@ -45,7 +45,11 @@ class Environment(environment.Environment):
     # self.initialState
     # self.finalStateSet
 
-    def __init__(self, initial_state = (0,0)):
+    def __init__(self, initial_state=(0,0), discount_factor=1):
+
+        self.discountFactor = discount_factor                    # TODO: in environment or in agent ???
+        assert 0 <= self.discountFactor <= 1                     # TODO
+
         # maze size
         self.numCol = 4
         self.numRow = 3
@@ -414,6 +418,7 @@ def display_maze_with_cairo(num_col, num_row, text_dict=None, color_dict=None, b
 class Agent():
 
     def __init__(self):
+        # The optimal policy...
         self.policy = { (0,2):'right', (1,2):'right', (2,2):'right',
                         (0,1):'up',                   (2,1):'up',
                         (0,0):'up',    (1,0):'left',  (2,0):'left', (3,0):'left' }

@@ -28,7 +28,11 @@ import numpy as np
 class Agent(agent.Agent):
 
     def __init__(self, environment):
+
+        assert 0 < environment.discountFactor < 1   # TODO: may get singular matrices if discountFactor == 1
+
         self.policy = {}
+        initial_state = environment.initialState
 
         print("Computing the policy... please wait.")
 
@@ -39,7 +43,7 @@ class Agent(agent.Agent):
         print("Number of possible policies :", number_of_possible_policies)
 
         best_policy = None
-        best_policy_value = float("-inf")
+        best_policy_values_dict = {state: float("-inf") for state in S}
 
         
         # The set of all possible (stationary) policies for an environment with
@@ -84,26 +88,26 @@ class Agent(agent.Agent):
         policy_it = 1
         for pi in itertools.product(*[A] * len(S)):
             # Print progress
-            if policy_it%100 == 0:
+            if policy_it%1000 == 0:
                 print("{0}% ({1}/{2})".format(float(policy_it)/number_of_possible_policies * 100., policy_it, number_of_possible_policies))
 
             self.policy = {p[0]:p[1] for p in zip(S, pi)}
 
             # Evaluate the policy (stochastic environment)
-            utility_list = []
-            for eval_it in range(3):
-                (state_list, action_list, reward_list) = environment.simulate(self, max_it=20)
-                utility_list.append(sum(reward_list))
-            policy_value = np.mean(utility_list)
+            policy_values_dict = evaluatePolicy(self.policy, environment)
 
             # Update best_policy
-            if policy_value > best_policy_value:
+            if policy_values_dict[initial_state] > best_policy_values_dict[initial_state]:
                 best_policy = self.policy
-                best_policy_value = policy_value
+                best_policy_values_dict = policy_values_dict
+                environment.displayPolicy(self, iteration=policy_it)
+                environment.displayValueFunction(policy_values_dict, iteration=policy_it)
 
             policy_it += 1
 
         self.policy = best_policy
+
+        environment.displayPolicy(self)
 
         print("Done.")
 
@@ -111,6 +115,39 @@ class Agent(agent.Agent):
     def getAction(self, state):
         action = self.policy[state]
         return action
+
+def evaluatePolicy(policy, environment):
+    """
+    Evaluate the policy (ie. compute V^{\pi_i}(s) \forall s in S)
+    """
+    state_list = list(environment.stateSet)
+    #print("STATES", state_list)
+
+    # Make the transition matrix
+    transition_list = []
+    for state_from in state_list:
+        if state_from in environment.finalStateSet:
+            transition_list.append([0 for state_to in state_list])
+        else:
+            action = policy[state_from]
+            transition_list.append([-environment.discountFactor * environment.transition(state_from, action)[state_to] for state_to in state_list])
+    transition_matrix = np.array(transition_list)
+    transition_matrix = transition_matrix + np.eye(len(transition_list))
+    #print("TRANSITION\n", transition_matrix)
+
+    # Make the reward vector
+    reward_vector = np.array([environment.reward(state) for state in state_list])
+    #print("REWARD", reward_vector)
+
+    # Solve the system of simplified Bellman equations
+    #value_vector = np.dot(np.linalg.inv(transition_matrix), reward_vector)
+    value_vector = np.linalg.solve(transition_matrix, reward_vector)
+    #print("VALUE", value_vector)
+
+    value_of_the_current_policy_dict = {state: value_vector[state_index] for state_index, state in enumerate(state_list)}
+    #print(value_of_the_current_policy_dict)
+
+    return value_of_the_current_policy_dict
 
 
 if __name__ == '__main__':

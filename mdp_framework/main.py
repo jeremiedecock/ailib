@@ -23,16 +23,22 @@
 
 
 from environment.maze import Environment
+#from environment.graph import Environment
 #from environment.maze import Agent
 #from agent.brute_force import Agent
-from agent.value_iteration import Agent
+#from agent.value_iteration import Agent
+#from agent.value_iteration_gauss_seidel import Agent
+#from agent.value_iteration_error_rate import Agent
+from agent.policy_iteration import Agent
 
 def main():
     """Main function"""
 
-    initial_state = (0,0)
+    #initial_state = (0,0)
+    #environment = Environment(initial_state = initial_state)
 
-    environment = Environment(initial_state = initial_state)
+    #environment = Environment()
+    environment = Environment(discount_factor=0.999)
     agent = Agent(environment)
 
     environment.displayReward()

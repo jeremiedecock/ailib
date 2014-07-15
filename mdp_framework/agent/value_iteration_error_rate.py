@@ -25,11 +25,12 @@ from . import agent
 
 class Agent(agent.Agent):
 
-    def __init__(self, environment, discount_factor=0.999, maximum_error_rate = 0.01):
+    def __init__(self, environment, maximum_error_rate = 0.01):
+
+        assert 0 < environment.discountFactor < 1   # TODO: stopping criteria won't work if discountFactor == 1
 
         self.environment = environment
-        self.discountFactor = discount_factor       # TODO: in environment or in agent ???
-        self.maximumErrorRate = maximum_error_rate  # the maximum error rate [epsilon]
+        self.maximumErrorRate = maximum_error_rate  # the maximum error rate (in value_utility estimation)
 
         # Init value utility to 0
         self.valueUtility = {state:0. for state in self.environment.stateSet}
@@ -40,7 +41,7 @@ class Agent(agent.Agent):
         # V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
         iteration = 0
         #while iteration < 30:  # TODO: ok if discount_factor == 1
-        while maximum_change_utility > self.maximumErrorRate * (1. - self.discountFactor) / self.discountFactor: # TODO: ok if discount_factor < 1
+        while maximum_change_utility > self.maximumErrorRate * (1. - self.environment.discountFactor) / self.environment.discountFactor: # TODO: ok if discount_factor < 1
 
             next_value_utility = {}      # init V'
             maximum_change_utility = 0.  # init the maximum change in the utility of any state in V [delta]
@@ -56,7 +57,7 @@ class Agent(agent.Agent):
                     (action, action_meu) = self.actionMaximumExpectedUtility(state)
 
                     # Compute V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
-                    next_value_utility[state] = self.environment.reward(state) + self.discountFactor * action_meu
+                    next_value_utility[state] = self.environment.reward(state) + self.environment.discountFactor * action_meu
 
                     # Update maximum_change_utility ?
                     delta = abs(self.valueUtility[state] - next_value_utility[state])

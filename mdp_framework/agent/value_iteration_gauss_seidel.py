@@ -35,22 +35,18 @@ class Agent(agent.Agent):
         # Iteratively update self.valueUtility with the following function
         # V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
         for iteration in range(maximum_iteration):
-            next_value_utility = {}      # init V'
-
             # For all s
             for state in self.environment.stateSet:
                 if state in environment.finalStateSet:
                     # If s is a final state then V_i(s)=R(s) for all i      (TODO: this is not explicitely written in most references...)
-                    next_value_utility[state] = self.environment.reward(state)
+                    self.valueUtility[state] = self.environment.reward(state)
                 else:
                     # Compute \pi^*(s) := \arg\max_{a} \sum_{s'} T(s, a, s') U_i(s')
                     # and         U(s) :=     \max_{a} \sum_{s'} T(s, a, s') U_i(s')
                     (action, action_meu) = self.actionMaximumExpectedUtility(state)
 
                     # Compute V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
-                    next_value_utility[state] = self.environment.reward(state) + self.environment.discountFactor * action_meu
-
-            self.valueUtility = next_value_utility
+                    self.valueUtility[state] = self.environment.reward(state) + self.environment.discountFactor * action_meu
 
             environment.displayValueFunction(self.valueUtility, iteration=iteration)
 
