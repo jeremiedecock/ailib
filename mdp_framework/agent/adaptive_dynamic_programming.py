@@ -53,7 +53,7 @@ class Agent(agent.Agent):
         self.approximateTransitionDict = {(state, action, next_state):0 for state in self.environment.stateSet - self.environment.finalStateSet for action in self.environment.actionSet for next_state in self.environment.stateSet}
 
         for initial_state in initial_state_set:
-            for iteration in range(number_of_simulations):
+            for simulation_index in range(number_of_simulations):
                 # Do the simulation
                 (state_list, action_list, reward_list) = self.environment.simulate(self, initial_state=initial_state,  max_it=1000)
 

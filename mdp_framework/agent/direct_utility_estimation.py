@@ -52,7 +52,7 @@ class Agent(agent.Agent):
         state_total_reward_dict = {state:[] for state in self.environment.stateSet}
 
         for initial_state in initial_state_set:
-            for iteration in range(number_of_simulations):
+            for simulation_index in range(number_of_simulations):
                 # Do the simulation
                 (state_list, action_list, reward_list) = environment.simulate(self, initial_state=initial_state,  max_it=1000)
                 print(state_list, "\n", reward_list)
@@ -65,7 +65,7 @@ class Agent(agent.Agent):
                 self.valueUtility = {state: np.mean(total_reward_list) if len(total_reward_list) > 0 else None for state, total_reward_list in state_total_reward_dict.items()}
 
                 print(self.valueUtility)
-                environment.displayValueFunction(self.valueUtility, iteration=iteration)
+                environment.displayValueFunction(self.valueUtility, iteration=simulation_index)
 
 
     def getAction(self, state):
