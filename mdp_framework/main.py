@@ -30,6 +30,7 @@ from environment.maze import Environment
 #from agent.value_iteration_gauss_seidel import Agent
 #from agent.value_iteration_error_rate import Agent
 from agent.policy_iteration import Agent
+#from agent.direct_utility_estimation import Agent
 
 def main():
     """Main function"""

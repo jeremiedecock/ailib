@@ -248,15 +248,15 @@ class Environment(environment.Environment):
 
 
     def displayValueFunction(self, value_utility_dict, iteration=None):
-        text_dict = {state:"{0:0.3f}".format(value_utility_dict[state]) for state in self.stateSet}
+        text_dict = {state:"{0:0.3f}".format(value_utility_dict[state]) if value_utility_dict[state] is not None else "?" for state in self.stateSet}
 
-        min_value = min([value_utility_dict[state] for state in self.stateSet])
-        max_value = max([value_utility_dict[state] for state in self.stateSet])
+        min_value = min([value_utility_dict[state] for state in self.stateSet if value_utility_dict[state] is not None])
+        max_value = max([value_utility_dict[state] for state in self.stateSet if value_utility_dict[state] is not None])
         min_color = 0.15
         max_color = 0.85
         scale_color = lambda value: (float(value * -1. - min_value)  / float(max_value - min_value)) * (max_color - min_color) + min_color
 
-        color_dict = {state: (0, 0, 1, scale_color(value_utility_dict[state])) for state in self.stateSet}
+        color_dict = {state: (0, 0, 1, scale_color(value_utility_dict[state])) for state in self.stateSet if value_utility_dict[state] is not None}
 
         bold_set = self.finalStateSet | {self.initialState}
         inner_square_dict = {state: (1, 0, 0, 1) for state in self.finalStateSet}
