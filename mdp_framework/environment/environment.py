@@ -62,6 +62,9 @@ class Environment(object):
 
 
     def simulate(self, agent, initial_state=None, max_it=float("inf")):
+        """
+        max_it (maximum number of iterations) can be used to avoid infinites simulations.
+        """
         if initial_state is None:
             initial_state = self.initialState
         else:

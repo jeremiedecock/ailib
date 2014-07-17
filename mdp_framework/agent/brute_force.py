@@ -26,6 +26,13 @@ import itertools
 import numpy as np
 
 class Agent(agent.Agent):
+    """
+    Brut force policy search.
+
+    Requires discount factor in [0;1[ (will bug if discout_factor==1).
+
+    No references.
+    """
 
     def __init__(self, environment):
 

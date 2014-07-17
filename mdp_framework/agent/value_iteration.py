@@ -24,6 +24,14 @@
 from . import agent
 
 class Agent(agent.Agent):
+    """
+    Value Iteration.
+    One of the two main DP algorithm to solve MDP.
+    The algorithm terminates after a given number of iterations.
+
+    See: Stuart Russell, Peter Norvig, "Intelligence artificielle", 2e édition,
+    Pearson, 2006, pp. 691-696.
+    """
 
     def __init__(self, environment, maximum_iteration = 30):
 

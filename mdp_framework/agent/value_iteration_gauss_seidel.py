@@ -24,6 +24,22 @@
 from . import agent
 
 class Agent(agent.Agent):
+    """
+    Value Iteration (VI).
+    One of the two main DP algorithm to solve MDP.
+    The algorithm terminates after a given number of iterations.
+
+    Gauss-Seidel variant: use V_{i+1}(s) instead V_i(s) in Bellman updates if
+    already computed. In standard Value Iteration, the same current cost
+    estimate V is used to update all states at the next iterate. Instead, here
+    we incorporate earlier in the computations the new values of the cost for
+    the states that have already been treated.
+    This version is a bit faster than the original VI algorithm.
+
+    See: Stuart Russell, Peter Norvig, "Intelligence artificielle", 2e édition,
+    Pearson, 2006, pp. 691-696.
+    See: Perny's courses for the Gauss-Seidel variant.
+    """
 
     def __init__(self, environment, maximum_iteration = 30):
 

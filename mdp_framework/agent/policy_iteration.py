@@ -31,6 +31,15 @@ import numpy as np
 import random
 
 class Agent(agent.Agent):
+    """
+    Policy Iteration.
+    One of the two main DP algorithm to solve MDP.
+
+    Requires discount factor in [0;1[ (will bug if discout_factor==1).
+
+    See: Stuart Russell, Peter Norvig, "Intelligence artificielle", 2e édition,
+    Pearson, 2006, pp. 697-698.
+    """
 
     def __init__(self, environment, maximum_iteration = 30):
         self.environment = environment
