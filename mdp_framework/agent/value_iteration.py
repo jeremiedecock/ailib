@@ -51,11 +51,11 @@ class Agent(agent.Agent):
                     # If s is a final state then V_i(s)=R(s) for all i      (TODO: this is not explicitely written in most references...)
                     next_value_utility[state] = self.environment.reward(state)
                 else:
-                    # Compute \pi^*(s) := \arg\max_{a} \sum_{s'} T(s, a, s') U_i(s')
-                    # and         U(s) :=     \max_{a} \sum_{s'} T(s, a, s') U_i(s')
+                    # Compute \pi^*(s) := \arg\max_{a} \sum_{s'} T(s, a, s') V_i(s')
+                    # and         V(s) :=     \max_{a} \sum_{s'} T(s, a, s') V_i(s')
                     (action, action_meu) = self.actionMaximumExpectedUtility(state)
 
-                    # Compute V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') U_i(s')
+                    # Compute V_{i+1}(s) := R(s) + discount \max_{a} \sum_{s'} T(s, a, s') V_i(s')
                     next_value_utility[state] = self.environment.reward(state) + self.environment.discountFactor * action_meu
 
             self.valueUtility = next_value_utility
@@ -71,8 +71,8 @@ class Agent(agent.Agent):
 
     def actionMaximumExpectedUtility(self, state):
         """
-        Compute \pi^*(s) = \arg\max_{a} \sum_{s'} T(s, a, s') U_i(s')
-        and         U(s) =     \max_{a} \sum_{s'} T(s, a, s') U_i(s')
+        Compute \pi^*(s) = \arg\max_{a} \sum_{s'} T(s, a, s') V_i(s')
+        and         V(s) =     \max_{a} \sum_{s'} T(s, a, s') V_i(s')
         """
 
         best_action = None
