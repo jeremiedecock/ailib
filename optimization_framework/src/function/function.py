@@ -6,7 +6,7 @@ __all__ = ['ObjectiveFunction']
 
 import numpy as np
 
-class ObjectiveFunction:
+class ObjectiveFunction(object):
 
     def __call__(self, *pargs, **kargs):
         x = pargs[0]

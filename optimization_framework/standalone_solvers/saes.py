@@ -119,7 +119,7 @@ def main():
             offspring = Individual(offspring_y, offspring_sigma)
             offspring_pop.append(offspring)
         parent_pop = select_individuals(offspring_pop)
-        print parent_pop[0]
+        print(parent_pop[0])
 
 # Remark: Final approximation of the optimizer is in "parent_pop[0].x"
 #         corresponding fitness is in "parent_pop[0].cost" and the final 

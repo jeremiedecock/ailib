@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 import random
 
-import optimizer
+from . import optimizer
 
 """
 The individual class
@@ -101,7 +101,7 @@ class SaesHgb(optimizer.Optimizer):
 
             self.log.data["x"].append(parent_pop[0].x)  # TODO use a "log" object instead
             self.log.data["y"].append(parent_pop[0].y)  # TODO
-            print parent_pop[0]
+            print(parent_pop[0])
 
         self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]).reshape([-1,1]))
         self.plotCosts(np.array(self.log.data["y"]).reshape([-1,1]))

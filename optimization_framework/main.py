@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2013 Jérémie DECOCK (http://www.jdhp.org)
@@ -30,7 +30,7 @@ def main():
     best_x = opt.optimize(f, num_gen=3000)
     #best_x = opt.optimize(f, num_samples=3000)
 
-    print "Best sample: f(", best_x, ") = ", f(best_x)
+    print("Best sample: f(", best_x, ") = ", f(best_x))
 
 if __name__ == '__main__':
     main()

@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib.finance import quotes_historical_yahoo
 import datetime
 
-import function
+from . import function
 
 class YahooFunction(function.ObjectiveFunction):
 

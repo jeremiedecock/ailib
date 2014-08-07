@@ -5,7 +5,7 @@
 __all__ = ['SphereFunction']
 
 import numpy as np
-import function
+from . import function
 
 class SphereFunction(function.ObjectiveFunction):
 

@@ -5,7 +5,7 @@
 __all__ = ['NoisedSphereFunction']
 
 import numpy as np
-import function
+from . import function
 
 # STOCHASTIC OBJECTIVE FUNCTIONS ##############################################
 

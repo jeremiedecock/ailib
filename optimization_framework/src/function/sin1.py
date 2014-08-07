@@ -5,7 +5,7 @@
 __all__ = ['Sin1Function']
 
 import numpy as np
-import function
+from . import function
 
 class Sin1Function(function.ObjectiveFunction):
 

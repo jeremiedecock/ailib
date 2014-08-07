@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 import warnings
 
-class Optimizer:
+class Optimizer(object):
 
     def __init__(self):
         self.log = Log()
