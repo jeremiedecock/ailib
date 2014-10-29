@@ -35,9 +35,40 @@ class ObjectiveFunction(object):
             y.append(self._eval_one_sample(xi))
         return np.array(y).reshape([-1,1])
 
-    # TODO
-    def plot(self, xmin, xmax):
-        pass
+    def plot(self, xmin=-10, xmax=10, xstep=0.01):
+        if self.ndim == 1:
+            import matplotlib.pyplot as plt
+
+            x_vec = np.arange(xmin, xmax, xstep)
+            y_vec = self(x_vec.reshape([-1, 1]))
+
+            try:
+                label = self.label
+            except:
+                label = "f(x)"
+
+            fig = plt.figure(figsize=(16.0, 10.0))
+            ax = fig.add_subplot(111)
+            ax.plot(x_vec, y_vec, "-", label=label)
+
+            # TITLE AND LABELS
+            ax.set_title("Objective function", fontsize=20)
+            ax.set_xlabel(r"$x$", fontsize=32)
+            ax.set_ylabel(r"$f(x)$", fontsize=32)
+
+            # LEGEND
+            ax.legend(loc='lower right', fontsize=20)
+
+            # SAVE FILES ######################
+            #filename = label + ".pdf"
+            #plt.savefig(filename)
+
+            # PLOT ############################
+            plt.show()
+        elif self.ndim == 2:
+            pass # TODO
+        else:
+            pass
 
 
 # TODO: doit être un objet qui permet de connaître:

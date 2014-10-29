@@ -15,7 +15,7 @@ from . import function
 
 class NoisedSphereFunction(function.ObjectiveFunction):
 
-    def __init__(self, ndim=1, sigma=0.1):
+    def __init__(self, ndim=1, sigma=5.0):
         self.ndim = ndim
         self.domain_min = -1. * np.ones(ndim)
         self.domain_max =  1. * np.ones(ndim)

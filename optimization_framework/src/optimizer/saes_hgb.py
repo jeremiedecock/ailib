@@ -33,7 +33,7 @@ https://homepages.fhv.at/hgb/downloads/mu_mu_I_lambda-ES.oct
 """
 class SaesHgb(optimizer.Optimizer):
 
-    def __init__(self, mu=3, lambda_=12, x_init=None, sigma_init=1, sigma_min=1e-5):
+    def __init__(self, mu=3, lambda_=12, x_init=None, sigma_init=1, sigma_min=1e-5, num_evals_func=None):
 
         optimizer.Optimizer.__init__(self)
 
@@ -42,6 +42,7 @@ class SaesHgb(optimizer.Optimizer):
         self.x_init = x_init            # initial parent vector 
         self.sigma_init = sigma_init    # initial global mutation strength sigma 
         self.sigma_min = sigma_min      # ES stops when sigma is smaller than sigma_min
+        self.num_evals_func = num_evals_func      # How many times noisy objective functions should be called for each evaluation (considere the average value of these calls)
 
         self.log.data["x"] = []
         self.log.data["sigma"] = []
@@ -89,10 +90,24 @@ class SaesHgb(optimizer.Optimizer):
         while parent_pop[0].sigma > self.sigma_min and gen_index < num_gen:
             offspring_pop = []
             recombinant = self.recombine_individuals(parent_pop) # TODO: BUG ? this statement may be in the next line
-            for i in range(1, self.lambda_):
+            for offspring_index in range(1, self.lambda_):
                 offspring_sigma = recombinant.sigma * math.exp(tau * random.normalvariate(0,1))
                 offspring_x = recombinant.x + offspring_sigma * np.random.normal(size=n)
-                offspring = Individual(offspring_x, offspring_sigma, objective_function(offspring_x))
+
+                if self.num_evals_func is None:
+                    # If the objective function is deterministic
+                    offspring_y = objective_function(offspring_x)
+                else:
+                    # If the objective function is stochastic
+                    # TODO: move this in function or in optimizer (?) class so that it is available for all optimiser implementations...
+                    num_evals = self.num_evals_func(gen_index)
+                    offspring_y_list = np.zeros(num_evals)
+                    for eval_index in range(num_evals):
+                        offspring_y_list[eval_index] = float(objective_function(offspring_x))
+                    offspring_y = np.mean(offspring_y_list)
+                    # TODO: generate the confidence bounds of offspring_y and plot it
+
+                offspring = Individual(offspring_x, offspring_sigma, offspring_y)
                 offspring_pop.append(offspring)
             parent_pop = self.select_individuals(offspring_pop)
             #parent_pop = self.select_individuals(parent_pop + offspring_pop)

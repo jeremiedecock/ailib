@@ -5,8 +5,6 @@
 __all__ = ['Optimizer', 'Log']
 
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
 import warnings
 
 class Optimizer(object):
@@ -15,6 +13,7 @@ class Optimizer(object):
         self.log = Log()
 
     def plotSamples(self, x, y):
+        import matplotlib.pyplot as plt
 
         assert x.ndim == 2, x.ndim
         assert y.ndim == 2, y.ndim
@@ -22,14 +21,30 @@ class Optimizer(object):
 
         if x.shape[1]==1:
             # 1D case
-            plt.plot(x[:,0], y, ".")
+            fig = plt.figure(figsize=(16.0, 10.0))
+            ax = fig.add_subplot(111)
+
+            label = "samples"
+            ax.plot(x[:,0], y, ".", label=label)
             
+            # PLOT BEST SAMPLE
             x_min = x[y.argmin(), :]
             y_min = y.min()
-            plt.plot(x_min, y_min, ".r")
+            ax.plot(x_min, y_min, ".r")
 
+            # TITLE AND LABELS
+            ax.set_title("Samples", fontsize=20)
+            ax.set_xlabel(r"$x$", fontsize=32)
+            ax.set_ylabel(r"$f(x)$", fontsize=32)
+
+            # LEGEND
+            ax.legend(loc='lower right', fontsize=20)
+
+            # PLOT
             plt.show()
         elif x.shape[1]==2:
+            from mpl_toolkits.mplot3d import axes3d
+
             # 2D case
             fig = plt.figure()
             ax = axes3d.Axes3D(fig)
@@ -44,11 +59,27 @@ class Optimizer(object):
             warnings.warn("Cannot plot samples: too many dimensions.")
 
     def plotCosts(self, y):
+        import matplotlib.pyplot as plt
 
         assert y.shape[1]==1
 
-        plt.plot(y)
+        label = "value"
+
+        fig = plt.figure(figsize=(16.0, 10.0))
+        ax = fig.add_subplot(111)
+        ax.plot(y, "-", label=label)
+
+        # TITLE AND LABELS
+        ax.set_title("Value over iterations", fontsize=20)
+        ax.set_xlabel(r"iteration $i$", fontsize=32)
+        ax.set_ylabel(r"$f(x)$", fontsize=32)
+
+        # LEGEND
+        ax.legend(loc='lower right', fontsize=20)
+
+        # PLOT
         plt.show()
+
 
 class Log:
     def __init__(self):
