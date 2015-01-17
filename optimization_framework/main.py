@@ -24,14 +24,6 @@
 import numpy as np
 import math
 
-from function.degree_2_polynomial import Function
-#from function.noised_sphere import Function
-#from function.sin1 import Function
-#from function.sin2 import Function
-#from function.sin3 import Function
-#from function.sphere import Function
-#from function.yahoo import Function
-
 #from optimizer.eda import Optimizer
 from optimizer.gradient import Optimizer
 #from optimizer.naive import Optimizer
@@ -44,22 +36,30 @@ def main():
     # SETUP OBJECTIVE FUNCTION ############################
 
     # Sphere ##########################
-    #f = Function(1)
+    from function.sphere import Function
+    f = Function(1)
     #f = Function(2)
 
     # Noised sphere ###################
+    #from function.noised_sphere import Function
     #f = Function(1)
     #f = Function(2)
 
     # Sinusoid functions ##############
+    #from function.sin1 import Function
+    #from function.sin2 import Function
+    #from function.sin3 import Function
     #f = Function()
 
     # Yahoo function ##################
+    #from function.yahoo import Function
     #f = Function()
 
     # Degree 2 polynomial function ####
-    f = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
+    #from function.degree_2_polynomial import Function
+    #f = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
 
+    # Plot
     f.plot()
 
 

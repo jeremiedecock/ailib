@@ -37,24 +37,44 @@ class Optimizer(object):
 
         if x.shape[1]==1:
             # 1D case
+
             fig = plt.figure(figsize=(16.0, 10.0))
             ax = fig.add_subplot(111)
 
-            label = "samples"
-            ax.plot(x[:,0], y, ".", label=label)
+            # PLOT THE OBJECTIVE FUNCTION 
+
+            if objective_function is not None:
+                # BUILD DATA
+
+                xmin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                xmax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                ymin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                ymax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                xstep = 0.05 # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+
+                x_vec = np.arange(xmin, xmax, xstep)
+                y_vec = objective_function(x_vec.reshape([-1, 1]))
+                ax.plot(x_vec, y_vec, "-", label="objective function")
+
+            # PLOT VISITED POINTS
+            ax.plot(x[:,0], y, ".", label="visited points")
             
-            # PLOT BEST SAMPLE
+            # PLOT THE BEST VISITED POINT
             x_min = x[y.argmin(), :]
             y_min = y.min()
             ax.plot(x_min, y_min, ".r")
 
             # TITLE AND LABELS
-            ax.set_title("Samples", fontsize=20)
+            ax.set_title('Visited points', fontsize=20)
             ax.set_xlabel(r"$x$", fontsize=32)
             ax.set_ylabel(r"$f(x)$", fontsize=32)
 
             # LEGEND
             ax.legend(loc='lower right', fontsize=20)
+
+            # SAVE FILES ######################
+            #filename = label + ".pdf"
+            #plt.savefig(filename)
 
             # PLOT
             plt.show()
@@ -84,27 +104,27 @@ class Optimizer(object):
                 ymax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
                 xstep = 0.05 # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
 
-                range_x = np.arange(xmin, xmax, xstep)
-                range_y = np.arange(xmin, xmax, xstep)
+                range_x1 = np.arange(xmin, xmax, xstep)
+                range_x2 = np.arange(xmin, xmax, xstep)
 
-                mesh_x,mesh_y = np.meshgrid(range_x, range_y)
+                mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
 
                 # TODO: take advantage of meshgrid, for now, it's not optimized at
                 #       all and not very well written
-                z = np.zeros(mesh_x.shape)         
-                for xi in range(z.shape[0]):
-                    for yi in range(z.shape[1]):
-                        point = np.array([mesh_x[xi, yi], mesh_y[xi, yi]])
-                        z[xi, yi] = objective_function(point)
+                z = np.zeros(mesh_x1.shape)         
+                for x1i in range(z.shape[0]):
+                    for x2i in range(z.shape[1]):
+                        point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                        z[x1i, x2i] = objective_function(point)
 
                 # PLOT
-                ax.plot_surface(mesh_x, mesh_y, z, rstride=5, cstride=5, alpha=0.3)
-                cset = ax.contourf(mesh_x, mesh_y, z, zdir='z', offset=0, cmap=cm.coolwarm)
+                ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, alpha=0.3)
+                cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
 
             # PLOT VISITED POINTS
-
             ax.scatter(x[:,0], x[:,1], y, color='b')
             
+            # PLOT THE BEST VISITED POINT
             x_min = x[y.argmin(), :]
             y_min = y.min()
             ax.scatter(x_min[0], x_min[1],  y_min, color='r')
@@ -114,6 +134,10 @@ class Optimizer(object):
             ax.set_xlabel(r'$x_1$', fontsize=32)
             ax.set_ylabel(r'$x_2$', fontsize=32)
             ax.set_zlabel(r'$f(x)$', fontsize=32)
+
+            # SAVE FILES ######################
+            #filename = label + ".pdf"
+            #plt.savefig(filename)
 
             plt.show()
         else:

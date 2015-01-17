@@ -192,30 +192,30 @@ class ObjectiveFunction(object):
 
             # BUILD DATA ################
 
-            x = np.arange(xmin, xmax, xstep)
-            y = np.arange(xmin, xmax, xstep)
+            x1 = np.arange(xmin, xmax, xstep)
+            x2 = np.arange(xmin, xmax, xstep)
 
-            xx,yy = np.meshgrid(x, y)
+            mesh_x1,mesh_x2 = np.meshgrid(x1, x2)
 
             # TODO: take advantage of meshgrid, for now, it's not optimized at
             #       all and not very well written
-            z = np.zeros(xx.shape)         
-            for xi in range(z.shape[0]):
-                for yi in range(z.shape[1]):
-                    point = np.array([xx[xi, yi], yy[xi, yi]])
-                    z[xi, yi] = self(point)
+            z = np.zeros(mesh_x1.shape)         
+            for x1i in range(z.shape[0]):
+                for x2i in range(z.shape[1]):
+                    point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                    z[x1i, x2i] = self(point)
 
             # PLOT DATA #################
 
             fig = plt.figure()
 
             #ax = axes3d.Axes3D(fig)
-            #ax.plot_wireframe(xx, yy, z)
+            #ax.plot_wireframe(mesh_x1, mesh_x2, z)
 
             ax = fig.gca(projection='3d')
 
-            ax.plot_surface(xx, yy, z, rstride=5, cstride=5, alpha=0.3)
-            cset = ax.contourf(xx, yy, z, zdir='z', offset=0, cmap=cm.coolwarm)
+            ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, alpha=0.3)
+            cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
 
             # TITLE AND LABELS
             ax.set_title('Objective function\n$' + str(self) + '$', fontsize=20)
