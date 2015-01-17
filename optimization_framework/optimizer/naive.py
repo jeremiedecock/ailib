@@ -25,7 +25,11 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 import warnings
 
-from . import optimizer
+# TODO: improve this ?
+if __name__ == '__main__':
+    import optimizer
+else:
+    from . import optimizer
 
 class Optimizer(optimizer.Optimizer):
     
@@ -38,8 +42,17 @@ class Optimizer(optimizer.Optimizer):
         y_samples = objective_function(x_samples)
         x_min = x_samples[y_samples.argmin(), :]
 
-        self.plotSamples(x_samples, y_samples)
+        self.plotSamples(x_samples, y_samples, objective_function)
         self.plotCosts(y_samples)
 
         return x_min
+
+
+# TEST ########################################################################
+
+def test():
+    pass
+
+if __name__ == '__main__':
+    test()
 

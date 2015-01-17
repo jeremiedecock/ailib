@@ -24,7 +24,11 @@
 import numpy as np
 import numbers
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -49,8 +53,6 @@ class Function(function.ObjectiveFunction):
         self.coef_deg2 = coef_deg2
         self.coef_deg1 = coef_deg1
         self.coef_deg0 = coef_deg0
-
-        print(self)
 
 
     # EVAL ####################################################################
@@ -110,9 +112,8 @@ class Function(function.ObjectiveFunction):
 # TEST ########################################################################
 
 def test():
-    f = Function(2)
-    print(f(np.array([1,1])))
-    print(f.gradient(np.array([1,1])))
+    f = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
+    f.plot()
 
 if __name__ == '__main__':
     test()

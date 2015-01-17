@@ -147,7 +147,7 @@ class ObjectiveFunction(object):
 
     # PLOT ####################################################################
 
-    def plot(self, xmin=-1., xmax=1., xstep=0.01):
+    def plot(self, xmin=-1., xmax=1., xstep=0.02):
         if self.ndim == 1:
 
             # 1D FUNCTIONS

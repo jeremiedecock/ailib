@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import optimizer
+# TODO: improve this ?
+if __name__ == '__main__':
+    import optimizer
+else:
+    from . import optimizer
 
 class Optimizer(optimizer.Optimizer):
 
@@ -53,4 +57,13 @@ class Optimizer(optimizer.Optimizer):
         self.plotCosts(y_history_list)
 
         return x
+
+
+# TEST ########################################################################
+
+def test():
+    pass
+
+if __name__ == '__main__':
+    test()
 

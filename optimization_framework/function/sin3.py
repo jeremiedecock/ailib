@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -47,4 +51,14 @@ class Function(function.ObjectiveFunction):
         y = np.sin(r)
         y = y.reshape([-1,1])
         return y
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function()
+    f.plot()
+
+if __name__ == '__main__':
+    test()
 

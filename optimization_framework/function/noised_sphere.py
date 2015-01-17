@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 # STOCHASTIC OBJECTIVE FUNCTIONS ##############################################
 
@@ -35,7 +39,7 @@ class Function(function.ObjectiveFunction):
 
     function_name = "Noised sphere"
 
-    def __init__(self, ndim=1, sigma=5.0):
+    def __init__(self, ndim=1, sigma=0.1):
         self.ndim = ndim
         self.domain_min = -1. * np.ones(ndim)
         self.domain_max =  1. * np.ones(ndim)
@@ -55,4 +59,17 @@ class Function(function.ObjectiveFunction):
         y = y + np.random.normal(0., self.sigma, y.shape[0])
         y = y.reshape([-1,1])
         return y
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function(1, sigma=0.1)
+    f.plot(xstep=0.05)
+
+    f = Function(2, sigma=0.1)
+    f.plot(xstep=0.05)
+
+if __name__ == '__main__':
+    test()
 

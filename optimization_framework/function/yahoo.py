@@ -24,7 +24,11 @@ import numpy as np
 from matplotlib.finance import quotes_historical_yahoo
 import datetime
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -52,4 +56,14 @@ class Function(function.ObjectiveFunction):
         if self.domain_min <= x < self.domain_max:
             y = self._quote[int(x)]
         return y
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function()
+    f.plot()
+
+if __name__ == '__main__':
+    test()
 

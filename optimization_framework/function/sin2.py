@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -41,4 +45,14 @@ class Function(function.ObjectiveFunction):
         x = np.absolute(x)
         y = np.sin(2 * 2 * np.pi * x) * np.exp(-5 * x)
         return y
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function()
+    f.plot()
+
+if __name__ == '__main__':
+    test()
 

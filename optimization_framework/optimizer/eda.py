@@ -24,7 +24,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import warnings
 
-from . import optimizer
+# TODO: improve this ?
+if __name__ == '__main__':
+    import optimizer
+else:
+    from . import optimizer
 
 class Optimizer(optimizer.Optimizer):
 
@@ -67,4 +71,13 @@ class Optimizer(optimizer.Optimizer):
         self.plotCosts(y_samples)
 
         return x
+
+
+# TEST ########################################################################
+
+def test():
+    pass
+
+if __name__ == '__main__':
+    test()
 

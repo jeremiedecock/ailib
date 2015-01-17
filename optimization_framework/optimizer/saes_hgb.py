@@ -26,7 +26,11 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 import random
 
-from . import optimizer
+# TODO: improve this ?
+if __name__ == '__main__':
+    import optimizer
+else:
+    from . import optimizer
 
 """
 The individual class
@@ -134,7 +138,7 @@ class Optimizer(optimizer.Optimizer):
             self.log.data["y"].append(parent_pop[0].y)  # TODO
             print(parent_pop[0])
 
-        self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]).reshape([-1,1]))
+        self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]).reshape([-1,1]), objective_function)
         self.plotCosts(np.array(self.log.data["y"]).reshape([-1,1]))
 
         return parent_pop[0].x
@@ -142,3 +146,12 @@ class Optimizer(optimizer.Optimizer):
 # Remark: Final approximation of the optimizer is in "parent_pop[0].x"
 #         corresponding fitness is in "parent_pop[0].y" and the final 
 #         mutation strength is in "parent_pop[0].sigma"
+
+# TEST ########################################################################
+
+def test():
+    pass
+
+if __name__ == '__main__':
+    test()
+

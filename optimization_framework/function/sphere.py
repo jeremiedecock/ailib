@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -71,8 +75,7 @@ class Function(function.ObjectiveFunction):
 
 def test():
     f = Function(2)
-    print(f(np.array([1,1])))
-    print(f.gradient(np.array([1,1])))
+    f.plot()
 
 if __name__ == '__main__':
     test()

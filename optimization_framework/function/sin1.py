@@ -23,7 +23,11 @@
 
 import numpy as np
 
-from . import function
+# TODO: improve this ?
+if __name__ == '__main__':
+    import function
+else:
+    from . import function
 
 class Function(function.ObjectiveFunction):
 
@@ -40,4 +44,14 @@ class Function(function.ObjectiveFunction):
     def _eval_one_sample(self, x):
         y = np.sin(2 * 2 * np.pi * x) * 1/np.sqrt(2*np.pi) * np.exp(-(x**2)/2)
         return y
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function()
+    f.plot()
+
+if __name__ == '__main__':
+    test()
 
