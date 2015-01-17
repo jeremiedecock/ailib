@@ -1,14 +1,34 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015 Jérémie DECOCK (http://www.jdhp.org)
 
-__all__ = ['Degree2PolynomialFunction']
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#  
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 import numpy as np
 import numbers
+
 from . import function
 
-class Degree2PolynomialFunction(function.ObjectiveFunction):
+class Function(function.ObjectiveFunction):
+
+    function_name = "Degree 2 polynomial"
 
     def __init__(self, coef_deg2, coef_deg1, coef_deg0, ndim=1):
         self.ndim = ndim
@@ -32,6 +52,9 @@ class Degree2PolynomialFunction(function.ObjectiveFunction):
 
         print(self)
 
+
+    # EVAL ####################################################################
+
     def _eval_one_sample(self, x):
         y = np.dot(self.coef_deg2 * x, x) + np.dot(self.coef_deg1, x) + self.coef_deg0
         return y
@@ -43,11 +66,15 @@ class Degree2PolynomialFunction(function.ObjectiveFunction):
         return y
 
 
+    # GRADIENT ################################################################
+
 #    def _eval_one_gradient(self, point):
 #        x = point
 #        y = self.coef_deg2 * 2. * x + self.coef_deg1
 #        return y
 
+
+    # STR #####################################################################
 
     def __str__(self):
 
@@ -78,4 +105,15 @@ class Degree2PolynomialFunction(function.ObjectiveFunction):
         function_str = "f(x) = " + " + ".join(terms_str_list)
 
         return function_str
+
+
+# TEST ########################################################################
+
+def test():
+    f = Function(2)
+    print(f(np.array([1,1])))
+    print(f.gradient(np.array([1,1])))
+
+if __name__ == '__main__':
+    test()
 
