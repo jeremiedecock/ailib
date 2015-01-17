@@ -1,5 +1,7 @@
 # based on Numpy source code architecture...
 
+from . import degree_2_polynomial
+from .degree_2_polynomial import *
 from . import noised_sphere
 from .noised_sphere import *
 from . import sphere
@@ -16,6 +18,7 @@ from .yahoo import *
 __all__ = []
 
 __all__ += function.__all__
+__all__ += degree_2_polynomial.__all__
 __all__ += noised_sphere.__all__
 __all__ += sphere.__all__
 __all__ += sin1.__all__

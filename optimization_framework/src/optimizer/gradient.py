@@ -10,38 +10,30 @@ from . import optimizer
 
 class GradientDescent(optimizer.Optimizer):
 
-    def __init__(self, delta):
-        self.delta = delta
-
-    def optimize(self, objective_function, num_samples=1000):
+    def optimize(self, objective_function, num_iterations=1000):
 
         dmin = objective_function.domain_min
         dmax = objective_function.domain_max
         
         x = np.random.uniform(dmin, dmax, objective_function.ndim)
 
-        x_samples = np.zeros([num_samples, objective_function.ndim])
+        x_history_list = np.zeros([num_iterations, objective_function.ndim])
+        nabla_history_list = np.zeros([num_iterations, objective_function.ndim])
 
         # Compute the gradient of objective_function at x
-        for sample_index in range(num_samples):
-            nabla = np.zeros(objective_function.ndim)
-            for dim_index in range(objective_function.ndim):
-                delta_vec = np.zeros(objective_function.ndim)
-                delta_vec[dim_index] = self.delta
+        for sample_index in range(num_iterations):
+            nabla = objective_function.gradient(x)
+            coef = 1.  # TODO!!! : http://fr.wikipedia.org/wiki/Algorithme_du_gradient + http://fr.wikipedia.org/wiki/Recherche_lin%C3%A9aire  +  http://fr.wikipedia.org/wiki/Algorithme_%C3%A0_r%C3%A9gions_de_confiance
 
-                y1 = objective_function(x - delta_vec)
-                y2 = objective_function(x + delta_vec)
+            x = x - coef * nabla
 
-                nabla[dim_index] = y2 - y1
+            # Keep an history of x and nabla to plot things...
+            x_history_list[sample_index, :] = x
+            nabla_history_list[sample_index, :] = nabla
 
-            x = x - nabla
-
-            # Keep an history of x to plot things...
-            x_samples[sample_index, :] = x
-
-        y_samples = objective_function(x_samples)
-        self.plotSamples(x_samples, y_samples)
-        self.plotCosts(y_samples)
+        y_history_list = objective_function(x_history_list)
+        self.plotSamples(x_history_list, y_history_list, objective_function)
+        self.plotCosts(y_history_list)
 
         return x
 
