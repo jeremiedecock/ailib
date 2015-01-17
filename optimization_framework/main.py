@@ -32,11 +32,16 @@ from function.degree_2_polynomial import Function
 #from function.sphere import Function
 #from function.yahoo import Function
 
+#from optimizer.eda import Optimizer
 from optimizer.gradient import Optimizer
+#from optimizer.naive import Optimizer
+#from optimizer.saes_hgb import Optimizer
 
 # MAIN ########################################################################
 
 def main():
+
+    # SETUP OBJECTIVE FUNCTION ############################
 
     # Sphere ##########################
     #f = Function(1)
@@ -57,11 +62,22 @@ def main():
 
     f.plot()
 
-    #opt = optimizer.NaiveMinimizer()
+
+    # SETUP OPTIMIZER #####################################
+
+    # Naive Minimizer #################
+    #optimizer = Optimizer()
+
+    # Gradient descent ################
     optimizer = Optimizer()
-    f.delta = 0.01     # A parameter for optimizer.GradientDescent()
-    #opt = optimizer.SaesHgb(x_init=np.ones(f.ndim), num_evals_func=lambda gen_index: math.floor(10. * pow(gen_index, 0.5)))
-    #opt = optimizer.SaesHgb(x_init=np.ones(f.ndim))
+    f.delta = 0.01
+
+    # SAES ############################
+    #optimizer = Optimizer(x_init=np.ones(f.ndim), num_evals_func=lambda gen_index: math.floor(10. * pow(gen_index, 0.5)))
+    #optimizer = Optimizer(x_init=np.ones(f.ndim))
+
+
+    # OPTIMIZE ############################################
 
     #best_x = optimizer.optimize(f, num_gen=500)
     best_x = optimizer.optimize(f, num_iterations=3000)
