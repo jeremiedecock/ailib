@@ -37,8 +37,8 @@ def main():
 
     # Sphere ##########################
     from function.sphere import Function
-    f = Function(1)
-    #f = Function(2)
+    #f = Function(1)
+    f = Function(2)
 
     # Noised sphere ###################
     #from function.noised_sphere import Function

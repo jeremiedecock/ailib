@@ -28,7 +28,7 @@ class Optimizer(object):
     def __init__(self):
         self.log = Log()
 
-    def plotSamples(self, x, y, objective_function=None):
+    def plotSamples(self, x, y, objective_function=None, save_filename=None):
         import matplotlib.pyplot as plt
 
         assert x.ndim == 2, x.ndim
@@ -73,8 +73,9 @@ class Optimizer(object):
             ax.legend(loc='lower right', fontsize=20)
 
             # SAVE FILES ######################
-            #filename = label + ".pdf"
-            #plt.savefig(filename)
+            if save_filename is not None:
+                filename = save_filename + ".pdf"
+                plt.savefig(filename)
 
             # PLOT
             plt.show()
@@ -136,8 +137,9 @@ class Optimizer(object):
             ax.set_zlabel(r'$f(x)$', fontsize=32)
 
             # SAVE FILES ######################
-            #filename = label + ".pdf"
-            #plt.savefig(filename)
+            if save_filename is not None:
+                filename = save_filename + ".pdf"
+                plt.savefig(filename)
 
             plt.show()
         else:
