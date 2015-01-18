@@ -53,7 +53,7 @@ class Optimizer(optimizer.Optimizer):
             nabla_history_list[sample_index, :] = nabla
 
         y_history_list = objective_function(x_history_list)
-        self.plotSamples(x_history_list, y_history_list, objective_function)
+        self.plotSamples(x_history_list, y_history_list, objective_function=objective_function)
         self.plotCosts(y_history_list)
 
         return x

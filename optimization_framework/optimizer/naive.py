@@ -42,7 +42,7 @@ class Optimizer(optimizer.Optimizer):
         y_samples = objective_function(x_samples)
         x_min = x_samples[y_samples.argmin(), :]
 
-        self.plotSamples(x_samples, y_samples, objective_function)
+        self.plotSamples(x_samples, y_samples, objective_function=objective_function)
         self.plotCosts(y_samples)
 
         return x_min

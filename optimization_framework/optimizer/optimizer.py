@@ -28,7 +28,7 @@ class Optimizer(object):
     def __init__(self):
         self.log = Log()
 
-    def plotSamples(self, x, y, objective_function=None, save_filename=None):
+    def plotSamples(self, x, y, nabla=None, objective_function=None, save_filename=None):
         import matplotlib.pyplot as plt
 
         assert x.ndim == 2, x.ndim
@@ -59,10 +59,14 @@ class Optimizer(object):
             # PLOT VISITED POINTS
             ax.plot(x[:,0], y, ".", label="visited points")
             
-            # PLOT THE BEST VISITED POINT
+            # PLOT THE BEST VISITED POINTS
             x_min = x[y.argmin(), :]
             y_min = y.min()
-            ax.plot(x_min, y_min, ".r")
+            ax.plot(x_min, y_min, "xr")
+
+            # PLOT GRADIENT OF VISITED POINTS
+            if nabla is not None:
+                pass
 
             # TITLE AND LABELS
             ax.set_title('Visited points', fontsize=20)
@@ -129,6 +133,10 @@ class Optimizer(object):
             x_min = x[y.argmin(), :]
             y_min = y.min()
             ax.scatter(x_min[0], x_min[1],  y_min, color='r')
+
+            # PLOT GRADIENT OF VISITED POINTS
+            if nabla is not None:
+                pass
 
             # TITLE AND LABELS
             ax.set_title('Visited points', fontsize=20)

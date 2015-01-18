@@ -64,7 +64,7 @@ class Optimizer(optimizer.Optimizer):
             x_samples[sample_index, :] = x
 
             # TODO
-            x_vec = np.random.uniform(dmin, dmax, objective_function.ndim)
+            x_vec = np.random.uniform(dmin, dmax, objective_function=objective_function.ndim)
 
         y_samples = objective_function(x_samples)
         self.plotSamples(x_samples, y_samples)

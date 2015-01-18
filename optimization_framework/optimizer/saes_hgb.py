@@ -138,7 +138,7 @@ class Optimizer(optimizer.Optimizer):
             self.log.data["y"].append(parent_pop[0].y)  # TODO
             print(parent_pop[0])
 
-        self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]).reshape([-1,1]), objective_function)
+        self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]).reshape([-1,1]), objective_function=objective_function)
         self.plotCosts(np.array(self.log.data["y"]).reshape([-1,1]))
 
         return parent_pop[0].x
