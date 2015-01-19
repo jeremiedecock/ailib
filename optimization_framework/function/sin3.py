@@ -38,6 +38,9 @@ class Function(function.ObjectiveFunction):
         self.domain_min = -10. * np.ones(self.ndim)
         self.domain_max =  10. * np.ones(self.ndim)
 
+        # Set self.function_formula
+        self.function_formula = r"f(x) = \sin(\sqrt{x_1^2 + x_2^2})"
+
 
     # EVAL ####################################################################
 
@@ -56,8 +59,22 @@ class Function(function.ObjectiveFunction):
 # TEST ########################################################################
 
 def test():
-    f = Function()
-    f.plot()
+    f1 = Function()
+    f1.plot()
+
+    # One point (2D)
+    print()
+    print("*** One point 2D ***")
+    x = np.array([0., 0.])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    nabla_num = f1._eval_one_num_gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
+    print("nabla_num =", nabla_num)
 
 if __name__ == '__main__':
     test()

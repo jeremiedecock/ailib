@@ -32,6 +32,7 @@ class ObjectiveFunction(object):
     """
 
     function_name = "Unknown"
+    function_formula = None
 
     # EVAL ####################################################################
 
@@ -382,7 +383,10 @@ class ObjectiveFunction(object):
     # STR #####################################################################
 
     def __str__(self):
-        return "%s" % (self.function_name)
+        if self.function_formula is not None:
+            return "%s: %s" % (self.function_name, self.function_formula)
+        else:
+            return "%s" % (self.function_name)
 
 
     # PLOT ####################################################################

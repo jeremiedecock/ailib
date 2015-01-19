@@ -54,6 +54,33 @@ class Function(function.ObjectiveFunction):
         self.coef_deg1 = coef_deg1
         self.coef_deg0 = coef_deg0
 
+        # Set self.function_formula #######################
+        # TODO: considere negative coef (avoid "+ -n")
+
+        terms_str_list = []
+
+        for d_index in range(self.ndim):
+            # Deg. 2
+            if self.coef_deg2[d_index] != 0:
+                if self.coef_deg2[d_index] == 1:
+                    terms_str_list.append("x_" + str(d_index) + "^2")
+                else:
+                    terms_str_list.append(str(self.coef_deg2[d_index]) + " x_" + str(d_index) + "^2")
+
+        for d_index in range(self.ndim):
+            # Deg. 1
+            if self.coef_deg1[d_index] != 0:
+                if self.coef_deg1[d_index] == 1:
+                    terms_str_list.append("x_" + str(d_index))
+                else:
+                    terms_str_list.append(str(self.coef_deg1[d_index]) + " x_" + str(d_index))
+
+        if self.coef_deg0 != 0:
+            # Deg. 0
+            terms_str_list.append(str(self.coef_deg0))
+
+        self.function_formula = "f(x) = " + " + ".join(terms_str_list)
+
 
     # EVAL ####################################################################
 
@@ -70,43 +97,29 @@ class Function(function.ObjectiveFunction):
 
     # GRADIENT ################################################################
 
-#    def _eval_one_gradient(self, point):
-#        x = point
-#        y = self.coef_deg2 * 2. * x + self.coef_deg1
-#        return y
+    def _eval_one_gradient(self, x):
+        """
+        Return the gradient of the function at the point x.
 
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value nabla is a numpy array of dimension 1 (i.e. a vector
+        not a matrix).
 
-    # STR #####################################################################
+        This function should never be called by other functions than gradient()
+        because all tests (assert) on arguments are made in gradient()
+        (i.e. this function assume arguments are well defined and doesn't test
+        them). The main reason of this choice is to avoid to rewrite all
+        tests (assert) in sub classes; all tests are written once for all
+        in gradient().
 
-    def __str__(self):
+        This function can be redefined to speedup computations and get more
+        accurate gradients (e.g. analytically computed gradient instead of the
+        default numerically computed gradient).
+        """
+        nabla = 2. * self.coef_deg2 * x + self.coef_deg1
+        return nabla
 
-        # TODO: considere negative coef (avoid "+ -n")
-
-        terms_str_list = []
-
-        # Deg. 2
-        for d_index in range(self.ndim):
-            if self.coef_deg2[d_index] != 0:
-                if self.coef_deg2[d_index] == 1:
-                    terms_str_list.append("x_" + str(d_index) + "^2")
-                else:
-                    terms_str_list.append(str(self.coef_deg2[d_index]) + " x_" + str(d_index) + "^2")
-
-        # Deg. 1
-        for d_index in range(self.ndim):
-            if self.coef_deg1[d_index] != 0:
-                if self.coef_deg1[d_index] == 1:
-                    terms_str_list.append("x_" + str(d_index))
-                else:
-                    terms_str_list.append(str(self.coef_deg1[d_index]) + " x_" + str(d_index))
-
-        # Deg. 0
-        if self.coef_deg0 != 0:
-            terms_str_list.append(str(self.coef_deg0))
-
-        function_str = "f(x) = " + " + ".join(terms_str_list)
-
-        return function_str
 
 
 # TEST ########################################################################
@@ -114,7 +127,7 @@ class Function(function.ObjectiveFunction):
 def test():
     f1 = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
 
-    #f1.plot()
+    f1.plot()
 
     # One point
     for xi in [-1., 0., 1., 2.]:

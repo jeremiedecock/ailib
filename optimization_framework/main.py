@@ -31,7 +31,7 @@ def main():
 
     # SETUP OBJECTIVE FUNCTION ############################
 
-    objective_func = "deg_2_poly"
+    objective_func = "sin3"
 
     if objective_func == "sphere":
         # Sphere ##########################

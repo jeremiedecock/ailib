@@ -38,6 +38,12 @@ class Function(function.ObjectiveFunction):
         self.domain_min = -1. * np.ones(ndim)
         self.domain_max =  1. * np.ones(ndim)
 
+        # Set self.function_formula
+        if self.ndim == 1:
+            self.function_formula = r"f(x) = x^2"
+        else:
+            self.function_formula = r"f(x) = \sum_{i=1}^" + str(self.ndim) + r" x_i^2"
+
 
     # EVAL ####################################################################
 
@@ -60,25 +66,14 @@ class Function(function.ObjectiveFunction):
         return nabla
 
 
-    # STR #####################################################################
-
-    def __str__(self):
-        if self.ndim == 1:
-            func_str = r"f(x) = x^2"
-        else:
-            func_str = r"f(x) = \sum_{i=1}^" + str(self.ndim) + r" x_i^2"
-
-        return func_str 
-
-
 # TEST ########################################################################
 
 def test():
     f1 = Function(1)
     f2 = Function(2)
 
-    #f1.plot()
-    #f2.plot()
+    f1.plot()
+    f2.plot()
 
     # One point (1D)
     for xi in [-1., 0., 1., 2.]:
