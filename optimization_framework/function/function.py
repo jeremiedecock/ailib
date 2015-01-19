@@ -39,13 +39,14 @@ class ObjectiveFunction(object):
         """
         Evaluate the point(s) x.
 
-        If x is a vector (x.ndim=1), then return the value f(x) of the point x.
-        This value y=f(x) is then a scalar number (not a vector ie. no
+        If x is a numpy array of dimension 1 (x.ndim=1 i.e. a vector not an
+        matrix), then return the value f(x) of the point x.
+        This value y=f(x) is then a scalar number (not a numpy array i.e. no
         multi-objective functions yet).
 
-        If x is a matrix of dimension 2 (x.ndim=2), then return the value
+        If x is a numpy array of dimension 2 (x.ndim=2), then return the value
         yi=f(xi) of each point xi in x.
-        The x matrix is considered as following:
+        The x array is considered as following:
            number_of_points := x.shape[0]
            dimension_of_each_point := x.shape[1]
         with:
@@ -53,17 +54,17 @@ class ObjectiveFunction(object):
                 [x2],
                 [x3],
                 ...]
-        For instance, the following matrix x means 3 points defined in R
+        For instance, the following array x means 3 points defined in R
         (1 dimension) have to be evaluated:
            x = [[ 2.],
                 [ 3.],
                 [ 4.]]
-        For instance, the following matrix x means 3 points defined in RxR
+        For instance, the following array x means 3 points defined in RxR
         (2 dimensions) have to be evaluated:
            x = [[ 2., 2.],
                 [ 3., 3.],
                 [ 4., 4.]]
-        Values yi=f(xi) are scalar numbers (not vectors ie. no multi-objective
+        Values yi=f(xi) are scalar numbers (not vectors i.e. no multi-objective
         functions yet).
         """
         x = pargs[0]
@@ -71,7 +72,7 @@ class ObjectiveFunction(object):
         if x.ndim == 1:
             # Only one point ##########
 
-            # Assert the number of elements of the vector x (ie. the dimension
+            # Assert the number of elements of the vector x (i.e. the dimension
             # of the point x) is equals to the dimension of the function (self).
             assert x.shape[0] == self.ndim, "x = " + str(x) + "; x.shape[0] = " + str(x.shape[0]) + "; self.ndim = " + str(self.ndim)
 
@@ -87,14 +88,14 @@ class ObjectiveFunction(object):
             number_of_points = x.shape[0]
             dimension_of_each_point = x.shape[1]
 
-            # Assert the number of elements of the vector x (ie. the dimension
+            # Assert the number of elements of the vector x (i.e. the dimension
             # of the point x) is equals to the dimension of the function (self).
-            # For instance, the following matrix x means 3 points defined in R
+            # For instance, the following numpy array x means 3 points defined in R
             # (1 dimension) have to be evaluated:
             #    x = [[ 2.],
             #         [ 3.],
             #         [ 4.]]
-            # For instance, the following matrix x means 3 points defined in RxR
+            # For instance, the following numpy array x means 3 points defined in RxR
             # (2 dimensions) have to be evaluated:
             #    x = [[ 2., 2.],
             #         [ 3., 3.],
@@ -104,7 +105,7 @@ class ObjectiveFunction(object):
             y = self._eval_multiple_samples(x)
 
             # Assert there is one value yi=f(xi) for each point xi in x
-            # and assert each yi is a scalar (not a vector).
+            # and assert each yi is a scalar number (not a numpy array).
             assert y.ndim == 2, "y.ndim = " + str(y)
             assert y.shape == (x.shape[0], 1), "y.shape = " + str(y.shape) + "x.shape = " + str(x.shape)
 
@@ -119,13 +120,14 @@ class ObjectiveFunction(object):
         Return the value y=f(x) of the function at the point x.
         This function must be redefined.
 
-        The argument x must be a numpy vector (x.ndim=1), not a matrix.
-        The returned value y=f(x) is a scalar number (not a vector ie. no
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value y=f(x) is a scalar number (not a numpy array i.e. no
         multi-objective functions yet).
 
         This function should never be called by other functions than __call__()
         because all tests (assert) on arguments are made in __call__()
-        (ie. this function assume arguments are well defined and doesn't test
+        (i.e. this function assume arguments are well defined and doesn't test
         them). The main reason of this choice is to avoid to rewrite all
         tests (assert) in sub classes; all tests are written once for all
         in __call__().
@@ -138,11 +140,11 @@ class ObjectiveFunction(object):
         Return the value yi=f(xi) of the function at the point xi in x.
         This function can be redefined to speedup computations.
 
-        The argument x must a numpy matrix of dimension 2 (x.ndim=2).
-        The returned the value yi=f(xi) of each point xi in x are scalar
-        numbers (not vectors ie. no multi-objective functions yet).
+        The argument x must a numpy array of dimension 2 (x.ndim=2).
+        The returned value yi=f(xi) of each point xi in x are scalar
+        numbers (not vectors i.e. no multi-objective functions yet).
 
-        The x matrix given as argument is considered as following:
+        The x array given as argument is considered as following:
            number_of_points := x.shape[0]
            dimension_of_each_point := x.shape[1]
         with:
@@ -150,12 +152,12 @@ class ObjectiveFunction(object):
                 [x2],
                 [x3],
                 ...]
-        For instance, the following matrix x means 3 points defined in R
+        For instance, the following array x means 3 points defined in R
         (1 dimension) have to be evaluated:
            x = [[ 2.],
                 [ 3.],
                 [ 4.]]
-        For instance, the following matrix x means 3 points defined in RxR
+        For instance, the following array x means 3 points defined in RxR
         (2 dimensions) have to be evaluated:
            x = [[ 2., 2.],
                 [ 3., 3.],
@@ -163,7 +165,7 @@ class ObjectiveFunction(object):
 
         This function should never be called by other functions than __call__()
         because all tests (assert) on arguments are made in __call__()
-        (ie. this function assume arguments are well defined and doesn't test
+        (i.e. this function assume arguments are well defined and doesn't test
         them). The main reason of this choice is to avoid to rewrite all
         tests (assert) in sub classes; all tests are written once for all
         in __call__().
@@ -178,24 +180,55 @@ class ObjectiveFunction(object):
 
     def gradient(self, x):
         """
-        Return the gradient of the function at one or multiple points.
+        Return the gradient of the function at one or multiple points (tuple of
+        points).
 
-        TODO: doc
-        
-        x can be a vector (a point) or a matrix (a tuple of points).
+        If x is a numpy array of dimension 1 (x.ndim=1 i.e. a vector not an
+        matrix), then return the value nabla is a numpy array of dimension 1
+        (i.e. a vector not a matrix).
+
+        If x is a numpy array of dimension 2 (x.ndim=2), then return the value
+        nabla is a numpy array containing a vector nabla_i for each point xi in x.
+        The nabla array given as argument is considered as following:
+           number_of_gradients := nabla.shape[0]
+           dimension_of_each_gradient := nabla.shape[1]
+        with:
+           nabla = [[nabla_1],
+                    [nabla_2],
+                    [nabla_3],
+                    ...]
+
+        The x array is considered as following:
+           number_of_points := x.shape[0]
+           dimension_of_each_point := x.shape[1]
+        with:
+           x = [[x1],
+                [x2],
+                [x3],
+                ...]
+        For instance, the following array x means 3 points defined in R
+        (1 dimension) have to be evaluated:
+           x = [[ 2.],
+                [ 3.],
+                [ 4.]]
+        For instance, the following array x means 3 points defined in RxR
+        (2 dimensions) have to be evaluated:
+           x = [[ 2., 2.],
+                [ 3., 3.],
+                [ 4., 4.]]
         """
         if x.ndim == 1:
             # Only one point ##########
 
-            # Assert the number of elements of the vector x (ie. the dimension
+            # Assert the number of elements of the vector x (i.e. the dimension
             # of the point x) is equals to the dimension of the function (self).
             assert x.shape[0] == self.ndim, "x = " + str(x) + "; x.shape[0] = " + str(x.shape[0]) + "; self.ndim = " + str(self.ndim)
 
             # Get the gradient of the function at the point x.
             nabla = self._eval_one_gradient(x)
 
-            # Assert nabla is a numpy vector with the same dimension than
-            # point x.
+            # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
+            # the same number of elements (dimension) than point x.
             assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)
             assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
 
@@ -205,14 +238,14 @@ class ObjectiveFunction(object):
             number_of_points = x.shape[0]
             dimension_of_each_point = x.shape[1]
 
-            # Assert the number of elements of the vector x (ie. the dimension
+            # Assert the number of elements of the vector x (i.e. the dimension
             # of the point x) is equals to the dimension of the function (self).
-            # For instance, the following matrix x means 3 points defined in R
+            # For instance, the following numpy array x means 3 points defined in R
             # (1 dimension) have to be evaluated:
             #    x = [[ 2.],
             #         [ 3.],
             #         [ 4.]]
-            # For instance, the following matrix x means 3 points defined in RxR
+            # For instance, the following numpy array x means 3 points defined in RxR
             # (2 dimensions) have to be evaluated:
             #    x = [[ 2., 2.],
             #         [ 3., 3.],
@@ -237,12 +270,14 @@ class ObjectiveFunction(object):
         """
         Return the gradient of the function at the point x.
 
-        The argument x must be a numpy vector (x.ndim=1), not a matrix.
-        The returned value nabla is a vector.
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value nabla is a numpy array of dimension 1 (i.e. a vector
+        not a matrix).
 
         This function should never be called by other functions than gradient()
         because all tests (assert) on arguments are made in gradient()
-        (ie. this function assume arguments are well defined and doesn't test
+        (i.e. this function assume arguments are well defined and doesn't test
         them). The main reason of this choice is to avoid to rewrite all
         tests (assert) in sub classes; all tests are written once for all
         in gradient().
@@ -262,8 +297,9 @@ class ObjectiveFunction(object):
         Return the gradient of the function at the point x.
         It implements a numerical approximation of the gradient.
 
-        The argument x must be a numpy vector (x.ndim=1), not a matrix.
-        The returned value nabla is a vector.
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value nabla is a numpy array of dimension 1 (i.e. a vector).
         """
         if not hasattr(self, "delta"):
             self.delta = 0.001
@@ -284,11 +320,10 @@ class ObjectiveFunction(object):
         return nabla
 
 
-    def _eval_multiple_gradients(self, points):
+    def _eval_multiple_gradients(self, x):
         """
-        Return the gradient of the function at multiple points.
-
-        TODO: doc
+        Return the gradient of the function at multiple points xi in x.
+        This function can be redefined to speedup computations.
 
         The argument "points" is a np.array.
         For instance,
@@ -296,10 +331,46 @@ class ObjectiveFunction(object):
                      [4, 5, 6]]
         contains 2 points (1, 2, 3) and (4, 5, 6).
 
-        This function can be redefined to speedup computations.
+        The argument x must a numpy array of dimension 2 (x.ndim=2).
+        The returned value nabla is a numpy array containing a vector nabla_i
+        for each point xi in x.
+        The nabla array given as argument is considered as following:
+           number_of_gradients := nabla.shape[0]
+           dimension_of_each_gradient := nabla.shape[1]
+        with:
+           nabla = [[nabla_1],
+                    [nabla_2],
+                    [nabla_3],
+                    ...]
+
+        The x numpy array given as argument is considered as following:
+           number_of_points := x.shape[0]
+           dimension_of_each_point := x.shape[1]
+        with:
+           x = [[x1],
+                [x2],
+                [x3],
+                ...]
+        For instance, the following array x means 3 points defined in R
+        (1 dimension) have to be evaluated:
+           x = [[ 2.],
+                [ 3.],
+                [ 4.]]
+        For instance, the following array x means 3 points defined in RxR
+        (2 dimensions) have to be evaluated:
+           x = [[ 2., 2.],
+                [ 3., 3.],
+                [ 4., 4.]]
+
+        This function should never be called by other functions than __call__()
+        because all tests (assert) on arguments are made in __call__()
+        (i.e. this function assume arguments are well defined and doesn't test
+        them). The main reason of this choice is to avoid to rewrite all
+        tests (assert) in sub classes; all tests are written once for all
+        in __call__().
         """
         nabla_list = []
-        for xi in points:
+        for xi in x:
             # xi is a point in points
             nabla_list.append(self._eval_one_gradient(xi))
 

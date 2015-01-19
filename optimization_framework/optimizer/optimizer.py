@@ -33,6 +33,11 @@ class Optimizer(object):
         self.log = Log()
 
     def plotSamples(self, x, y, nabla=None, objective_function=None, save_filename=None):
+        """
+        Plot the objective function for x in the range (xmin, xmax, xstep) and
+        the evaluated points.
+        This only works for 1D and 2D functions.
+        """
         import matplotlib.pyplot as plt
 
         assert x.ndim == 2, x.ndim
@@ -158,6 +163,8 @@ class Optimizer(object):
             warnings.warn("Cannot plot samples: too many dimensions.")
 
     def plotCosts(self, y):
+        """
+        """
         import matplotlib.pyplot as plt
 
         assert y.shape[1]==1
@@ -181,5 +188,6 @@ class Optimizer(object):
 
 
 class Log:
+    # TODO: this class is not used yet ?
     def __init__(self):
         self.data = {}
