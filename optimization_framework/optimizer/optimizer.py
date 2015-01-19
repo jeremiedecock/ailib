@@ -164,6 +164,7 @@ class Optimizer(object):
 
     def plotCosts(self, y):
         """
+        Plot the evolution of point's cost evaluated during iterations.
         """
         import matplotlib.pyplot as plt
 
