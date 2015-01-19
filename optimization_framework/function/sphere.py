@@ -22,6 +22,7 @@
 # THE SOFTWARE.
 
 import numpy as np
+import numbers
 
 # TODO: improve this ?
 if __name__ == '__main__':
@@ -48,21 +49,94 @@ class Function(function.ObjectiveFunction):
     # EVAL ####################################################################
 
     def _eval_one_sample(self, x):
+        """
+        Return the value y=f(x) of the function at the point x.
+
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value y=f(x) is a scalar number (not a numpy array i.e. no
+        multi-objective functions yet).
+        """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
+
         y = np.dot(x,x)
+
+        # Assert y is a (scalar) number.
+        assert isinstance(y, numbers.Number), "y = " + str(y)
+
         return y
 
 
     def _eval_multiple_samples(self, x):
+        """
+        Return the value yi=f(xi) of the function at the point xi in x.
+        This function can be redefined to speedup computations.
+
+        The argument x must a numpy array of dimension 2 (x.ndim=2).
+        The returned value yi=f(xi) of each point xi in x are scalar
+        numbers (not vectors i.e. no multi-objective functions yet).
+        Therefore, the returned value y must have y.ndim=1 and
+        y.shape[0]=x.shape[0].
+
+        The x array given as argument is considered as following:
+           number_of_points := x.shape[0]
+           dimension_of_each_point := x.shape[1]
+        with:
+           x = [[x1],
+                [x2],
+                [x3],
+                ...]
+        For instance, the following array x means 3 points defined in R
+        (1 dimension) have to be evaluated:
+           x = [[ 2.],
+                [ 3.],
+                [ 4.]]
+        For instance, the following array x means 3 points defined in RxR
+        (2 dimensions) have to be evaluated:
+           x = [[ 2., 2.],
+                [ 3., 3.],
+                [ 4., 4.]]
+        """
+
+        assert x.ndim == 2                   # There are multiple points in x
+        number_of_points = x.shape[0]
+        dimension_of_each_point = x.shape[1]
+        assert dimension_of_each_point == self.ndim, "x.shape[1] = " + str(x) + "; self.ndim =" + str(self.ndim)
+
         y = np.sum(np.power(x, 2.), 1)
-        y = y.reshape([-1,1])
+
+        # Assert there is one value yi=f(xi) for each point xi in x
+        # and assert each yi is a scalar number (not a numpy array).
+        assert y.ndim == 1, "y.ndim = " + str(y.ndim)
+        assert y.shape[0] == number_of_points, "y.shape = " + str(y.shape) + "x.shape = " + str(x.shape)
+
         return y
 
 
     # GRADIENT ################################################################
 
-    def _eval_one_gradient(self, point):
-        x = point
+    def _eval_one_gradient(self, x):
+        """
+        Return the gradient of the function at the point x.
+
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value nabla is a numpy array of dimension 1 (i.e. a vector
+        not a matrix).
+        """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
+
         nabla = 2. * x
+
+        # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
+        # the same number of elements (dimension) than point x.
+        assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)    # there is only one point x
+        assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+
         return nabla
 
 

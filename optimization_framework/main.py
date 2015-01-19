@@ -31,7 +31,7 @@ def main():
 
     # SETUP OBJECTIVE FUNCTION ############################
 
-    objective_func = "sin3"
+    objective_func = "deg_2_poly"
 
     if objective_func == "sphere":
         # Sphere ##########################
@@ -79,7 +79,7 @@ def main():
 
     # OPTIMIZER ###########################################
 
-    optimizer_choice = "gradient"
+    optimizer_choice = "saes"
 
     if optimizer_choice == "naive":
         # Naive Minimizer #################
@@ -92,7 +92,7 @@ def main():
         from optimizer.gradient import Optimizer
         optimizer = Optimizer()
         f.delta = 0.01
-        best_x = optimizer.optimize(f, num_iterations=500)
+        best_x = optimizer.optimize(f, num_iterations=30)
 
     elif optimizer_choice == "saes":
         # SAES ############################

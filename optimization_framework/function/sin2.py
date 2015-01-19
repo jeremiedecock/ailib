@@ -22,6 +22,8 @@
 # THE SOFTWARE.
 
 import numpy as np
+import numbers
+import math
 
 # TODO: improve this ?
 if __name__ == '__main__':
@@ -38,12 +40,33 @@ class Function(function.ObjectiveFunction):
         self.domain_min = 0. * np.ones(self.ndim)
         self.domain_max = 10. * np.ones(self.ndim)
 
+        # Set self.function_formula
+        self.function_formula = r"f(x) = \sin(4\pi |x|) \exp^{-5|x|}"
+
 
     # EVAL ####################################################################
 
     def _eval_one_sample(self, x):
+        """
+        Return the value y=f(x) of the function at the point x.
+
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value y=f(x) is a scalar number (not a numpy array i.e. no
+        multi-objective functions yet).
+        """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim == 1  # This function is defined in 1D
+
+        x = x[0]
         x = np.absolute(x)
-        y = np.sin(2 * 2 * np.pi * x) * np.exp(-5 * x)
+
+        y = math.sin(2. * 2. * math.pi * x) * math.exp(-5. * x)
+
+        # Assert y is a (scalar) number.
+        assert isinstance(y, numbers.Number), "y = " + str(y)
+
         return y
 
 

@@ -85,13 +85,23 @@ class Function(function.ObjectiveFunction):
     # EVAL ####################################################################
 
     def _eval_one_sample(self, x):
+        """
+        Return the value y=f(x) of the function at the point x.
+
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value y=f(x) is a scalar number (not a numpy array i.e. no
+        multi-objective functions yet).
+        """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
+
         y = np.dot(self.coef_deg2 * x, x) + np.dot(self.coef_deg1, x) + self.coef_deg0
-        return y
 
+        # Assert y is a (scalar) number.
+        assert isinstance(y, numbers.Number), "y = " + str(y)
 
-    def _eval_multiple_samples(self, x):
-        y = np.sum(np.power(x, 2.), 1)
-        y = y.reshape([-1,1])
         return y
 
 
@@ -105,19 +115,18 @@ class Function(function.ObjectiveFunction):
         vector not a matrix).
         The returned value nabla is a numpy array of dimension 1 (i.e. a vector
         not a matrix).
-
-        This function should never be called by other functions than gradient()
-        because all tests (assert) on arguments are made in gradient()
-        (i.e. this function assume arguments are well defined and doesn't test
-        them). The main reason of this choice is to avoid to rewrite all
-        tests (assert) in sub classes; all tests are written once for all
-        in gradient().
-
-        This function can be redefined to speedup computations and get more
-        accurate gradients (e.g. analytically computed gradient instead of the
-        default numerically computed gradient).
         """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
+
         nabla = 2. * self.coef_deg2 * x + self.coef_deg1
+
+        # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
+        # the same number of elements (dimension) than point x.
+        assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)    # there is only one point x
+        assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+
         return nabla
 
 

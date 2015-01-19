@@ -52,9 +52,18 @@ class Optimizer(optimizer.Optimizer):
             x_history_list[sample_index, :] = x
             nabla_history_list[sample_index, :] = nabla
 
+            #print("DEBUG optimize(): xi =", x)
+            #print("DEBUG optimize(): type(xi) =", type(x))
+
         y_history_list = objective_function(x_history_list)
         self.plotSamples(x_history_list, y_history_list, objective_function=objective_function)
         self.plotCosts(y_history_list)
+
+        #print("DEBUG optimize(): x_history_list =", x_history_list)
+        #print("DEBUG optimize(): type(x_history_list) =", type(x_history_list))
+        #print("DEBUG optimize(): y_history_list =", y_history_list)
+        #print("DEBUG optimize(): type(y_history_list) =", type(y_history_list))
+        #print("DEBUG optimize(): x =", x)
 
         return x
 

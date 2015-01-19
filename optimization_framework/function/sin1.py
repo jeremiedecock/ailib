@@ -22,6 +22,8 @@
 # THE SOFTWARE.
 
 import numpy as np
+import numbers
+import math
 
 # TODO: improve this ?
 if __name__ == '__main__':
@@ -38,19 +40,67 @@ class Function(function.ObjectiveFunction):
         self.domain_min = -10. * np.ones(self.ndim)
         self.domain_max =  10. * np.ones(self.ndim)
 
+        # Set self.function_formula
+        self.function_formula = r"f(x) = \sin(4\pi x) \frac{1}{\sqrt{2\pi}} \exp^{-x^2/2}"
+
 
     # EVAL ####################################################################
 
     def _eval_one_sample(self, x):
-        y = np.sin(2 * 2 * np.pi * x) * 1/np.sqrt(2*np.pi) * np.exp(-(x**2)/2)
+        """
+        Return the value y=f(x) of the function at the point x.
+
+        The argument x must be a numpy array of dimension 1 (x.ndim=1 i.e. a
+        vector not a matrix).
+        The returned value y=f(x) is a scalar number (not a numpy array i.e. no
+        multi-objective functions yet).
+        """
+
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim == 1  # This function is defined in 1D
+
+        x = x[0]
+        y = math.sin(2. * 2. * math.pi * x) * 1./math.sqrt(2.*math.pi) * math.exp(-(x**2)/2.)
+
+        # Assert y is a (scalar) number.
+        assert isinstance(y, numbers.Number), "y = " + str(y)
+
         return y
 
 
 # TEST ########################################################################
 
 def test():
-    f = Function()
-    f.plot()
+    f1 = Function()
+
+    f1.plot()
+
+    # One point (1D)
+    for xi in [0., 1., 2.]:
+        print()
+        print("*** One point 1D ***")
+        x = np.array([xi])
+        print("x =", x)
+        print("x.ndim =", x.ndim)
+        print("x.shape =", x.shape)
+        y = f1(x)
+        nabla = f1.gradient(x)
+        nabla_num = f1._eval_one_num_gradient(x)
+        print("f(x) =", y)
+        print("nabla =", nabla)
+        print("nabla_num =", nabla_num)
+
+    # Multiple points (1D)
+    print()
+    print("*** 3 points 1D ***")
+    x = np.array([[2.], [3.], [4.]])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
 
 if __name__ == '__main__':
     test()

@@ -40,9 +40,14 @@ class Optimizer(object):
         """
         import matplotlib.pyplot as plt
 
+        #print("DEBUG plotSamples(): x =", x)
+        #print("DEBUG plotSamples(): type(x) =", type(x))
+        #print("DEBUG plotSamples(): y =", y)
+        #print("DEBUG plotSamples(): type(y) =", type(y))
+
         assert x.ndim == 2, x.ndim
-        assert y.ndim == 2, y.ndim
-        assert y.shape[1] == 1, y.shape
+        assert y.ndim == 1, y.ndim
+        assert y.shape[0] == x.shape[0], y.shape
 
         if x.shape[1]==1:
             # 1D case
@@ -55,11 +60,16 @@ class Optimizer(object):
             if objective_function is not None:
                 # BUILD DATA
 
-                xmin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                xmax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                ymin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                ymax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                xstep = 0.05 # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                assert objective_function.domain_min.ndim == 1
+                assert objective_function.domain_max.ndim == 1
+                assert objective_function.domain_min.shape[0] == 1
+                assert objective_function.domain_max.shape[0] == 1
+
+                xmin = objective_function.domain_min[0]
+                xmax = objective_function.domain_max[0]
+                assert xmin < xmax
+
+                xstep = (xmax - xmin) / 1000.
 
                 x_vec = np.arange(xmin, xmax, xstep)
                 y_vec = objective_function(x_vec.reshape([-1, 1]))
@@ -92,6 +102,7 @@ class Optimizer(object):
 
             # PLOT
             plt.show()
+
         elif x.shape[1]==2:
             # 2D case
 
@@ -112,14 +123,24 @@ class Optimizer(object):
             if objective_function is not None:
                 # BUILD DATA
 
-                xmin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                xmax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                ymin = -1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                ymax =  1    # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
-                xstep = 0.05 # TODO: AUTOMATICALY COMPUTE THIS WITH VISITED POINTS
+                assert objective_function.domain_min.ndim == 1
+                assert objective_function.domain_max.ndim == 1
+                assert objective_function.domain_min.shape[0] == 2
+                assert objective_function.domain_max.shape[0] == 2
 
-                range_x1 = np.arange(xmin, xmax, xstep)
-                range_x2 = np.arange(xmin, xmax, xstep)
+                x1min = objective_function.domain_min[0]
+                x1max = objective_function.domain_max[0]
+                assert x1min < x1max
+
+                x2min = objective_function.domain_min[1]
+                x2max = objective_function.domain_max[1]
+                assert x2min < x2max
+
+                x1step = (x1max - x1min) / 200.
+                x2step = (x2max - x2min) / 200.
+
+                range_x1 = np.arange(x1min, x1max, x1step)
+                range_x2 = np.arange(x2min, x2max, x2step)
 
                 mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
 
@@ -159,6 +180,7 @@ class Optimizer(object):
                 plt.savefig(filename)
 
             plt.show()
+
         else:
             warnings.warn("Cannot plot samples: too many dimensions.")
 
@@ -168,7 +190,7 @@ class Optimizer(object):
         """
         import matplotlib.pyplot as plt
 
-        assert y.shape[1]==1
+        assert y.ndim == 1, "y.ndim = " + str(y.ndim)
 
         label = "value"
 

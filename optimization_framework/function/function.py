@@ -107,8 +107,8 @@ class ObjectiveFunction(object):
 
             # Assert there is one value yi=f(xi) for each point xi in x
             # and assert each yi is a scalar number (not a numpy array).
-            assert y.ndim == 2, "y.ndim = " + str(y)
-            assert y.shape == (x.shape[0], 1), "y.shape = " + str(y.shape) + "x.shape = " + str(x.shape)
+            assert y.ndim == 1, "y.ndim = " + str(y.ndim)
+            assert y.shape[0] == number_of_points, "y.shape = " + str(y.shape) + "x.shape = " + str(x.shape)
 
         else:
             raise Exception("Wrong value for x.")
@@ -144,6 +144,8 @@ class ObjectiveFunction(object):
         The argument x must a numpy array of dimension 2 (x.ndim=2).
         The returned value yi=f(xi) of each point xi in x are scalar
         numbers (not vectors i.e. no multi-objective functions yet).
+        Therefore, the returned value y must have y.ndim=1 and
+        y.shape[0]=x.shape[0].
 
         The x array given as argument is considered as following:
            number_of_points := x.shape[0]
@@ -164,17 +166,29 @@ class ObjectiveFunction(object):
                 [ 3., 3.],
                 [ 4., 4.]]
 
-        This function should never be called by other functions than __call__()
+        This function should not be called by other functions than __call__()
         because all tests (assert) on arguments are made in __call__()
         (i.e. this function assume arguments are well defined and doesn't test
         them). The main reason of this choice is to avoid to rewrite all
         tests (assert) in sub classes; all tests are written once for all
         in __call__().
         """
-        y = []
+
+        assert x.ndim == 2                   # There are multiple points in x
+        number_of_points = x.shape[0]
+        dimension_of_each_point = x.shape[1]
+        assert dimension_of_each_point == self.ndim, "x.shape[1] = " + str(x) + "; self.ndim =" + str(self.ndim)
+
+        y_list = []
         for xi in x:
-            y.append(self._eval_one_sample(xi))
-        return np.array(y).reshape([-1,1])
+            yi = self._eval_one_sample(xi)
+
+            # Assert yi is a (scalar) number.
+            assert isinstance(yi, numbers.Number), "yi = " + str(yi)
+
+            y_list.append(yi)
+
+        return np.array(y_list)
 
 
     # GRADIENT ################################################################
@@ -230,7 +244,7 @@ class ObjectiveFunction(object):
 
             # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
             # the same number of elements (dimension) than point x.
-            assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)
+            assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)    # there is only one point x
             assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
 
         elif x.ndim == 2:
@@ -373,7 +387,15 @@ class ObjectiveFunction(object):
         nabla_list = []
         for xi in x:
             # xi is a point in points
-            nabla_list.append(self._eval_one_gradient(xi))
+
+            nabla_i = self._eval_one_gradient(xi)
+
+            # Assert nabla_i is a numpy array of dimension 1 (i.e. a vector) with
+            # the same number of elements (dimension) than point x.
+            assert nabla_i.ndim == 1, "nabla_i.ndim = " + str(nabla_i)
+            assert nabla_i.shape[0] == x.shape[1], "nabla_i.shape = " + str(nabla_i.shape) + "x.shape = " + str(x.shape)
+
+            nabla_list.append(nabla_i)
 
         nabla = np.array(nabla_list)
 
@@ -391,9 +413,9 @@ class ObjectiveFunction(object):
 
     # PLOT ####################################################################
 
-    def plot(self, xmin=-1., xmax=1., xstep=0.02):
+    def plot(self):
         """
-        Plot the function for x in the range (xmin, xmax, xstep).
+        Plot the function for x in the domain of the function.
         This only works for 1D and 2D functions.
         """
         if self.ndim == 1:
@@ -402,8 +424,19 @@ class ObjectiveFunction(object):
 
             import matplotlib.pyplot as plt
 
-            x_vec = np.arange(xmin, xmax, xstep)
-            y_vec = self(x_vec.reshape([-1, 1]))
+            assert self.domain_min.ndim == 1
+            assert self.domain_max.ndim == 1
+            assert self.domain_min.shape[0] == 1
+            assert self.domain_max.shape[0] == 1
+
+            xmin = self.domain_min[0]
+            xmax = self.domain_max[0]
+
+            assert xmin < xmax
+            xstep = (xmax - xmin) / 1000.
+
+            x_range = np.arange(xmin, xmax, xstep)
+            y_array = self(x_range.reshape([-1, 1])) # a 1dim numpy array
 
             try:
                 label = self.label
@@ -412,7 +445,7 @@ class ObjectiveFunction(object):
 
             fig = plt.figure(figsize=(16.0, 10.0))
             ax = fig.add_subplot(111)
-            ax.plot(x_vec, y_vec, "-", label=label)
+            ax.plot(x_range, y_array, "-", label=label)
 
             # TITLE AND LABELS
             ax.set_title('Objective function\n$' + str(self) + '$', fontsize=20)
@@ -440,10 +473,26 @@ class ObjectiveFunction(object):
 
             # BUILD DATA ################
 
-            x1 = np.arange(xmin, xmax, xstep)
-            x2 = np.arange(xmin, xmax, xstep)
+            assert self.domain_min.ndim == 1
+            assert self.domain_max.ndim == 1
+            assert self.domain_min.shape[0] == 2
+            assert self.domain_max.shape[0] == 2
 
-            mesh_x1,mesh_x2 = np.meshgrid(x1, x2)
+            x1min = self.domain_min[0]
+            x1max = self.domain_max[0]
+            assert x1min < x1max
+
+            x2min = self.domain_min[1]
+            x2max = self.domain_max[1]
+            assert x2min < x2max
+
+            x1step = (x1max - x1min) / 200.
+            x2step = (x2max - x2min) / 200.
+
+            range_x1 = np.arange(x1min, x1max, x1step)
+            range_x2 = np.arange(x2min, x2max, x2step)
+
+            mesh_x1, mesh_x2 = np.meshgrid(range_x1, range_x2)
 
             # TODO: take advantage of meshgrid, for now, it's not optimized at
             #       all and it's not very well written
