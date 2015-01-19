@@ -262,7 +262,8 @@ class ObjectiveFunction(object):
         Return the gradient of the function at the point x.
         It implements a numerical approximation of the gradient.
 
-        TODO: doc
+        The argument x must be a numpy vector (x.ndim=1), not a matrix.
+        The returned value nabla is a vector.
         """
         if not hasattr(self, "delta"):
             self.delta = 0.001
@@ -271,13 +272,14 @@ class ObjectiveFunction(object):
         nabla = np.zeros(self.ndim)
 
         for dim_index in range(self.ndim):
+            # For each dimension of f
             delta_vec = np.zeros(self.ndim)
             delta_vec[dim_index] = self.delta
 
             y1 = self(x - delta_vec)
             y2 = self(x + delta_vec)
 
-            nabla[dim_index] = y2 - y1
+            nabla[dim_index] = (y2 - y1) / (2. * self.delta)
 
         return nabla
 
@@ -369,7 +371,7 @@ class ObjectiveFunction(object):
             mesh_x1,mesh_x2 = np.meshgrid(x1, x2)
 
             # TODO: take advantage of meshgrid, for now, it's not optimized at
-            #       all and not very well written
+            #       all and it's not very well written
             z = np.zeros(mesh_x1.shape)         
             for x1i in range(z.shape[0]):
                 for x2i in range(z.shape[1]):
