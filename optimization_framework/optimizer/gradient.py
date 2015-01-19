@@ -44,7 +44,7 @@ class Optimizer(optimizer.Optimizer):
         # Compute the gradient of objective_function at x
         for sample_index in range(num_iterations):
             nabla = objective_function.gradient(x)
-            coef = 1.  # TODO!!! : http://fr.wikipedia.org/wiki/Algorithme_du_gradient + http://fr.wikipedia.org/wiki/Recherche_lin%C3%A9aire  +  http://fr.wikipedia.org/wiki/Algorithme_%C3%A0_r%C3%A9gions_de_confiance
+            coef = .1  # TODO!!! : http://fr.wikipedia.org/wiki/Algorithme_du_gradient + http://fr.wikipedia.org/wiki/Recherche_lin%C3%A9aire  +  http://fr.wikipedia.org/wiki/Algorithme_%C3%A0_r%C3%A9gions_de_confiance
 
             x = x - coef * nabla
 

@@ -54,10 +54,10 @@ class Function(function.ObjectiveFunction):
 
     # GRADIENT ################################################################
 
-#    def _eval_one_gradient(self, point):
-#        x = point
-#        nabla = 2. * x
-#        return nabla
+    def _eval_one_gradient(self, point):
+        x = point
+        nabla = 2. * x
+        return nabla
 
 
     # STR #####################################################################
@@ -74,8 +74,55 @@ class Function(function.ObjectiveFunction):
 # TEST ########################################################################
 
 def test():
-    f = Function(2)
-    f.plot()
+    f1 = Function(1)
+    f2 = Function(2)
+
+    #f1.plot()
+    #f2.plot()
+
+    # One point (1D)
+    print("*** One point 1D ***")
+    x = np.array([2.])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
+
+    # One point (2D)
+    print("*** One point 2D ***")
+    x = np.array([2., 2.])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f2(x)
+    nabla = f2.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
+
+    # Multiple points (1D)
+    print("*** 3 points 1D ***")
+    x = np.array([[2.], [3.], [4.]])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
+
+    # Multiple points (2D)
+    print("*** 3 points 2D ***")
+    x = np.array([[2., 2.], [3., 3.], [4., 4.]])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f2(x)
+    nabla = f2.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
 
 if __name__ == '__main__':
     test()

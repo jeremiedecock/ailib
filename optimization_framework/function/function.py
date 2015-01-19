@@ -21,41 +21,152 @@
 # THE SOFTWARE.
 
 import numpy as np
+import numbers
 
 class ObjectiveFunction(object):
+    """
+    Objective function class.
+
+    It's important to remember that by default, all optimizers of this
+    framework works in minimization.
+    """
 
     function_name = "Unknown"
 
     # EVAL ####################################################################
 
     def __call__(self, *pargs, **kargs):
+        """
+        Evaluate the point(s) x.
+
+        If x is a vector (x.ndim=1), then return the value f(x) of the point x.
+        This value y=f(x) is then a scalar number (not a vector ie. no
+        multi-objective functions yet).
+
+        If x is a matrix of dimension 2 (x.ndim=2), then return the value
+        yi=f(xi) of each point xi in x.
+        The x matrix is considered as following:
+           number_of_points := x.shape[0]
+           dimension_of_each_point := x.shape[1]
+        with:
+           x = [[x1],
+                [x2],
+                [x3],
+                ...]
+        For instance, the following matrix x means 3 points defined in R
+        (1 dimension) have to be evaluated:
+           x = [[ 2.],
+                [ 3.],
+                [ 4.]]
+        For instance, the following matrix x means 3 points defined in RxR
+        (2 dimensions) have to be evaluated:
+           x = [[ 2., 2.],
+                [ 3., 3.],
+                [ 4., 4.]]
+        Values yi=f(xi) are scalar numbers (not vectors ie. no multi-objective
+        functions yet).
+        """
         x = pargs[0]
 
         if x.ndim == 1:
-            # Only one point
-            assert x.shape[0] == self.ndim, x
+            # Only one point ##########
+
+            # Assert the number of elements of the vector x (ie. the dimension
+            # of the point x) is equals to the dimension of the function (self).
+            assert x.shape[0] == self.ndim, "x = " + str(x) + "; x.shape[0] = " + str(x.shape[0]) + "; self.ndim = " + str(self.ndim)
+
+            # Get the value of the point x.
             y = self._eval_one_sample(x)
-            #assert type(y) == type(float), type(y)
-        else:
-            # Multiple points
-            assert x.shape[1] == self.ndim, x
+
+            # Assert y is a (scalar) number.
+            assert isinstance(y, numbers.Number), "y = " + str(y)
+
+        elif x.ndim == 2:
+            # Multiple points #########
+
+            number_of_points = x.shape[0]
+            dimension_of_each_point = x.shape[1]
+
+            # Assert the number of elements of the vector x (ie. the dimension
+            # of the point x) is equals to the dimension of the function (self).
+            # For instance, the following matrix x means 3 points defined in R
+            # (1 dimension) have to be evaluated:
+            #    x = [[ 2.],
+            #         [ 3.],
+            #         [ 4.]]
+            # For instance, the following matrix x means 3 points defined in RxR
+            # (2 dimensions) have to be evaluated:
+            #    x = [[ 2., 2.],
+            #         [ 3., 3.],
+            #         [ 4., 4.]]
+            assert dimension_of_each_point == self.ndim, "x.shape[1] = " + str(x) + "; self.ndim =" + str(self.ndim)
+
             y = self._eval_multiple_samples(x)
-            assert y.ndim == 2, y
-            assert y.shape == (x.shape[0], 1), y.shape
+
+            # Assert there is one value yi=f(xi) for each point xi in x
+            # and assert each yi is a scalar (not a vector).
+            assert y.ndim == 2, "y.ndim = " + str(y)
+            assert y.shape == (x.shape[0], 1), "y.shape = " + str(y.shape) + "x.shape = " + str(x.shape)
+
+        else:
+            raise Exception("Wrong value for x.")
 
         return y
 
 
     def _eval_one_sample(self, x):
         """
-        Return the value of the function at the point x.
+        Return the value y=f(x) of the function at the point x.
+        This function must be redefined.
+
+        The argument x must be a numpy vector (x.ndim=1), not a matrix.
+        The returned value y=f(x) is a scalar number (not a vector ie. no
+        multi-objective functions yet).
+
+        This function should never be called by other functions than __call__()
+        because all tests (assert) on arguments are made in __call__()
+        (ie. this function assume arguments are well defined and doesn't test
+        them). The main reason of this choice is to avoid to rewrite all
+        tests (assert) in sub classes; all tests are written once for all
+        in __call__().
         """
         raise NotImplementedError
 
 
     def _eval_multiple_samples(self, x):
         """
-        This function can be redefined to speedup computations
+        Return the value yi=f(xi) of the function at the point xi in x.
+        This function can be redefined to speedup computations.
+
+        The argument x must a numpy matrix of dimension 2 (x.ndim=2).
+        The returned the value yi=f(xi) of each point xi in x are scalar
+        numbers (not vectors ie. no multi-objective functions yet).
+
+        The x matrix given as argument is considered as following:
+           number_of_points := x.shape[0]
+           dimension_of_each_point := x.shape[1]
+        with:
+           x = [[x1],
+                [x2],
+                [x3],
+                ...]
+        For instance, the following matrix x means 3 points defined in R
+        (1 dimension) have to be evaluated:
+           x = [[ 2.],
+                [ 3.],
+                [ 4.]]
+        For instance, the following matrix x means 3 points defined in RxR
+        (2 dimensions) have to be evaluated:
+           x = [[ 2., 2.],
+                [ 3., 3.],
+                [ 4., 4.]]
+
+        This function should never be called by other functions than __call__()
+        because all tests (assert) on arguments are made in __call__()
+        (ie. this function assume arguments are well defined and doesn't test
+        them). The main reason of this choice is to avoid to rewrite all
+        tests (assert) in sub classes; all tests are written once for all
+        in __call__().
         """
         y = []
         for xi in x:
@@ -68,31 +179,80 @@ class ObjectiveFunction(object):
     def gradient(self, x):
         """
         Return the gradient of the function at one or multiple points.
+
+        TODO: doc
         
         x can be a vector (a point) or a matrix (a tuple of points).
         """
         if x.ndim == 1:
-            # Only one point
-            assert x.shape[0] == self.ndim, x
-            y = self._eval_one_gradient(x)
-            #assert type(y) == type(float), type(y)
-        else:
-            # Multiple points
-            assert x.shape[1] == self.ndim, x
-            y = self._eval_multiple_gradients(x)
-            assert y.ndim == 2, y
-            assert y.shape == (x.shape[0], 1), y.shape
+            # Only one point ##########
 
-        return y
+            # Assert the number of elements of the vector x (ie. the dimension
+            # of the point x) is equals to the dimension of the function (self).
+            assert x.shape[0] == self.ndim, "x = " + str(x) + "; x.shape[0] = " + str(x.shape[0]) + "; self.ndim = " + str(self.ndim)
+
+            # Get the gradient of the function at the point x.
+            nabla = self._eval_one_gradient(x)
+
+            # Assert nabla is a numpy vector with the same dimension than
+            # point x.
+            assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)
+            assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+
+        elif x.ndim == 2:
+            # Multiple points #########
+
+            number_of_points = x.shape[0]
+            dimension_of_each_point = x.shape[1]
+
+            # Assert the number of elements of the vector x (ie. the dimension
+            # of the point x) is equals to the dimension of the function (self).
+            # For instance, the following matrix x means 3 points defined in R
+            # (1 dimension) have to be evaluated:
+            #    x = [[ 2.],
+            #         [ 3.],
+            #         [ 4.]]
+            # For instance, the following matrix x means 3 points defined in RxR
+            # (2 dimensions) have to be evaluated:
+            #    x = [[ 2., 2.],
+            #         [ 3., 3.],
+            #         [ 4., 4.]]
+            assert dimension_of_each_point == self.ndim, "x.shape[1] = " + str(x) + "; self.ndim =" + str(self.ndim)
+
+            nabla = self._eval_multiple_gradients(x)
+
+            # Assert there is one value nabla_i for each point x_i in x
+            # and assert each nabla_i is a numpy vector with the same
+            # dimension than points x_i.
+            assert nabla.ndim == 2, "nabla.ndim = " + str(nabla)
+            assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+
+        else:
+            raise Exception("Wrong value for x.")
+
+        return nabla
 
 
     def _eval_one_gradient(self, point):
         """
         Return the gradient of the function at the point x.
-        By default, it does a numerical approximation of the gradient.
+
+        The argument x must be a numpy vector (x.ndim=1), not a matrix.
+        The returned value nabla is a vector.
+
+        This function should never be called by other functions than gradient()
+        because all tests (assert) on arguments are made in gradient()
+        (ie. this function assume arguments are well defined and doesn't test
+        them). The main reason of this choice is to avoid to rewrite all
+        tests (assert) in sub classes; all tests are written once for all
+        in gradient().
+
+        By default, this function does a numerical approximation of the
+        gradient.
 
         This function can be redefined to speedup computations and get more
-        accurate gradients.
+        accurate gradients (e.g. analytically computed gradient instead of the
+        default numerically computed gradient).
         """
         return self._eval_one_num_gradient(point)
 
@@ -101,6 +261,8 @@ class ObjectiveFunction(object):
         """
         Return the gradient of the function at the point x.
         It implements a numerical approximation of the gradient.
+
+        TODO: doc
         """
         if not hasattr(self, "delta"):
             self.delta = 0.001
@@ -112,8 +274,8 @@ class ObjectiveFunction(object):
             delta_vec = np.zeros(self.ndim)
             delta_vec[dim_index] = self.delta
 
-            y1 = self._eval_one_sample(x - delta_vec)
-            y2 = self._eval_one_sample(x + delta_vec)
+            y1 = self(x - delta_vec)
+            y2 = self(x + delta_vec)
 
             nabla[dim_index] = y2 - y1
 
@@ -123,6 +285,8 @@ class ObjectiveFunction(object):
     def _eval_multiple_gradients(self, points):
         """
         Return the gradient of the function at multiple points.
+
+        TODO: doc
 
         The argument "points" is a np.array.
         For instance,
@@ -136,7 +300,10 @@ class ObjectiveFunction(object):
         for xi in points:
             # xi is a point in points
             nabla_list.append(self._eval_one_gradient(xi))
-        return np.array(nabla_list).reshape([-1,1])
+
+        nabla = np.array(nabla_list)
+
+        return nabla
 
 
     # STR #####################################################################
@@ -148,6 +315,10 @@ class ObjectiveFunction(object):
     # PLOT ####################################################################
 
     def plot(self, xmin=-1., xmax=1., xstep=0.02):
+        """
+        Plot the function for x in the range (xmin, xmax, xstep).
+        This only works for 1D and 2D functions.
+        """
         if self.ndim == 1:
 
             # 1D FUNCTIONS

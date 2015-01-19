@@ -79,7 +79,7 @@ def main():
 
     # OPTIMIZER ###########################################
 
-    optimizer_choice = "naive"
+    optimizer_choice = "gradient"
 
     if optimizer_choice == "naive":
         # Naive Minimizer #################

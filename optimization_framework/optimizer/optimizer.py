@@ -24,6 +24,10 @@ import numpy as np
 import warnings
 
 class Optimizer(object):
+    """
+    Optimizer class.
+    By default, all optimizers works in minimization.
+    """
 
     def __init__(self):
         self.log = Log()

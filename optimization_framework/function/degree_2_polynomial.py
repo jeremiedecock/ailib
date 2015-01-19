@@ -112,8 +112,31 @@ class Function(function.ObjectiveFunction):
 # TEST ########################################################################
 
 def test():
-    f = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
-    f.plot()
+    f1 = Function(np.array([6.,2.]), np.array([1.,2.]), 1., 2)
+
+    #f1.plot()
+
+    # One point
+    print("*** One point 2D ***")
+    x = np.array([2., 2.])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
+
+    # Multiple points (2D)
+    print("*** 3 points 2D ***")
+    x = np.array([[2., 2.], [3., 3.], [4., 4.]])
+    print("x =", x)
+    print("x.ndim =", x.ndim)
+    print("x.shape =", x.shape)
+    y = f1(x)
+    nabla = f1.gradient(x)
+    print("f(x) =", y)
+    print("nabla =", nabla)
 
 if __name__ == '__main__':
     test()
