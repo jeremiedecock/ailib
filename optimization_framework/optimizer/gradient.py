@@ -31,18 +31,24 @@ else:
 
 class Optimizer(optimizer.Optimizer):
 
+    optimizer_name = "gradient descent"
+
     def optimize(self, objective_function, num_iterations=1000):
 
         dmin = objective_function.domain_min
         dmax = objective_function.domain_max
         
+        # Get the first point
         x = np.random.uniform(dmin, dmax, objective_function.ndim)
 
+        # Init history lists
         x_history_list = np.zeros([num_iterations, objective_function.ndim])
         nabla_history_list = np.zeros([num_iterations, objective_function.ndim])
 
-        # Compute the gradient of objective_function at x
+        # Main loop: for each iteration do...
         for sample_index in range(num_iterations):
+
+            # Compute the gradient of objective_function at x
             nabla = objective_function.gradient(x)
             coef = .1  # TODO!!! : http://fr.wikipedia.org/wiki/Algorithme_du_gradient + http://fr.wikipedia.org/wiki/Recherche_lin%C3%A9aire  +  http://fr.wikipedia.org/wiki/Algorithme_%C3%A0_r%C3%A9gions_de_confiance
 
@@ -52,18 +58,9 @@ class Optimizer(optimizer.Optimizer):
             x_history_list[sample_index, :] = x
             nabla_history_list[sample_index, :] = nabla
 
-            #print("DEBUG optimize(): xi =", x)
-            #print("DEBUG optimize(): type(xi) =", type(x))
-
         y_history_list = objective_function(x_history_list)
         self.plotSamples(x_history_list, y_history_list, objective_function=objective_function)
         self.plotCosts(y_history_list)
-
-        #print("DEBUG optimize(): x_history_list =", x_history_list)
-        #print("DEBUG optimize(): type(x_history_list) =", type(x_history_list))
-        #print("DEBUG optimize(): y_history_list =", y_history_list)
-        #print("DEBUG optimize(): type(y_history_list) =", type(y_history_list))
-        #print("DEBUG optimize(): x =", x)
 
         return x
 

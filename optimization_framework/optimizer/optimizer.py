@@ -29,6 +29,8 @@ class Optimizer(object):
     By default, all optimizers works in minimization.
     """
 
+    optimizer_name = "unknown"
+
     def __init__(self):
         self.log = Log()
 
