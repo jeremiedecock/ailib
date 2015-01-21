@@ -42,8 +42,8 @@ class Optimizer(optimizer.Optimizer):
         x = np.random.uniform(dmin, dmax, objective_function.ndim)
 
         # Init history lists
-        x_history_list = np.zeros([num_iterations, objective_function.ndim])
-        nabla_history_list = np.zeros([num_iterations, objective_function.ndim])
+        x_history_array = np.zeros([num_iterations, objective_function.ndim])
+        nabla_history_array = np.zeros([num_iterations, objective_function.ndim])
 
         # Main loop: for each iteration do...
         for sample_index in range(num_iterations):
@@ -55,12 +55,12 @@ class Optimizer(optimizer.Optimizer):
             x = x - coef * nabla
 
             # Keep an history of x and nabla to plot things...
-            x_history_list[sample_index, :] = x
-            nabla_history_list[sample_index, :] = nabla
+            x_history_array[sample_index, :] = x
+            nabla_history_array[sample_index, :] = nabla
 
-        y_history_list = objective_function(x_history_list)
-        self.plotSamples(x_history_list, y_history_list, objective_function=objective_function)
-        self.plotCosts(y_history_list)
+        y_history_array = objective_function(x_history_array)
+        self.plotSamples(x_history_array, y_history_array, objective_function=objective_function)
+        self.plotCosts(y_history_array)
 
         return x
 

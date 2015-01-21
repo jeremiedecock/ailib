@@ -34,24 +34,18 @@ class Optimizer(object):
     def __init__(self):
         self.log = Log()
 
-    def plotSamples(self, x, y, nabla=None, objective_function=None, save_filename=None):
+    def plotSamples(self, x_hist_array, y_hist_array, nabla_hist_array=None, objective_function=None, save_filename=None):
         """
-        Plot the objective function for x in the range (xmin, xmax, xstep) and
-        the evaluated points.
+        Plot the objective function for x_hist_array and the evaluated points.
         This only works for 1D and 2D functions.
         """
         import matplotlib.pyplot as plt
 
-        #print("DEBUG plotSamples(): x =", x)
-        #print("DEBUG plotSamples(): type(x) =", type(x))
-        #print("DEBUG plotSamples(): y =", y)
-        #print("DEBUG plotSamples(): type(y) =", type(y))
+        assert x_hist_array.ndim == 2, x_hist_array.ndim
+        assert y_hist_array.ndim == 1, y_hist_array.ndim
+        assert y_hist_array.shape[0] == x_hist_array.shape[0], y_hist_array.shape
 
-        assert x.ndim == 2, x.ndim
-        assert y.ndim == 1, y.ndim
-        assert y.shape[0] == x.shape[0], y.shape
-
-        if x.shape[1]==1:
+        if x_hist_array.shape[1]==1:
             # 1D case
 
             fig = plt.figure(figsize=(16.0, 10.0))
@@ -78,15 +72,15 @@ class Optimizer(object):
                 ax.plot(x_vec, y_vec, "-", label="objective function")
 
             # PLOT VISITED POINTS
-            ax.plot(x[:,0], y, ".", label="visited points")
+            ax.plot(x_hist_array[:,0], y_hist_array, ".", label="visited points")
             
             # PLOT THE BEST VISITED POINTS
-            x_min = x[y.argmin(), :]
-            y_min = y.min()
+            x_min = x_hist_array[y_hist_array.argmin(), :]
+            y_min = y_hist_array.min()
             ax.plot(x_min, y_min, "xr")
 
             # PLOT GRADIENT OF VISITED POINTS
-            if nabla is not None:
+            if nabla_hist_array is not None:
                 pass
 
             # TITLE AND LABELS
@@ -105,7 +99,7 @@ class Optimizer(object):
             # PLOT
             plt.show()
 
-        elif x.shape[1]==2:
+        elif x_hist_array.shape[1]==2:
             # 2D case
 
             from mpl_toolkits.mplot3d import axes3d
@@ -159,15 +153,15 @@ class Optimizer(object):
                 cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
 
             # PLOT VISITED POINTS
-            ax.scatter(x[:,0], x[:,1], y, color='b')
+            ax.scatter(x_hist_array[:,0], x_hist_array[:,1], y_hist_array, color='b')
             
             # PLOT THE BEST VISITED POINT
-            x_min = x[y.argmin(), :]
-            y_min = y.min()
+            x_min = x_hist_array[y_hist_array.argmin(), :]
+            y_min = y_hist_array.min()
             ax.scatter(x_min[0], x_min[1],  y_min, color='r')
 
             # PLOT GRADIENT OF VISITED POINTS
-            if nabla is not None:
+            if nabla_hist_array is not None:
                 pass
 
             # TITLE AND LABELS
@@ -186,19 +180,21 @@ class Optimizer(object):
         else:
             warnings.warn("Cannot plot samples: too many dimensions.")
 
-    def plotCosts(self, y):
+
+    def plotCosts(self, y_array):
         """
         Plot the evolution of point's cost evaluated during iterations.
+        y_array[i] is the cost at the ith iteration.
+        y_array must be a numpy array of dimension 1.
         """
         import matplotlib.pyplot as plt
 
-        assert y.ndim == 1, "y.ndim = " + str(y.ndim)
-
-        label = "value"
+        # y_array must be a numpy array of dimension 1
+        assert y_array.ndim == 1, "y_array.ndim = " + str(y_array.ndim)
 
         fig = plt.figure(figsize=(16.0, 10.0))
         ax = fig.add_subplot(111)
-        ax.plot(y, "-", label=label)
+        ax.plot(y_array, "-", label="value")
 
         # TITLE AND LABELS
         ax.set_title("Value over iterations", fontsize=20)
