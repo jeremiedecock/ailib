@@ -204,14 +204,6 @@ class ObjectiveFunction(object):
 
         If x is a numpy array of dimension 2 (x.ndim=2), then return the value
         nabla is a numpy array containing a vector nabla_i for each point xi in x.
-        The nabla array given as argument is considered as following:
-           number_of_gradients := nabla.shape[0]
-           dimension_of_each_gradient := nabla.shape[1]
-        with:
-           nabla = [[nabla_1],
-                    [nabla_2],
-                    [nabla_3],
-                    ...]
 
         The x array is considered as following:
            number_of_points := x.shape[0]
@@ -231,6 +223,15 @@ class ObjectiveFunction(object):
            x = [[ 2., 2.],
                 [ 3., 3.],
                 [ 4., 4.]]
+
+        The nabla array returned is considered as following:
+           number_of_gradients := nabla.shape[0]
+           dimension_of_each_gradient := nabla.shape[1]
+        with:
+           nabla = [[nabla_1],
+                    [nabla_2],
+                    [nabla_3],
+                    ...]
         """
         if x.ndim == 1:
             # Only one point ##########
@@ -281,7 +282,7 @@ class ObjectiveFunction(object):
         return nabla
 
 
-    def _eval_one_gradient(self, point):
+    def _eval_one_gradient(self, x):
         """
         Return the gradient of the function at the point x.
 
@@ -304,10 +305,19 @@ class ObjectiveFunction(object):
         accurate gradients (e.g. analytically computed gradient instead of the
         default numerically computed gradient).
         """
-        return self._eval_one_num_gradient(point)
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
 
+        nabla = self._eval_one_num_gradient(x)
 
-    def _eval_one_num_gradient(self, point):
+        # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
+        # the same number of elements (dimension) than point x.
+        assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)    # there is only one point x
+        assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+
+        return nabla
+
+    def _eval_one_num_gradient(self, x):
         """
         Return the gradient of the function at the point x.
         It implements a numerical approximation of the gradient.
@@ -316,10 +326,12 @@ class ObjectiveFunction(object):
         vector not a matrix).
         The returned value nabla is a numpy array of dimension 1 (i.e. a vector).
         """
+        assert x.ndim == 1                   # There is only one point in x
+        assert x.shape[0] == self.ndim       # This function is defined in self.ndim dim
+
         if not hasattr(self, "delta"):
             self.delta = 0.001
 
-        x = point
         nabla = np.zeros(self.ndim)
 
         for dim_index in range(self.ndim):
@@ -331,6 +343,11 @@ class ObjectiveFunction(object):
             y2 = self(x + delta_vec)
 
             nabla[dim_index] = (y2 - y1) / (2. * self.delta)
+
+        # Assert nabla is a numpy array of dimension 1 (i.e. a vector) with
+        # the same number of elements (dimension) than point x.
+        assert nabla.ndim == 1, "nabla.ndim = " + str(nabla)    # there is only one point x
+        assert nabla.shape == x.shape, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
 
         return nabla
 
@@ -349,14 +366,6 @@ class ObjectiveFunction(object):
         The argument x must a numpy array of dimension 2 (x.ndim=2).
         The returned value nabla is a numpy array containing a vector nabla_i
         for each point xi in x.
-        The nabla array given as argument is considered as following:
-           number_of_gradients := nabla.shape[0]
-           dimension_of_each_gradient := nabla.shape[1]
-        with:
-           nabla = [[nabla_1],
-                    [nabla_2],
-                    [nabla_3],
-                    ...]
 
         The x numpy array given as argument is considered as following:
            number_of_points := x.shape[0]
@@ -377,6 +386,15 @@ class ObjectiveFunction(object):
                 [ 3., 3.],
                 [ 4., 4.]]
 
+        The nabla array returned is considered as following:
+           number_of_gradients := nabla.shape[0]
+           dimension_of_each_gradient := nabla.shape[1]
+        with:
+           nabla = [[nabla_1],
+                    [nabla_2],
+                    [nabla_3],
+                    ...]
+
         This function should never be called by other functions than __call__()
         because all tests (assert) on arguments are made in __call__()
         (i.e. this function assume arguments are well defined and doesn't test
@@ -384,6 +402,12 @@ class ObjectiveFunction(object):
         tests (assert) in sub classes; all tests are written once for all
         in __call__().
         """
+
+        assert x.ndim == 2                   # There are multiple points in x
+        number_of_points = x.shape[0]
+        dimension_of_each_point = x.shape[1]
+        assert dimension_of_each_point == self.ndim, "x.shape[1] = " + str(x) + "; self.ndim =" + str(self.ndim)
+
         nabla_list = []
         for xi in x:
             # xi is a point in points
@@ -393,11 +417,17 @@ class ObjectiveFunction(object):
             # Assert nabla_i is a numpy array of dimension 1 (i.e. a vector) with
             # the same number of elements (dimension) than point x.
             assert nabla_i.ndim == 1, "nabla_i.ndim = " + str(nabla_i)
-            assert nabla_i.shape[0] == x.shape[1], "nabla_i.shape = " + str(nabla_i.shape) + "x.shape = " + str(x.shape)
+            assert nabla_i.shape[0] == dimension_of_each_point, "nabla_i.shape = " + str(nabla_i.shape) + "x.shape = " + str(x.shape)
 
             nabla_list.append(nabla_i)
 
         nabla = np.array(nabla_list)
+
+        # Assert nabla is a numpy array of dimension 2 (i.e. a matrix) with
+        # the same number of elements (dimension) than point x.
+        assert nabla.ndim == 2, "nabla.ndim = " + str(nabla.ndim)
+        assert nabla.shape[0] == number_of_points, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
+        assert nabla.shape[1] == dimension_of_each_point, "nabla.shape = " + str(nabla.shape) + "x.shape = " + str(x.shape)
 
         return nabla
 
