@@ -31,7 +31,7 @@ def main():
 
     # SETUP OBJECTIVE FUNCTION ############################
 
-    objective_func = "deg_2_poly"
+    objective_func = "sphere"
 
     if objective_func == "sphere":
         # Sphere ##########################
@@ -79,7 +79,7 @@ def main():
 
     # OPTIMIZER ###########################################
 
-    optimizer_choice = "saes"
+    optimizer_choice = "gradient"
 
     if optimizer_choice == "naive":
         # Naive Minimizer #################
