@@ -79,7 +79,7 @@ def main():
 
     # OPTIMIZER ###########################################
 
-    optimizer_choice = "gradient"
+    optimizer_choice = "cutting_plane"
 
     if optimizer_choice == "naive":
         # Naive Minimizer #################
@@ -100,6 +100,12 @@ def main():
         optimizer = Optimizer(x_init=np.ones(f.ndim), num_evals_func=lambda gen_index: math.floor(10. * pow(gen_index, 0.5)))
         optimizer = Optimizer(x_init=np.ones(f.ndim))
         best_x = optimizer.optimize(f, num_gen=50)
+
+    elif optimizer_choice == "cutting_plane":
+        # Gradient descent ################
+        from optimizer.cutting_plane import Optimizer
+        optimizer = Optimizer()
+        best_x = optimizer.optimize(f, num_iterations=5)
 
     elif optimizer_choice == "eda":
         # EDA #############################

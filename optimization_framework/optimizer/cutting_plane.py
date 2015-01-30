@@ -56,28 +56,45 @@ class Optimizer(optimizer.Optimizer):
         x = np.random.uniform(dmin, dmax, objective_function.ndim)
 
         # Init history lists
-        x_history_list = np.zeros([num_iterations, objective_function.ndim])
-        nabla_history_list = np.zeros([num_iterations, objective_function.ndim])
+        x_history_list = []
+        nabla_history_list = []
+
+        # Init the heuristic function f^tild_0 (cut_list)
+        initial_cut = lambda x : -1.   # TODO
+        cut_list = [initial_cut]
 
         # Main loop: for each iteration do...
-        for sample_index in range(num_iterations):
+        for iteration_index in range(num_iterations):
+
+            # Compute the value y of objective_function at x
+            y = objective_function(x)
 
             # Compute the gradient of objective_function at x
             nabla = objective_function.gradient(x)
-            coef = .1  # TODO!!! : http://fr.wikipedia.org/wiki/Algorithme_du_gradient + http://fr.wikipedia.org/wiki/Recherche_lin%C3%A9aire  +  http://fr.wikipedia.org/wiki/Algorithme_%C3%A0_r%C3%A9gions_de_confiance
 
-            x = x - coef * nabla
+            # Compute the cut at x and add it to cut_list
+            cut = self.getCutsFunctionList(np.array([x]), np.array([y]), np.array([nabla]))[0] # TODO: permettre de calculer une seule coupe!
+            cut_list.append(cut)
 
             # Keep an history of x and nabla to plot things...
-            x_history_list[sample_index, :] = x
-            nabla_history_list[sample_index, :] = nabla
+            x_history_list.append(x)
+            nabla_history_list.append(nabla)
 
-            #print("DEBUG optimize(): xi =", x)
-            #print("DEBUG optimize(): type(xi) =", type(x))
+            # Compute the next point x: the argmin of max(cut_list)
+            # TODO
+            #x = np.random.uniform(dmin, dmax, objective_function.ndim)
+            x_history_array = np.array(x_history_list)
+            y_history_array = objective_function(x_history_array)
+            nabla_history_array = np.array(nabla_history_list)
+            # TODO: BUG because of initial_cut... => remove initial cut and add consraints on the domain in the LP ?
+            x = self.getMinimumOfCuts(x_history_array, y_history_array, nabla_history_array, cut_list)
 
-        y_history_list = objective_function(x_history_list)
-        self.plotSamples(x_history_list, y_history_list, objective_function=objective_function)
-        self.plotCosts(y_history_list)
+        x_history_array = np.array(x_history_list)
+        y_history_array = objective_function(x_history_array)
+        nabla_history_array = np.array(nabla_history_list)
+
+        self.plotSamples(x_history_array, y_history_array, nabla=nabla_history_array, cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=None)
+        self.plotCosts(y_history_array)
 
         #print("DEBUG optimize(): x_history_list =", x_history_list)
         #print("DEBUG optimize(): type(x_history_list) =", type(x_history_list))
