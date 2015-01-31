@@ -51,22 +51,32 @@ class Optimizer(optimizer.Optimizer):
 
         dmin = objective_function.domain_min
         dmax = objective_function.domain_max
-        
+
         # Get the first point
         x = np.random.uniform(dmin, dmax, objective_function.ndim)
+        #x = np.ones(objective_function.ndim) # TODO
 
         # Init history lists
         x_history_list = []
         nabla_history_list = []
 
         # Init the heuristic function f^tild_0 (cut_list)
-        initial_cut = lambda x : -1.   # TODO
-        cut_list = [initial_cut]
+        #initial_cut = lambda x : -1.   # TODO !!! ça devrait plutot entre 2 matrices "A_init" et "b_init" à concaténer aux matrices des contraintes "A" et "b"
+        # TODO: doc
+        # -x_m <= -10
+        # i.e. x_m >= -10
+        # initial_A = [[0, 0, 0, ..., 0, 0, -1]]  with m-1 leading zeros
+        initial_heuristic_A = np.zeros([1, objective_function.ndim + 1])
+        initial_heuristic_A[0, -1] = -1             # The last variable is equal to -1
+        initial_heuristic_b = np.array([[ -10. ]])  # TODO
+
+        cut_list = []
 
         # Main loop: for each iteration do...
         for iteration_index in range(num_iterations):
 
             # Compute the value y of objective_function at x
+            print("DEBUG: x =", x)
             y = objective_function(x)
 
             # Compute the gradient of objective_function at x
@@ -87,7 +97,9 @@ class Optimizer(optimizer.Optimizer):
             y_history_array = objective_function(x_history_array)
             nabla_history_array = np.array(nabla_history_list)
             # TODO: BUG because of initial_cut... => remove initial cut and add consraints on the domain in the LP ?
-            x = self.getMinimumOfCuts(x_history_array, y_history_array, nabla_history_array, cut_list)
+            xstar = self.getMinimumOfCuts(x_history_array, y_history_array, nabla_history_array, cut_list, domain_min=dmin, domain_max=dmax)
+
+            x = xstar.transpose()[0][:-1]  # TODO
 
         x_history_array = np.array(x_history_list)
         y_history_array = objective_function(x_history_array)
@@ -220,7 +232,7 @@ class Optimizer(optimizer.Optimizer):
         return cut_list
 
 
-    def getMinimumOfCuts(self, x_array, y_array, nabla_array, cut_list):
+    def getMinimumOfCuts(self, x_array, y_array, nabla_array, cut_list, domain_min=None, domain_max=None):
         """
         TODO
 
@@ -252,6 +264,15 @@ class Optimizer(optimizer.Optimizer):
         # Assert there is one cut function per point.
         assert len(cut_list) == number_of_points, "len(cut_list) = " + str(len(cut_list)) + "x_array.shape = " + str(x_array.shape)
 
+        # Assert there is one cut function per point.
+        if domain_min is not None or domain_max is not None:
+            assert domain_min is not None and domain_max is not None
+            assert domain_min.ndim == 1
+            assert domain_min.shape[0] == dimension_of_each_point
+            assert domain_max.ndim == 1
+            assert domain_max.shape[0] == dimension_of_each_point
+            # TODO: CHECK MIN < MAX
+
         # LP matrices #################
 
         number_of_variables = dimension_of_each_point + 1     # A dimension is added
@@ -274,6 +295,18 @@ class Optimizer(optimizer.Optimizer):
         # b = [-cut_1(0), -cut_2(0), ..., -cut_m(0)]
         orig_array = np.zeros(dimension_of_each_point)
         np_b = np.array([-cut(orig_array) for cut in cut_list])
+
+        # Domain constraints
+        if domain_min is not None or domain_max is not None:
+            # max
+            max_const_A = np.concatenate((np.eye(dimension_of_each_point), np.zeros(dimension_of_each_point).reshape([-1, 1])), 1)
+            np_A = np.concatenate((np_A, max_const_A), 0)
+            np_b = np.concatenate((np_b, domain_max), 1)
+
+            # min
+            min_const_A = np.concatenate((-1. * np.eye(dimension_of_each_point), np.zeros(dimension_of_each_point).reshape([-1, 1])), 1)
+            np_A = np.concatenate((np_A, min_const_A), 0)
+            np_b = np.concatenate((np_b, -1. * domain_min), 1)
 
         print("np_c =", np_c)
         print("np_A =", np_A)
@@ -586,7 +619,7 @@ def test():
 
     cut_list = optimizer.getCutsFunctionList(x_hist_array, y_hist_array, nabla_hist_array)
 
-    xstar = optimizer.getMinimumOfCuts(x_hist_array, y_hist_array, nabla_hist_array, cut_list)
+    xstar = optimizer.getMinimumOfCuts(x_hist_array, y_hist_array, nabla_hist_array, cut_list, domain_min=f1.domain_min, domain_max=f1.domain_max)
     print("xstar =", xstar)
 
     optimizer.plotSamples(x_hist_array, y_hist_array, nabla=nabla_hist_array, cut_list=cut_list, objective_function=f1, minimum_of_cuts=xstar)
@@ -615,7 +648,7 @@ def test():
 
     cut_list = optimizer.getCutsFunctionList(x_hist_array, y_hist_array, nabla_hist_array)
 
-    xstar = optimizer.getMinimumOfCuts(x_hist_array, y_hist_array, nabla_hist_array, cut_list)
+    xstar = optimizer.getMinimumOfCuts(x_hist_array, y_hist_array, nabla_hist_array, cut_list, domain_min=f2.domain_min, domain_max=f2.domain_max)
     print("xstar =", xstar)
 
     optimizer.plotSamples(x_hist_array, y_hist_array, nabla=nabla_hist_array, cut_list=cut_list, objective_function=f2, minimum_of_cuts=xstar)

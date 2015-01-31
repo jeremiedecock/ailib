@@ -105,7 +105,7 @@ def main():
         # Gradient descent ################
         from optimizer.cutting_plane import Optimizer
         optimizer = Optimizer()
-        best_x = optimizer.optimize(f, num_iterations=5)
+        best_x = optimizer.optimize(f, num_iterations=15)
 
     elif optimizer_choice == "eda":
         # EDA #############################
