@@ -30,6 +30,8 @@ import cvxopt.solvers
 import numpy as np
 import numbers
 
+import warnings
+
 # TODO: improve this ?
 if __name__ == '__main__':
     import optimizer
@@ -47,72 +49,60 @@ class Optimizer(optimizer.Optimizer):
 
     optimizer_name = "cutting plane"
 
-    def optimize(self, objective_function, num_iterations=10):
+    def optimize(self, objective_function, prallele=None, num_iterations=10):
 
         dmin = objective_function.domain_min
         dmax = objective_function.domain_max
 
-        # Get the first point
-        x = np.random.uniform(dmin, dmax, objective_function.ndim)
-        #x = np.ones(objective_function.ndim) # TODO
-
-        # Init history lists
-        x_history_list = []
-        nabla_history_list = []
-
-        # Init the heuristic function f^tild_0 (cut_list)
-        #initial_cut = lambda x : -1.   # TODO !!! ça devrait plutot entre 2 matrices "A_init" et "b_init" à concaténer aux matrices des contraintes "A" et "b"
-        # TODO: doc
-        # -x_m <= -10
-        # i.e. x_m >= -10
-        # initial_A = [[0, 0, 0, ..., 0, 0, -1]]  with m-1 leading zeros
-        initial_heuristic_A = np.zeros([1, objective_function.ndim + 1])
-        initial_heuristic_A[0, -1] = -1             # The last variable is equal to -1
-        initial_heuristic_b = np.array([[ -10. ]])  # TODO
+        # Init history arrays
+        x_history_array = np.zeros([num_iterations, objective_function.ndim])
+        y_history_array = np.zeros(num_iterations)
+        y_tilde_history_array = np.zeros(num_iterations)
+        nabla_history_array = np.zeros([num_iterations, objective_function.ndim])
 
         cut_list = []
+
+        ## Init the heuristic function f^tild_0 (cut_list)
+        ## -x_m <= -10
+        ## i.e. x_m >= -10
+        ## initial_A = [[0, 0, 0, ..., 0, 0, -1]]  with m-1 leading zeros
+        #initial_heuristic_A = np.zeros([1, objective_function.ndim + 1])
+        #initial_heuristic_A[0, -1] = -1             # The last variable is equal to -1
+        #initial_heuristic_b = np.array([[ -10. ]])  # TODO
+
+        # Get the first point
+        x = np.random.uniform(dmin, dmax, objective_function.ndim)
 
         # Main loop: for each iteration do...
         for iteration_index in range(num_iterations):
 
+            x_history_array[iteration_index, :] = x
+
             # Compute the value y of objective_function at x
-            print("DEBUG: x =", x)
             y = objective_function(x)
+            y_history_array[iteration_index] = y
 
             # Compute the gradient of objective_function at x
             nabla = objective_function.gradient(x)
+            nabla_history_array[iteration_index, :] = nabla
 
             # Compute the cut at x and add it to cut_list
             cut = self.getCutsFunctionList(np.array([x]), np.array([y]), np.array([nabla]))[0] # TODO: permettre de calculer une seule coupe!
             cut_list.append(cut)
 
-            # Keep an history of x and nabla to plot things...
-            x_history_list.append(x)
-            nabla_history_list.append(nabla)
-
             # Compute the next point x: the argmin of max(cut_list)
-            # TODO
-            #x = np.random.uniform(dmin, dmax, objective_function.ndim)
-            x_history_array = np.array(x_history_list)
-            y_history_array = objective_function(x_history_array)
-            nabla_history_array = np.array(nabla_history_list)
-            # TODO: BUG because of initial_cut... => remove initial cut and add consraints on the domain in the LP ?
-            xstar = self.getMinimumOfCuts(x_history_array, y_history_array, nabla_history_array, cut_list, domain_min=dmin, domain_max=dmax)
+            xy_min = self.getMinimumOfCuts(x_history_array[0:iteration_index+1], y_history_array[0:iteration_index+1], nabla_history_array[0:iteration_index+1], cut_list, domain_min=dmin, domain_max=dmax) # TODO: return a tuple of np.array (1dim)
 
-            x = xstar.transpose()[0][:-1]  # TODO
+            x = xy_min.transpose()[0][:-1]
+            y_tilde = xy_min.transpose()[0][-1]
 
-        x_history_array = np.array(x_history_list)
-        y_history_array = objective_function(x_history_array)
-        nabla_history_array = np.array(nabla_history_list)
+            y_tilde_history_array[iteration_index] = y_tilde
+
+            # Plot
+            self.plotSamples(x_history_array[0:iteration_index+1], y_history_array[0:iteration_index+1], nabla=nabla_history_array[0:iteration_index+1], cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=xy_min, show=False, save_filename=str(iteration_index) + ".png")
 
         self.plotSamples(x_history_array, y_history_array, nabla=nabla_history_array, cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=None)
-        self.plotCosts(y_history_array)
-
-        #print("DEBUG optimize(): x_history_list =", x_history_list)
-        #print("DEBUG optimize(): type(x_history_list) =", type(x_history_list))
-        #print("DEBUG optimize(): y_history_list =", y_history_list)
-        #print("DEBUG optimize(): type(y_history_list) =", type(y_history_list))
-        #print("DEBUG optimize(): x =", x)
+        self.plotCosts(y_history_array, y_tilde_history_array)
 
         return x
 
@@ -327,12 +317,11 @@ class Optimizer(optimizer.Optimizer):
         # Get and return the solution
         xstar = sol['x']
         np_xstar = np.array(xstar)
-        #np_xstar = np.array(xstar)[:-1]
 
         return np_xstar
 
 
-    def plotSamples(self, x, y, nabla=None, cut_list=None, objective_function=None, save_filename=None, minimum_of_cuts=None):
+    def plotSamples(self, x, y, nabla=None, cut_list=None, objective_function=None, save_filename=None, minimum_of_cuts=None, show=True):
         """
         Plot the objective function for x in the range (xmin, xmax, xstep) and
         the evaluated points.
@@ -350,7 +339,8 @@ class Optimizer(optimizer.Optimizer):
         assert y.shape[0] == x.shape[0], y.shape
 
         if x.shape[1]==1:
-            # 1D case
+
+            # 1D case #####################################
 
             fig = plt.figure(figsize=(16.0, 10.0))
             ax = fig.add_subplot(111)
@@ -394,7 +384,9 @@ class Optimizer(optimizer.Optimizer):
                     y_to_plot = np.array([cut(np.array([xmin])), cut(np.array([xmax]))])
                     ax.plot(x_to_plot, y_to_plot, "-g") # , label="gradients")
 
-                ax.set_ylim(min(y), max(y))
+                y_min = min(y_vec)
+                y_max = max(y_vec)
+                ax.set_ylim(y_min - float(y_max - y_min)/50., y_max)
 
             # PLOT MAX CUTS (the heuristic function)
             if cut_list is not None:
@@ -436,16 +428,20 @@ class Optimizer(optimizer.Optimizer):
             # LEGEND
             ax.legend(loc='lower right', fontsize=20)
 
-            # SAVE FILES ######################
-            if save_filename is not None:
-                filename = save_filename + ".pdf"
-                plt.savefig(filename)
+            # PLOT ######################
 
-            # PLOT
-            plt.show()
+            # SAVE FILES
+            if save_filename is not None:
+                plt.savefig(save_filename)
+
+            if show:
+                plt.show()
+
+            plt.close()
 
         elif x.shape[1]==2:
-            # 2D case
+
+            # 2D case #####################################
 
             from mpl_toolkits.mplot3d import axes3d
             if objective_function is not None:
@@ -552,29 +548,35 @@ class Optimizer(optimizer.Optimizer):
             ax.set_ylabel(r'$x_2$', fontsize=32)
             ax.set_zlabel(r'$f(x)$', fontsize=32)
 
-            # SAVE FILES ######################
-            if save_filename is not None:
-                filename = save_filename + ".pdf"
-                plt.savefig(filename)
+            # PLOT ######################
 
-            plt.show()
+            # SAVE FILES
+            if save_filename is not None:
+                plt.savefig(save_filename)
+
+            if show:
+                plt.show()
+
+            plt.close()
 
         else:
             warnings.warn("Cannot plot samples: too many dimensions.")
 
-    def plotCosts(self, y):
+    def plotCosts(self, y_history_array, y_tilde_history_array):
         """
         Plot the evolution of point's cost evaluated during iterations.
         """
         import matplotlib.pyplot as plt
 
-        assert y.ndim == 1, "y.ndim = " + str(y.ndim)
-
-        label = "value"
+        assert y_history_array.ndim == 1, "y_history_array.ndim = " + str(y_history_array.ndim)
+        assert y_tilde_history_array.ndim == 1, "y_tilde_history_array.ndim = " + str(y_tilde_history_array.ndim)
+        assert y_history_array.shape[0] == y_tilde_history_array.shape[0]
 
         fig = plt.figure(figsize=(16.0, 10.0))
         ax = fig.add_subplot(111)
-        ax.plot(y, "-", label=label)
+
+        ax.plot(y_history_array, "-", label="objective function cost")
+        ax.plot(y_tilde_history_array, "-", label="heuristic function cost")
 
         # TITLE AND LABELS
         ax.set_title("Value over iterations", fontsize=20)

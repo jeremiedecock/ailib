@@ -36,8 +36,9 @@ def main():
     if objective_func == "sphere":
         # Sphere ##########################
         from function.sphere import Function
-        #f = Function(1)
-        f = Function(2)
+        f = Function(1)
+        #f = Function(2)
+        #f = Function(10)
 
     elif objective_func == "noised_sphere":
         # Noised sphere ###################
@@ -105,7 +106,9 @@ def main():
         # Gradient descent ################
         from optimizer.cutting_plane import Optimizer
         optimizer = Optimizer()
-        best_x = optimizer.optimize(f, num_iterations=15)
+        best_x = optimizer.optimize(f, num_iterations=7)   # sphere with 1 dimension
+        #best_x = optimizer.optimize(f, num_iterations=15) # sphere with 2 dimensions
+        #best_x = optimizer.optimize(f, num_iterations=100) # sphere with 10 dimensions
 
     elif optimizer_choice == "eda":
         # EDA #############################
