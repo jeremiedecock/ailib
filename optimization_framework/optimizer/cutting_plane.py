@@ -49,7 +49,26 @@ class Optimizer(optimizer.Optimizer):
 
     optimizer_name = "cutting plane"
 
-    def optimize(self, objective_function, prallele=None, num_iterations=10):
+    def optimize(self, objective_function, parallel=None, num_iterations=10):
+        """
+        TODO
+        """
+        if parallel is None:
+            x = self.optimize_std(objective_function, num_iterations)
+        elif parallel == "linear":
+            x = self.optimize_linear_pcp(objective_function, num_iterations)
+        elif parallel == "gaussian":
+            x = self.optimize_gaussian_pcp(objective_function, num_iterations)
+        elif parallel == "billard":
+            x = self.optimize_billard_pcp(objective_function, num_iterations)
+        else:
+            raise Exception("Wrong value.")
+
+        return x
+
+    # STANDARD CUTTING PLANE ##################################################
+
+    def optimize_std(self, objective_function, num_iterations):
 
         dmin = objective_function.domain_min
         dmax = objective_function.domain_max
@@ -106,6 +125,161 @@ class Optimizer(optimizer.Optimizer):
 
         return x
 
+    # LINEAR PARALLEL CUTTING PLANE ###########################################
+
+    def optimize_linear_pcp(self, objective_function, num_iterations, num_parallel_eval=2):
+
+        dmin = objective_function.domain_min
+        dmax = objective_function.domain_max
+
+        # Init history arrays
+        x_history_array = np.zeros([num_iterations * num_parallel_eval, objective_function.ndim])
+        y_history_array = np.zeros(num_iterations * num_parallel_eval)
+        y_tilde_history_array = np.zeros(num_iterations)
+        nabla_history_array = np.zeros([num_iterations * num_parallel_eval, objective_function.ndim])
+
+        cut_list = []
+
+        ###
+
+        # Get the first point
+        prev_x = np.random.uniform(dmin, dmax, objective_function.ndim)
+        #prev_x = dmin
+        #x_history_array[0, :] = prev_x
+
+        ## Compute the value y of objective_function at prev_x
+        #y = objective_function(prev_x)
+        #y_history_array[0] = y
+
+        ## Compute the gradient of objective_function at prev_x
+        #nabla = objective_function.gradient(prev_x)
+        #nabla_history_array[0, :] = nabla
+
+        ## Compute the cut at prev_x and add it to cut_list
+        #cut = self.getCutsFunctionList(np.array([prev_x]), np.array([y]), np.array([nabla]))[0] # TODO: permettre de calculer une seule coupe!
+        #cut_list.append(cut)
+
+        ###
+
+        # Choose the second point
+        cur_x = np.random.uniform(dmin, dmax, objective_function.ndim)
+        #cur_x = dmax
+
+        # Main loop: for each iteration do...
+        for it_index in range(num_iterations):
+
+            # Parallel loop: for each iteration do...
+            for p_it_index in range(num_parallel_eval):
+                global_index = it_index * num_parallel_eval + p_it_index
+
+                # Compute x
+                x = prev_x + (float(p_it_index + 1.) / float(num_parallel_eval)) * (cur_x - prev_x)
+                x_history_array[global_index, :] = x
+
+                # Compute the value y of objective_function at x
+                y = objective_function(x)
+                y_history_array[global_index] = y
+
+                # Compute the gradient of objective_function at x
+                nabla = objective_function.gradient(x)
+                nabla_history_array[global_index, :] = nabla
+
+                # Compute the cut at x and add it to cut_list
+                cut = self.getCutsFunctionList(np.array([x]), np.array([y]), np.array([nabla]))[0] # TODO: permettre de calculer une seule coupe!
+                cut_list.append(cut)
+
+            slice_end = (it_index+1) * num_parallel_eval
+
+            # Compute the next point x: the argmin of max(cut_list)
+            xy_min = self.getMinimumOfCuts(x_history_array[0:slice_end], y_history_array[0:slice_end], nabla_history_array[0:slice_end], cut_list, domain_min=dmin, domain_max=dmax) # TODO: return a tuple of np.array (1dim)
+
+            prev_x = cur_x
+            cur_x = xy_min.transpose()[0][:-1]
+
+            y_tilde = xy_min.transpose()[0][-1]
+            y_tilde_history_array[it_index] = y_tilde
+
+            # Plot
+            self.plotSamples(x_history_array[0:slice_end], y_history_array[0:slice_end], nabla=nabla_history_array[0:slice_end], cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=xy_min, show=False, save_filename=str(it_index) + ".png")
+
+        self.plotSamples(x_history_array, y_history_array, nabla=nabla_history_array, cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=None)
+        self.plotParallelCosts(y_history_array.reshape(num_iterations, num_parallel_eval), y_tilde_history_array)
+
+        return x
+
+    # GAUSSIAN PARALLEL CUTTING PLANE #########################################
+
+    def optimize_gaussian_pcp(self, objective_function, num_iterations, num_parallel_eval=2):
+
+        dmin = objective_function.domain_min
+        dmax = objective_function.domain_max
+
+        # Init history arrays
+        x_history_array = np.zeros([num_iterations * num_parallel_eval, objective_function.ndim])
+        y_history_array = np.zeros(num_iterations * num_parallel_eval)
+        y_tilde_history_array = np.zeros(num_iterations)
+        nabla_history_array = np.zeros([num_iterations * num_parallel_eval, objective_function.ndim])
+
+        cut_list = []
+
+        ###
+
+        # Get the first points
+        prev_x = np.random.uniform(dmin, dmax, objective_function.ndim)
+        cur_x = np.random.uniform(dmin, dmax, objective_function.ndim)
+
+        # Main loop: for each iteration do...
+        for it_index in range(num_iterations):
+
+            mu = cur_x
+            sigma = np.abs((cur_x - prev_x)) / objective_function.ndim
+            cov = np.diag(sigma)
+
+            # Parallel loop: for each iteration do...
+            for p_it_index in range(num_parallel_eval):
+                global_index = it_index * num_parallel_eval + p_it_index
+
+                # Compute x
+                x = np.random.multivariate_normal(mu, cov, 1)[0]
+                x_history_array[global_index, :] = x
+
+                # Compute the value y of objective_function at x
+                y = objective_function(x)
+                y_history_array[global_index] = y
+
+                # Compute the gradient of objective_function at x
+                nabla = objective_function.gradient(x)
+                nabla_history_array[global_index, :] = nabla
+
+                # Compute the cut at x and add it to cut_list
+                cut = self.getCutsFunctionList(np.array([x]), np.array([y]), np.array([nabla]))[0] # TODO: permettre de calculer une seule coupe!
+                cut_list.append(cut)
+
+            slice_end = (it_index+1) * num_parallel_eval
+
+            # Compute the next point x: the argmin of max(cut_list)
+            xy_min = self.getMinimumOfCuts(x_history_array[0:slice_end], y_history_array[0:slice_end], nabla_history_array[0:slice_end], cut_list, domain_min=dmin, domain_max=dmax) # TODO: return a tuple of np.array (1dim)
+
+            prev_x = cur_x
+            cur_x = xy_min.transpose()[0][:-1]
+
+            y_tilde = xy_min.transpose()[0][-1]
+            y_tilde_history_array[it_index] = y_tilde
+
+            # Plot
+            self.plotSamples(x_history_array[0:slice_end], y_history_array[0:slice_end], nabla=nabla_history_array[0:slice_end], cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=xy_min, show=False, save_filename=str(it_index) + ".png")
+
+        self.plotSamples(x_history_array, y_history_array, nabla=nabla_history_array, cut_list=cut_list, objective_function=objective_function, minimum_of_cuts=None)
+        self.plotParallelCosts(y_history_array.reshape(num_iterations, num_parallel_eval), y_tilde_history_array)
+
+        return x
+
+    # BILLARD PARALLEL CUTTING PLANE ##########################################
+
+    def optimize_billard_pcp(self, objective_function, num_iterations):
+        raise NotImplementedError()
+
+    ###########################################################################
 
     def getCutsFunctionList(self, x_array, y_array, nabla_array):
         """
@@ -562,6 +736,7 @@ class Optimizer(optimizer.Optimizer):
         else:
             warnings.warn("Cannot plot samples: too many dimensions.")
 
+
     def plotCosts(self, y_history_array, y_tilde_history_array):
         """
         Plot the evolution of point's cost evaluated during iterations.
@@ -577,6 +752,35 @@ class Optimizer(optimizer.Optimizer):
 
         ax.plot(y_history_array, "-", label="objective function cost")
         ax.plot(y_tilde_history_array, "-", label="heuristic function cost")
+
+        # TITLE AND LABELS
+        ax.set_title("Value over iterations", fontsize=20)
+        ax.set_xlabel(r"iteration $i$", fontsize=32)
+        ax.set_ylabel(r"$f(x)$", fontsize=32)
+
+        # LEGEND
+        ax.legend(loc='lower right', fontsize=20)
+
+        # PLOT
+        plt.show()
+
+
+    def plotParallelCosts(self, y_history_array, y_tilde_history_array):
+        """
+        Plot the evolution of point's cost evaluated during iterations.
+        """
+        import matplotlib.pyplot as plt
+
+        assert y_history_array.ndim == 2, "y_history_array.ndim = " + str(y_history_array.ndim)
+        assert y_tilde_history_array.ndim == 1, "y_tilde_history_array.ndim = " + str(y_tilde_history_array.ndim)
+        assert y_history_array.shape[0] == y_tilde_history_array.shape[0]
+
+        fig = plt.figure(figsize=(16.0, 10.0))
+        ax = fig.add_subplot(111)
+
+        ax.plot(y_history_array, "xr")
+        ax.plot(y_history_array[:,-1], "-r", label="objective function cost")
+        ax.plot(y_tilde_history_array, "-b", label="heuristic function cost")
 
         # TITLE AND LABELS
         ax.set_title("Value over iterations", fontsize=20)
