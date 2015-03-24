@@ -5,5 +5,9 @@
   - nouvelles fonctions test :
     - ajouter les fonctions de wikipedia (x18) et leurs images
     - bbob
-  - nettoyer cutting plane
+  - cutting plane :
+    - nettoyer
+    - ajouter les bornes du PL dans le PL
+    - traiter la coupe initiale à part dans le PL
+    - benchmark
 
