@@ -1,0 +1,9 @@
+* optimisation
+  - descente de gradient:
+    - ajouter optimisation d'epsilon (adaptation du pas de descente) : cf. wikipedia
+    - afficher le gradient (?)
+  - nouvelles fonctions test :
+    - ajouter les fonctions de wikipedia (x18) et leurs images
+    - bbob
+  - nettoyer cutting plane
+
