@@ -1,6 +1,6 @@
 # TODO
 
-For each algorithm, a tutorial PDF file should be add...
+For each algorithm, a tutorial (PDF file and/or ipython notebook) should be add...
 
 ## Optimisation
 
