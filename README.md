@@ -1,4 +1,4 @@
-# [PyAI -- Python Artificial Intelligence Framework](http://www.jdhp.org/projects_en.html#pyai)
+# [Python Artificial Intelligence Framework](http://www.jdhp.org/projects_en.html#pyai)
 
 Copyright (c) 2014,2015 Jeremie DECOCK (http://www.jdhp.org)
 
