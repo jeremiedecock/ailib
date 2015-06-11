@@ -1,0 +1,41 @@
+This framework is mainly inspired by the following book:
+
+  Artificial Intelligence: A Modern Approach
+  (Third edition) by Stuart Russell and Peter Norvig
+
+I may try to keep the same organisation:
+
+  Part I Artificial Intelligence
+          1 Introduction
+          2 Intelligent Agents
+  Part II Problem Solving
+          3 Solving Problems by Searching
+          4 Beyond Classical Search
+          5 Adversarial Search
+          6 Constraint Satisfaction Problems
+  Part III Knowledge and Reasoning
+          7 Logical Agents
+          8 First-Order Logic
+          9 Inference in First-Order Logic
+        10 Classical Planning
+        11 Planning and Acting in the Real World
+        12 Knowledge Representation
+  Part IV Uncertain Knowledge and Reasoning
+        13 Quantifying Uncertainty
+        14 Probabilistic Reasoning
+        15 Probabilistic Reasoning over Time
+        16 Making Simple Decisions
+        17 Making Complex Decisions
+  Part V Learning
+        18 Learning from Examples
+        19 Knowledge in Learning
+        20 Learning Probabilistic Models
+        21 Reinforcement Learning
+  Part VII Communicating, Perceiving, and Acting
+        22 Natural Language Processing
+        23 Natural Language for Communication
+        24 Perception
+        25 Robotics
+  Part VIII Conclusions
+        26 Philosophical Foundations
+        27 AI: The Present and Future
