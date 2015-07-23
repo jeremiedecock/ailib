@@ -40,8 +40,10 @@ with open("iris.json", "w") as fd:
 A classic toy classification dataset.
 
 - 10 classes: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-- 64 attributes
-- Attribute Information: 8x8 image of integer pixels in the range 0..16
+- 1797 samples
+- ~180 samples per classes
+- 64 dimensions (64 pixels in a 8x8 image of integer pixels in the range 0..16)
+- Features: integer in the range 0..16
 
 See:
 - https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/datasets/descr/digits.rst
