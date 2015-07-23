@@ -495,7 +495,7 @@ class Optimizer(optimizer.Optimizer):
         return np_xstar
 
 
-    def plotSamples(self, x, y, nabla=None, cut_list=None, objective_function=None, save_filename=None, minimum_of_cuts=None, show=True):
+    def plotSamples(self, x, y, nabla=None, cut_list=None, objective_function=None, save_filename=None, minimum_of_cuts=None, show=True, projection_mode=True):
         """
         Plot the objective function for x in the range (xmin, xmax, xstep) and
         the evaluated points.
@@ -617,110 +617,223 @@ class Optimizer(optimizer.Optimizer):
 
             # 2D case #####################################
 
-            from mpl_toolkits.mplot3d import axes3d
-            if objective_function is not None:
-                from mpl_toolkits.mplot3d import axes3d
-                from matplotlib import cm
+            if projection_mode:
 
-            fig = plt.figure()
+                import matplotlib.cm as cm
+                import matplotlib.pyplot as plt
 
-            if objective_function is not None:
-                ax = fig.gca(projection='3d')
+                fig = plt.figure()
+                ax = fig.add_subplot(111)
+
+                # PLOT THE OBJECTIVE FUNCTION 
+
+                if objective_function is not None:
+                    # BUILD DATA
+
+                    assert objective_function.domain_min.ndim == 1
+                    assert objective_function.domain_max.ndim == 1
+                    assert objective_function.domain_min.shape[0] == 2
+                    assert objective_function.domain_max.shape[0] == 2
+
+                    x1min = objective_function.domain_min[0]
+                    x1max = objective_function.domain_max[0]
+                    assert x1min < x1max
+
+                    x2min = objective_function.domain_min[1]
+                    x2max = objective_function.domain_max[1]
+                    assert x2min < x2max
+
+                    x1step = (x1max - x1min) / 200.
+                    x2step = (x2max - x2min) / 200.
+
+                    range_x1 = np.arange(x1min, x1max, x1step)
+                    range_x2 = np.arange(x2min, x2max, x2step)
+
+                    mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
+
+                    # TODO: take advantage of meshgrid, for now, it's not optimized at
+                    #       all and not very well written
+                    z = np.zeros(mesh_x1.shape)         
+                    for x1i in range(z.shape[0]):
+                        for x2i in range(z.shape[1]):
+                            point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                            z[x1i, x2i] = objective_function(point)
+
+                    # Contours and labels
+                    levels = y
+                    #ax.contour(mesh_x1, mesh_x2, z, colors='k')
+                    ax.contour(mesh_x1, mesh_x2, z, levels, colors='k', linewidths=0.5, linestyles="dashed")           # Plot the levels specified in the "levels" variable
+                    ax.contour(mesh_x1, mesh_x2, z, 10, colors='k', linewidths=0.5, linestyles="dotted")           # Plot the levels specified in the "levels" variable
+
+                    # Heat map
+                    im = ax.imshow(z, interpolation='bilinear', origin='lower', cmap=cm.binary, extent=(x1min, x1max, x2min, x2max))
+                    fig.colorbar(im) # draw colorbar
+
+                # PLOT MAX CUTS (the heuristic function)
+                if cut_list is not None:
+                    x1min = objective_function.domain_min[0]
+                    x1max = objective_function.domain_max[0]
+                    assert x1min < x1max
+
+                    x2min = objective_function.domain_min[1]
+                    x2max = objective_function.domain_max[1]
+                    assert x2min < x2max
+
+                    x1step = (x1max - x1min) / 100.
+                    x2step = (x2max - x2min) / 100.
+
+                    range_x1 = np.arange(x1min, x1max, x1step)
+                    range_x2 = np.arange(x2min, x2max, x2step)
+
+                    mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
+
+                    # TODO: take advantage of meshgrid, for now, it's not optimized at
+                    #       all and not very well written
+                    z = np.zeros(mesh_x1.shape)         
+                    for x1i in range(z.shape[0]):
+                        for x2i in range(z.shape[1]):
+                            point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                            z[x1i, x2i] = max([ cut(point) for cut in cut_list ])
+
+                    # Contours and labels
+                    levels = y
+                    #ax.contour(mesh_x1, mesh_x2, z, colors='k')
+                    ax.contour(mesh_x1, mesh_x2, z, levels, colors='r', linewidths=0.5)  # Plot the levels specified in the "levels" variable
+                    ax.contour(mesh_x1, mesh_x2, z, 20, colors='r', linewidths=0.5, linestyles="dotted")  # Plot the levels specified in the "levels" variable
+
+
+                # PLOT VISITED POINTS
+                ax.plot(x[:,0], x[:,1], 'x:b')
+                
+                # PLOT THE BEST VISITED POINT
+                x_min = x[y.argmin(), :]
+                y_min = y.min()
+                ax.scatter(x_min[0], x_min[1], color='r')
+
+                # PLOT THE MINIMUM OF CUTS
+                if minimum_of_cuts is not None:
+                    x_min = minimum_of_cuts[:-1]
+                    y_min = minimum_of_cuts[-1]
+                    ax.scatter(x_min[0], x_min[1], color='g')
+
+                # PLOT GRADIENT OF VISITED POINTS
+                if nabla is not None:
+                    pass
+
+                # TITLE AND LABELS
+                ax.set_title('Visited points', fontsize=20)
+                ax.set_xlabel(r'$x_1$', fontsize=32)
+                ax.set_ylabel(r'$x_2$', fontsize=32)
+
+                ax.set_xlim(objective_function.domain_min[0], objective_function.domain_max[0])
+                ax.set_ylim(objective_function.domain_min[1], objective_function.domain_max[1])
+
             else:
-                ax = axes3d.Axes3D(fig)
 
-            # PLOT THE OBJECTIVE FUNCTION 
+                from mpl_toolkits.mplot3d import axes3d
+                if objective_function is not None:
+                    from mpl_toolkits.mplot3d import axes3d
+                    from matplotlib import cm
 
-            if objective_function is not None:
-                # BUILD DATA
+                fig = plt.figure()
 
-                assert objective_function.domain_min.ndim == 1
-                assert objective_function.domain_max.ndim == 1
-                assert objective_function.domain_min.shape[0] == 2
-                assert objective_function.domain_max.shape[0] == 2
+                if objective_function is not None:
+                    ax = fig.gca(projection='3d')
+                else:
+                    ax = axes3d.Axes3D(fig)
 
-                x1min = objective_function.domain_min[0]
-                x1max = objective_function.domain_max[0]
-                assert x1min < x1max
+                # PLOT THE OBJECTIVE FUNCTION 
 
-                x2min = objective_function.domain_min[1]
-                x2max = objective_function.domain_max[1]
-                assert x2min < x2max
+                if objective_function is not None:
+                    # BUILD DATA
 
-                x1step = (x1max - x1min) / 200.
-                x2step = (x2max - x2min) / 200.
+                    assert objective_function.domain_min.ndim == 1
+                    assert objective_function.domain_max.ndim == 1
+                    assert objective_function.domain_min.shape[0] == 2
+                    assert objective_function.domain_max.shape[0] == 2
 
-                range_x1 = np.arange(x1min, x1max, x1step)
-                range_x2 = np.arange(x2min, x2max, x2step)
+                    x1min = objective_function.domain_min[0]
+                    x1max = objective_function.domain_max[0]
+                    assert x1min < x1max
 
-                mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
+                    x2min = objective_function.domain_min[1]
+                    x2max = objective_function.domain_max[1]
+                    assert x2min < x2max
 
-                # TODO: take advantage of meshgrid, for now, it's not optimized at
-                #       all and not very well written
-                z = np.zeros(mesh_x1.shape)         
-                for x1i in range(z.shape[0]):
-                    for x2i in range(z.shape[1]):
-                        point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
-                        z[x1i, x2i] = objective_function(point)
+                    x1step = (x1max - x1min) / 200.
+                    x2step = (x2max - x2min) / 200.
 
-                # PLOT
-                ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, linewidth=0.2, alpha=0.2)
-                #cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
+                    range_x1 = np.arange(x1min, x1max, x1step)
+                    range_x2 = np.arange(x2min, x2max, x2step)
 
-            # PLOT MAX CUTS (the heuristic function)
-            if cut_list is not None:
-                x1min = objective_function.domain_min[0]
-                x1max = objective_function.domain_max[0]
-                assert x1min < x1max
+                    mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
 
-                x2min = objective_function.domain_min[1]
-                x2max = objective_function.domain_max[1]
-                assert x2min < x2max
+                    # TODO: take advantage of meshgrid, for now, it's not optimized at
+                    #       all and not very well written
+                    z = np.zeros(mesh_x1.shape)         
+                    for x1i in range(z.shape[0]):
+                        for x2i in range(z.shape[1]):
+                            point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                            z[x1i, x2i] = objective_function(point)
 
-                x1step = (x1max - x1min) / 100.
-                x2step = (x2max - x2min) / 100.
+                    # PLOT
+                    ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, linewidth=0.2, alpha=0.2)
+                    #cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
 
-                range_x1 = np.arange(x1min, x1max, x1step)
-                range_x2 = np.arange(x2min, x2max, x2step)
+                # PLOT MAX CUTS (the heuristic function)
+                if cut_list is not None:
+                    x1min = objective_function.domain_min[0]
+                    x1max = objective_function.domain_max[0]
+                    assert x1min < x1max
 
-                mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
+                    x2min = objective_function.domain_min[1]
+                    x2max = objective_function.domain_max[1]
+                    assert x2min < x2max
 
-                # TODO: take advantage of meshgrid, for now, it's not optimized at
-                #       all and not very well written
-                z = np.zeros(mesh_x1.shape)         
-                for x1i in range(z.shape[0]):
-                    for x2i in range(z.shape[1]):
-                        point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
-                        z[x1i, x2i] = max([ cut(point) for cut in cut_list ])
+                    x1step = (x1max - x1min) / 100.
+                    x2step = (x2max - x2min) / 100.
 
-                # PLOT
-                ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, alpha=0.5, color="r")
-                #cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
+                    range_x1 = np.arange(x1min, x1max, x1step)
+                    range_x2 = np.arange(x2min, x2max, x2step)
+
+                    mesh_x1,mesh_x2 = np.meshgrid(range_x1, range_x2)
+
+                    # TODO: take advantage of meshgrid, for now, it's not optimized at
+                    #       all and not very well written
+                    z = np.zeros(mesh_x1.shape)         
+                    for x1i in range(z.shape[0]):
+                        for x2i in range(z.shape[1]):
+                            point = np.array([mesh_x1[x1i, x2i], mesh_x2[x1i, x2i]])
+                            z[x1i, x2i] = max([ cut(point) for cut in cut_list ])
+
+                    # PLOT
+                    ax.plot_surface(mesh_x1, mesh_x2, z, rstride=5, cstride=5, alpha=0.5, color="r")
+                    #cset = ax.contourf(mesh_x1, mesh_x2, z, zdir='z', offset=0, cmap=cm.coolwarm)
 
 
-            # PLOT VISITED POINTS
-            ax.scatter(x[:,0], x[:,1], y, color='b')
-            
-            # PLOT THE BEST VISITED POINT
-            x_min = x[y.argmin(), :]
-            y_min = y.min()
-            ax.scatter(x_min[0], x_min[1],  y_min, color='r')
+                # PLOT VISITED POINTS
+                ax.scatter(x[:,0], x[:,1], y, color='b')
+                
+                # PLOT THE BEST VISITED POINT
+                x_min = x[y.argmin(), :]
+                y_min = y.min()
+                ax.scatter(x_min[0], x_min[1],  y_min, color='r')
 
-            # PLOT THE MINIMUM OF CUTS
-            if minimum_of_cuts is not None:
-                x_min = minimum_of_cuts[:-1]
-                y_min = minimum_of_cuts[-1]
-                ax.scatter(x_min[0], x_min[1],  y_min, color='g')
+                # PLOT THE MINIMUM OF CUTS
+                if minimum_of_cuts is not None:
+                    x_min = minimum_of_cuts[:-1]
+                    y_min = minimum_of_cuts[-1]
+                    ax.scatter(x_min[0], x_min[1],  y_min, color='g')
 
-            # PLOT GRADIENT OF VISITED POINTS
-            if nabla is not None:
-                pass
+                # PLOT GRADIENT OF VISITED POINTS
+                if nabla is not None:
+                    pass
 
-            # TITLE AND LABELS
-            ax.set_title('Visited points', fontsize=20)
-            ax.set_xlabel(r'$x_1$', fontsize=32)
-            ax.set_ylabel(r'$x_2$', fontsize=32)
-            ax.set_zlabel(r'$f(x)$', fontsize=32)
+                # TITLE AND LABELS
+                ax.set_title('Visited points', fontsize=20)
+                ax.set_xlabel(r'$x_1$', fontsize=32)
+                ax.set_ylabel(r'$x_2$', fontsize=32)
+                ax.set_zlabel(r'$f(x)$', fontsize=32)
 
             # PLOT ######################
 
