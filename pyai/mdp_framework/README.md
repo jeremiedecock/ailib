@@ -1,3 +1,5 @@
+# PyAI - MDP Framework
+
 This is an open source Markov Decision Processes framework written in Python.
 
 Markov Decision Processes (MDPs) are a mathematical framework for modeling
