@@ -37,8 +37,8 @@ def main():
         # Sphere ##########################
         from function.sphere import Function
         #f = Function(1)
-        #f = Function(2)
-        f = Function(10)
+        f = Function(2)
+        #f = Function(10)
 
     elif objective_func == "noised_sphere":
         # Noised sphere ###################
@@ -115,7 +115,9 @@ def main():
         #best_x = optimizer.optimize(f, parallel="linear", num_iterations=100)   # sphere with 10 dimension
 
         #best_x = optimizer.optimize(f, parallel="gaussian", num_iterations=7)   # sphere with 1 dimension
-        best_x = optimizer.optimize(f, parallel="gaussian", num_iterations=100)   # sphere with 10 dimension
+        #best_x = optimizer.optimize(f, parallel="gaussian", num_iterations=100)   # sphere with 10 dimension
+
+        best_x = optimizer.optimize(f, num_iterations=15) # sphere with 2 dimensions
 
     elif optimizer_choice == "eda":
         # EDA #############################
