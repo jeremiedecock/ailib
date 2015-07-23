@@ -1,5 +1,7 @@
 #!/bin/sh
 
+rm -v *.png
+
 # Python 3.x
 
 #find src -type d -name "__pycache__" -exec rm -rv {} \;
