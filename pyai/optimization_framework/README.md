@@ -1,3 +1,0 @@
-# PyAI - Optimization Framework
-
-...
