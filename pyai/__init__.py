@@ -40,6 +40,6 @@
 #
 __version__ = '0.1.dev0'
 
-__all__ = ['machine_learning_framework',
-           'mdp_framework',
-           'optimization_framework']
+__all__ = ['machine_learning',
+           'mdp',
+           'optimization']
