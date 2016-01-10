@@ -2,7 +2,7 @@
 
 # The MIT License
 #
-# Copyright (c) 2014,2015 Jeremie DECOCK (http://www.jdhp.org)
+# Copyright (c) 2014,2015,2016 Jeremie DECOCK (http://www.jdhp.org)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -42,4 +42,5 @@ __version__ = '0.1.dev0'
 
 __all__ = ['machine_learning',
            'mdp',
-           'optimization']
+           'optimization',
+           'signal_processing']
