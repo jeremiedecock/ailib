@@ -1,13 +1,12 @@
 #!/bin/sh
 
 rm -v *.png
+rm -v *.svg
 
 # Python 3.x
 
-#find src -type d -name "__pycache__" -exec rm -rv {} \;
-rm -rvf function/__pycache__
-rm -rvf optimizer/__pycache__
+find . -type d -name "__pycache__" -exec rm -rv "{}" \;
 
 # Python 2.x
 
-find . -type f -name "*.pyc" -exec rm -v {} \;
+find . -type f -name "*.pyc" -exec rm -v "{}" \;
