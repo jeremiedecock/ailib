@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2014 Jérémie DECOCK (http://www.jdhp.org)
+# Copyright (c) 2014,2015 Jérémie DECOCK (http://www.jdhp.org)
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,16 +21,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+"""
+A PyAI (Markov Decision Processes framework) demo.
+"""
 
-from environment.maze import Environment
-#from environment.graph import Environment
-#from environment.maze import Agent
-#from agent.brute_force import Agent
-#from agent.value_iteration import Agent
-#from agent.value_iteration_gauss_seidel import Agent
-#from agent.value_iteration_error_rate import Agent
-from agent.policy_iteration import Agent
-#from agent.direct_utility_estimation import Agent
+from pyai.mdp.environment.maze import Environment
+#from pyai.mdp.environment.graph import Environment
+#from pyai.mdp.environment.maze import Agent
+#from pyai.mdp.agent.brute_force import Agent
+#from pyai.mdp.agent.value_iteration import Agent
+#from pyai.mdp.agent.value_iteration_gauss_seidel import Agent
+#from pyai.mdp.agent.value_iteration_error_rate import Agent
+from pyai.mdp.agent.policy_iteration import Agent
+#from pyai.mdp.agent.direct_utility_estimation import Agent
 
 def main():
     """Main function"""
