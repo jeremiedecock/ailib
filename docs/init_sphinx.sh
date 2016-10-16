@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sphinx-quickstart
