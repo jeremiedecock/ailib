@@ -5,10 +5,10 @@ TODO_PROJECT_NAME
 TODO_COPYRIGHT_NOTICE
 
 * Web site: TODO_PROJECT_WEB_SITE_URL
-* Online documentation: TODO_PROJECT_DOCUMENTATION_URL
+* Online documentation: TODO_PROJECT_ONLINE_DOCUMENTATION_URL
 * Source code: TODO_PROJECT_GITHUB_URL
 * Issue tracker: TODO_PROJECT_ISSUE_TRACKER_URL
-* PyPI: TODO_PROJECT_PYPI_URL
+* TODO_PYTHON_PACKAGE_NAME on PyPI: TODO_PROJECT_PYPI_URL
 
 
 Description
@@ -37,9 +37,9 @@ Gnu/Linux
 You can install, upgrade, uninstall TODO_PROJECT_NAME with these commands (in a
 terminal)::
 
-    pip install --pre TODO_PROJECT_FILE_BASE_NAME
-    pip install --upgrade TODO_PROJECT_FILE_BASE_NAME
-    pip uninstall TODO_PROJECT_FILE_BASE_NAME
+    pip install --pre TODO_PYTHON_PACKAGE_NAME
+    pip install --upgrade TODO_PYTHON_PACKAGE_NAME
+    pip uninstall TODO_PYTHON_PACKAGE_NAME
 
 Or, if you have downloaded the TODO_PROJECT_NAME source code::
 
@@ -47,7 +47,7 @@ Or, if you have downloaded the TODO_PROJECT_NAME source code::
 
 .. There's also a package for Debian/Ubuntu::
 .. 
-..     sudo apt-get install TODO_PROJECT_FILE_BASE_NAME
+..     sudo apt-get install TODO_PYTHON_PACKAGE_NAME
 
 Windows
 -------
@@ -61,9 +61,9 @@ Windows
 You can install, upgrade, uninstall TODO_PROJECT_NAME with these commands (in a
 `command prompt`_)::
 
-    py -m pip install --pre TODO_PROJECT_FILE_BASE_NAME
-    py -m pip install --upgrade TODO_PROJECT_FILE_BASE_NAME
-    py -m pip uninstall TODO_PROJECT_FILE_BASE_NAME
+    py -m pip install --pre TODO_PYTHON_PACKAGE_NAME
+    py -m pip install --upgrade TODO_PYTHON_PACKAGE_NAME
+    py -m pip uninstall TODO_PYTHON_PACKAGE_NAME
 
 Or, if you have downloaded the TODO_PROJECT_NAME source code::
 
@@ -81,9 +81,9 @@ MacOSX
 You can install, upgrade, uninstall TODO_PROJECT_NAME with these commands (in a
 terminal)::
 
-    pip install --pre TODO_PROJECT_FILE_BASE_NAME
-    pip install --upgrade TODO_PROJECT_FILE_BASE_NAME
-    pip uninstall TODO_PROJECT_FILE_BASE_NAME
+    pip install --pre TODO_PYTHON_PACKAGE_NAME
+    pip install --upgrade TODO_PYTHON_PACKAGE_NAME
+    pip uninstall TODO_PYTHON_PACKAGE_NAME
 
 Or, if you have downloaded the TODO_PROJECT_NAME source code::
 
@@ -93,8 +93,8 @@ Or, if you have downloaded the TODO_PROJECT_NAME source code::
 Documentation
 =============
 
-* Online documentation: TODO_PROJECT_DOCUMENTATION_URL
-* API documentation: TODO_PROJECT_API_DOCUMENTATION_URL
+* Online documentation: TODO_PROJECT_ONLINE_DOCUMENTATION_URL
+* API documentation: TODO_PROJECT_ONLINE_API_DOCUMENTATION_URL
 
 
 Example usage
@@ -108,7 +108,7 @@ Bug reports
 
 To search for bugs or report them, please use the TODO_PROJECT_NAME Bug Tracker at:
 
-    https://github.com/jeremiedecock/TODO_PROJECT_FILE_BASE_NAME/issues
+    TODO_PROJECT_ISSUE_TRACKER_URL
 
 
 License
@@ -120,4 +120,4 @@ The ``TODO_PROJECT_NAME`` library is provided under the terms and conditions of 
 
 .. _MIT License: http://opensource.org/licenses/MIT
 
-.. _TODO_PROJECT_NAME: http://www.jdhp.org/projects_en.html#TODO_PROJECT_FILE_BASE_NAME
+.. _TODO_PROJECT_NAME: TODO_PROJECT_WEB_SITE_URL
