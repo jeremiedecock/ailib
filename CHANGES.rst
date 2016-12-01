@@ -1,6 +1,6 @@
 Changelog
 =========
 
-0.1 (YYYY-MM-DD)
+0.1 (TODO_PROJECT_INITIAL_DATE)
 ----------------
 
