@@ -85,6 +85,7 @@ sed -i "" \
     LICENSE \
     meta.make \
     README.rst \
+    setup.py \
     TODO_PYTHON_PACKAGE_NAME/__init__.py
 
 
