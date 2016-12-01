@@ -82,6 +82,7 @@ sed -i "" \
     -e "s TODO_PROJECT_ONLINE_API_DOCUMENTATION_URL ${PROJECT_ONLINE_API_DOCUMENTATION_URL} g" \
     AUTHORS \
     CHANGES.rst \
+    docs/init_sphinx.sh \
     LICENSE \
     meta.make \
     README.rst \
