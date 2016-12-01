@@ -95,3 +95,8 @@ sed -i "" \
     -e "s/^====$/${PROJECT_NAME_UNDERLINE}/" \
     README.rst
 
+
+# RENAME THE ROOT PACKAGE DIRECTORY ###########################################
+
+mv -v TODO_PYTHON_PACKAGE_NAME "${TODO_PYTHON_PACKAGE_NAME}"
+
