@@ -84,7 +84,8 @@ sed -i "" \
     CHANGES.rst \
     LICENSE \
     meta.make \
-    README.rst
+    README.rst \
+    TODO_PYTHON_PACKAGE_NAME/__init__.py
 
 
 # FIX TITLES UNDERLINE LENGTH IN RESTRUCTUREDTEXT FILES #######################
