@@ -7,45 +7,60 @@ include meta.make
 all: help
 
 .PHONY : all \
-	     help \
 		 analyse \
-		 init \
 		 clean \
 		 conda \
 		 doc \
-		 doc-show \
 		 doc-publish-github \
 		 doc-publish-jdhp \
+		 doc-show \
+	     help \
+		 init \
+		 init-skeleton \
+		 list \
 		 pep8 \
+		 publish \
+		 pypi \
 		 test \
 		 trailing-spaces \
-		 init-skeleton 
+
 
 ###############################################################################
 
 PYTHON=python3
 
-###############################################################################
+## HELP #######################################################################
 
-help:
-	@echo ''
-	@echo 'Available make targets:'
-	@echo ''
-	@echo '  help                Print this help message (the default)'
-	@echo '  init                Import submodules'
-	@echo '  clean               Remove generated files'
-	@echo '  develop             Make symlinks to this package in python install dir'
-	@echo '  test                Run tests'
-	@echo '  doc                 Generate Sphinx docs'
-	@echo '  doc-show            Generate and display docs in browser'
-	@echo '  analyze             Do a static code check and report errors'
-	@echo ''
-	@echo 'Advanced targets (for experts):'
-	@echo ''
-	@echo '  conda               Build a conda package for distribution'
-	@echo '  doc-publish-jdhp    Generate and upload the docs to www.jdhp.org'
-	@echo '  doc-publish-github  Generate and upload the docs to GitHub'
-	@echo ''
+#help:
+#	@echo ''
+#	@echo 'Available make targets:'
+#	@echo ''
+#	@echo '  help                Print this help message (the default)'
+#	@echo '  init                Import submodules'
+#	@echo '  clean               Remove generated files'
+#	@echo '  develop             Make symlinks to this package in python install dir'
+#	@echo '  test                Run tests'
+#	@echo '  doc                 Generate Sphinx docs'
+#	@echo '  doc-show            Generate and display docs in browser'
+#	@echo '  analyze             Do a static code check and report errors'
+#	@echo ''
+#	@echo 'Advanced targets (for experts):'
+#	@echo ''
+#	@echo '  conda               Build a conda package for distribution'
+#	@echo '  doc-publish-jdhp    Generate and upload the docs to www.jdhp.org'
+#	@echo '  doc-publish-github  Generate and upload the docs to GitHub'
+#	@echo ''
+
+# See http://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
+
+help: list
+
+list:
+	@echo "Available targets:"
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | xargs
+
+
+###############################################################################
 
 analyze:
 	@pyflakes $(PYTHON_PACKAGE_NAME) examples
@@ -53,21 +68,6 @@ analyze:
 init:
 	git submodule init
 	git submodule update
-
-clean:
-	find . -type d -iname "__pycache__" -exec rm -rfv {} \;
-	find . -type f -iname "*.pyc" -exec rm -v {} \;
-	find . -type f -iname "*.pyo" -exec rm -v {} \;
-	find . -type f -iname "*.pyd" -exec rm -v {} \;
-	find . -type f -iname "*.so"  -exec rm -v {} \;
-	rm -rf docs/_build
-	rm -rf build
-	rm -rf dist
-	rm -rf sdist
-	rm -rf *.egg-info/
-	rm -rf htmlcov/
-	rm -rf debian
-	rm MANIFEST
 
 conda:
 	$(PYTHON) setup.py bdist_conda
@@ -114,7 +114,37 @@ trailing-spaces:
 init-skeleton:
 	./init-skeleton.sh
 
-# Any other command can be passed to setup.py
+
+## PUBLISH ####################################################################
+
+publish: pypi
+
+pypi:
+	python3 setup.py sdist upload
+
+
+## CLEAN ######################################################################
+
+init: clean
+
+clean:
+	@echo "Remove generated files"
+	@find . -type d -iname "__pycache__" -exec rm -rfv {} \;
+	@find . -type f -iname "*.pyc" -exec rm -v {} \;
+	@find . -type f -iname "*.pyo" -exec rm -v {} \;
+	@find . -type f -iname "*.pyd" -exec rm -v {} \;
+	@find . -type f -iname "*.so"  -exec rm -v {} \;
+	@rm -rvf docs/_build
+	@rm -rvf build
+	@rm -rvf dist
+	@rm -rvf sdist
+	@rm -rvf *.egg-info/
+	@rm -rvf htmlcov/
+	@rm -rvf debian
+	@rm -v MANIFEST
+
+## ANY OTHER COMMAND CAN BE PASSED TO SETUP.PY ################################
+
 %:
 	$(PYTHON) setup.py $@
 
