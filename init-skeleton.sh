@@ -87,7 +87,15 @@ sed -i "" \
     meta.make \
     README.rst \
     setup.py \
-    TODO_PYTHON_PACKAGE_NAME/__init__.py
+    TODO_PYTHON_PACKAGE_NAME/__init__.py \
+    docs/api.rst \
+    docs/conf.py \
+    docs/developer.rst \
+    docs/index.rst \
+    docs/init_sphinx.sh \
+    docs/intro.rst \
+    docs/make.bat \
+    docs/Makefile
 
 
 # FIX TITLES UNDERLINE LENGTH IN RESTRUCTUREDTEXT FILES #######################
@@ -97,6 +105,10 @@ PROJECT_NAME_UNDERLINE=$(echo "${PROJECT_NAME}" | tr '[:print:]' '=')
 sed -i "" \
     -e "s/^====$/${PROJECT_NAME_UNDERLINE}/" \
     README.rst
+
+sed -i "" \
+    -e "s/^====$/${PROJECT_NAME_UNDERLINE}/" \
+    docs/index.rst
 
 
 # RENAME THE ROOT PACKAGE DIRECTORY ###########################################
