@@ -36,3 +36,9 @@ Credits
 .. include:: ../AUTHORS
    :start-line: 1
 
+License
+=======
+
+.. include:: ../LICENSE
+   :start-line: 1
+
