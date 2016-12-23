@@ -10,16 +10,17 @@ all: help
 		 analyse \
 		 clean \
 		 conda \
-		 doc \
-		 doc-publish-github \
-		 doc-publish-jdhp \
-		 doc-show \
+		 docs \
+		 docs-show \
 	     help \
 		 init \
 		 init-skeleton \
 		 list \
 		 pep8 \
 		 publish \
+		 publish-docs-github \
+		 publish-docs-jdhp \
+		 publish-pypi \
 		 pypi \
 		 test \
 		 trailing-spaces \
@@ -40,15 +41,15 @@ PYTHON=python3
 #	@echo '  clean               Remove generated files'
 #	@echo '  develop             Make symlinks to this package in python install dir'
 #	@echo '  test                Run tests'
-#	@echo '  doc                 Generate Sphinx docs'
-#	@echo '  doc-show            Generate and display docs in browser'
+#	@echo '  docs                Generate Sphinx docs'
+#	@echo '  docs-show           Generate and display docs in browser'
 #	@echo '  analyze             Do a static code check and report errors'
 #	@echo ''
 #	@echo 'Advanced targets (for experts):'
 #	@echo ''
 #	@echo '  conda               Build a conda package for distribution'
-#	@echo '  doc-publish-jdhp    Generate and upload the docs to www.jdhp.org'
-#	@echo '  doc-publish-github  Generate and upload the docs to GitHub'
+#	@echo '  publish-docs-jdhp   Generate and upload the docs to www.jdhp.org'
+#	@echo '  publish-docs-github Generate and upload the docs to GitHub'
 #	@echo ''
 
 # See http://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
@@ -72,35 +73,11 @@ init:
 conda:
 	$(PYTHON) setup.py bdist_conda
 
-doc:
+docs:
 	$(PYTHON) setup.py build_sphinx
 
-doc-show:
+docs-show:
 	$(PYTHON) setup.py build_sphinx --open-docs-in-browser
-
-doc-publish-github: doc
-	ghp-import -n -p -m 'Update gh-pages docs' docs/_build/html
-
-doc-publish-jdhp: doc
-	# JDHP_DOCS_URI is a shell environment variable that contains the
-	# destination URI of the HTML files.
-	@if test -z $$JDHP_DOCS_URI ; then exit 1 ; fi
-
-	# Copy HTML
-	@rm -rf $(HTML_TMP_DIR)/
-	@mkdir $(HTML_TMP_DIR)/
-	cp -v $(PYTHON_PACKAGE_NAME).html $(HTML_TMP_DIR)/
-	cp -vr images $(HTML_TMP_DIR)/
-
-	# Upload the HTML files
-	rsync -r -v -e ssh $(HTML_TMP_DIR)/ ${JDHP_DOCS_URI}/$(PYTHON_PACKAGE_NAME)/
-	
-	# JDHP_DL_URI is a shell environment variable that contains the destination
-	# URI of the PDF files.
-	@if test -z $$JDHP_DL_URI ; then exit 1 ; fi
-	
-	# Upload the PDF file
-	rsync -v -e ssh $(PYTHON_PACKAGE_NAME).pdf ${JDHP_DL_URI}/pdf/
 
 pep8:
 	@pep8 --statistics
@@ -117,10 +94,43 @@ init-skeleton:
 
 ## PUBLISH ####################################################################
 
-publish: pypi
+publish: publish-pypi publish-docs-jdhp
 
-pypi:
+publish-pypi:
 	python3 setup.py sdist upload
+
+publish-docs-github: docs
+	ghp-import -n -p -m 'Update gh-pages docs' docs/_build/html
+
+publish-docs-jdhp: docs
+	
+	########
+	# HTML #
+	########
+	
+	# JDHP_DOCS_URI is a shell environment variable that contains the
+	# destination URI of the HTML files.
+	@if test -z $$JDHP_DOCS_URI ; then exit 1 ; fi
+
+	# Copy HTML
+	@rm -rf $(HTML_TMP_DIR)/
+	@mkdir $(HTML_TMP_DIR)/
+	cp -v $(PYTHON_PACKAGE_NAME).html $(HTML_TMP_DIR)/
+	cp -vr images $(HTML_TMP_DIR)/
+
+	# Upload the HTML files
+	rsync -r -v -e ssh $(HTML_TMP_DIR)/ ${JDHP_DOCS_URI}/$(PYTHON_PACKAGE_NAME)/
+	
+	#######
+	# PDF #
+	#######
+	
+	## JDHP_DL_URI is a shell environment variable that contains the destination
+	## URI of the PDF files.
+	#@if test -z $$JDHP_DL_URI ; then exit 1 ; fi
+	#
+	## Upload the PDF file
+	#rsync -v -e ssh $(PYTHON_PACKAGE_NAME).pdf ${JDHP_DL_URI}/pdf/
 
 
 ## CLEAN ######################################################################
