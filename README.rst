@@ -114,8 +114,7 @@ To search for bugs or report them, please use the TODO_PROJECT_NAME Bug Tracker 
 License
 =======
 
-The ``TODO_PROJECT_NAME`` library is provided under the terms and conditions of the
-`MIT License`_.
+This project is provided under the terms and conditions of the `MIT License`_.
 
 
 .. _MIT License: http://opensource.org/licenses/MIT
