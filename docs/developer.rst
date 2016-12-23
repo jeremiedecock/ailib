@@ -10,14 +10,12 @@ Source code
 The source code is currently `available on GitHub`_ under the terms and
 conditions of the :ref:`MIT license <license>`. Fork away!
 
-
 Bug reports
 ~~~~~~~~~~~
 
 To search for bugs or report them, please use the Bug Tracker at:
 
-    https://github.com/jdhp-sap/sap-cta-data-pipeline/issues
-
+    TODO_PROJECT_ISSUE_TRACKER_URL
 
 Contribute
 ~~~~~~~~~~
@@ -39,13 +37,13 @@ and/or doctest_.
 pylint_, `pep8 <https://github.com/PyCQA/pep8>`__ and pyflakes_ should also be
 used to check the quality of each module.
 
-
 Changes
 ~~~~~~~
 
 .. include:: ../CHANGES.rst
    :start-line: 2
 
+.. ......................................................................... ..
 
 .. _PEP8: https://www.python.org/dev/peps/pep-0008/
 .. _PEP257: https://www.python.org/dev/peps/pep-0257/
