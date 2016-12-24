@@ -108,18 +108,12 @@ publish-doc-jdhp: doc
 	# HTML #
 	########
 	
-	# JDHP_DOCS_URI is a shell environment variable that contains the
+	# JDHP_SOFTWARE_URI is a shell environment variable that contains the
 	# destination URI of the HTML files.
-	@if test -z $$JDHP_DOCS_URI ; then exit 1 ; fi
-
-	# Copy HTML
-	@rm -rf $(HTML_TMP_DIR)/
-	@mkdir $(HTML_TMP_DIR)/
-	cp -v $(PYTHON_PACKAGE_NAME).html $(HTML_TMP_DIR)/
-	cp -vr images $(HTML_TMP_DIR)/
+	@if test -z $$JDHP_SOFTWARE_URI ; then exit 1 ; fi
 
 	# Upload the HTML files
-	rsync -r -v -e ssh $(HTML_TMP_DIR)/ ${JDHP_DOCS_URI}/$(PYTHON_PACKAGE_NAME)/
+	rsync -r -v -e ssh $(HTML_TMP_DIR)/ ${JDHP_SOFTWARE_URI}/$(PYTHON_PACKAGE_NAME)/
 	
 	#######
 	# PDF #
