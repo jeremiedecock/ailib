@@ -34,11 +34,13 @@ Credits
 =======
 
 .. include:: ../AUTHORS
-   :start-line: 1
+   :literal:
 
 License
 =======
 
+.. highlight:: none
+
 .. include:: ../LICENSE
-   :start-line: 1
+   :literal:
 
