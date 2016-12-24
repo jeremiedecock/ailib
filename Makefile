@@ -10,16 +10,16 @@ all: help
 		 analyse \
 		 clean \
 		 conda \
-		 docs \
-		 docs-show \
+		 doc \
+		 doc-show \
 	     help \
 		 init \
 		 init-skeleton \
 		 list \
 		 pep8 \
 		 publish \
-		 publish-docs-github \
-		 publish-docs-jdhp \
+		 publish-doc-github \
+		 publish-doc-jdhp \
 		 publish-pypi \
 		 pypi \
 		 test \
@@ -41,15 +41,15 @@ PYTHON=python3
 #	@echo '  clean               Remove generated files'
 #	@echo '  develop             Make symlinks to this package in python install dir'
 #	@echo '  test                Run tests'
-#	@echo '  docs                Generate Sphinx docs'
-#	@echo '  docs-show           Generate and display docs in browser'
+#	@echo '  doc                 Generate Sphinx docs'
+#	@echo '  doc-show            Generate and display docs in browser'
 #	@echo '  analyze             Do a static code check and report errors'
 #	@echo ''
 #	@echo 'Advanced targets (for experts):'
 #	@echo ''
 #	@echo '  conda               Build a conda package for distribution'
-#	@echo '  publish-docs-jdhp   Generate and upload the docs to www.jdhp.org'
-#	@echo '  publish-docs-github Generate and upload the docs to GitHub'
+#	@echo '  publish-doc-jdhp    Generate and upload the docs to www.jdhp.org'
+#	@echo '  publish-doc-github  Generate and upload the docs to GitHub'
 #	@echo ''
 
 # See http://stackoverflow.com/questions/4219255/how-do-you-get-the-list-of-targets-in-a-makefile
@@ -73,10 +73,10 @@ init:
 conda:
 	$(PYTHON) setup.py bdist_conda
 
-docs:
+doc:
 	$(PYTHON) setup.py build_sphinx
 
-docs-show:
+doc-show:
 	$(PYTHON) setup.py build_sphinx --open-docs-in-browser
 
 pep8:
@@ -94,15 +94,15 @@ init-skeleton:
 
 ## PUBLISH ####################################################################
 
-publish: publish-pypi publish-docs-jdhp
+publish: publish-pypi publish-doc-jdhp
 
 publish-pypi:
 	python3 setup.py sdist upload
 
-publish-docs-github: docs
+publish-doc-github: doc
 	ghp-import -n -p -m 'Update gh-pages docs' docs/_build/html
 
-publish-docs-jdhp: docs
+publish-doc-jdhp: doc
 	
 	########
 	# HTML #
