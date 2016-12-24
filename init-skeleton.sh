@@ -31,7 +31,7 @@
 
 # LOAD VARIABLES ##############################################################
 
-source ./meta.sh
+. ./meta.sh
 
 echo "AUTHOR_NAME: ${AUTHOR_NAME}"
 echo "AUTHOR_EMAIL: ${AUTHOR_EMAIL}"
@@ -82,12 +82,10 @@ sed -i "" \
     -e "s TODO_PROJECT_ONLINE_API_DOCUMENTATION_URL ${PROJECT_ONLINE_API_DOCUMENTATION_URL} g" \
     AUTHORS \
     CHANGES.rst \
-    docs/init_sphinx.sh \
     LICENSE \
     meta.make \
     README.rst \
     setup.py \
-    TODO_PYTHON_PACKAGE_NAME/__init__.py \
     docs/api.rst \
     docs/conf.py \
     docs/developer.rst \
@@ -95,7 +93,8 @@ sed -i "" \
     docs/init_sphinx.sh \
     docs/intro.rst \
     docs/make.bat \
-    docs/Makefile
+    docs/Makefile \
+    TODO_PYTHON_PACKAGE_NAME/__init__.py
 
 
 # FIX TITLES UNDERLINE LENGTH IN RESTRUCTUREDTEXT FILES #######################
