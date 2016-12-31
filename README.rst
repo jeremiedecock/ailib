@@ -118,5 +118,4 @@ This project is provided under the terms and conditions of the `MIT License`_.
 
 
 .. _MIT License: http://opensource.org/licenses/MIT
-
-.. _TODO_PROJECT_NAME: TODO_PROJECT_WEB_SITE_URL
+.. _command prompt: https://en.wikipedia.org/wiki/Cmd.exe
