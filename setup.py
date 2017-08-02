@@ -79,7 +79,7 @@ SCRIPTS = []
 ENTRY_POINTS = {}
 #ENTRY_POINTS = {
 #  'console_scripts': [
-#      'pyax12gui = pyax12.gui:run',
+#      'pyaigui = pyai.gui:run',
 #  ],
 #}
 
@@ -97,7 +97,7 @@ setup(author='Jeremie DECOCK',
       maintainer='Jeremie DECOCK',
       maintainer_email='jd.jdhp@gmail.com',
 
-      name='pyai',
+      name='jdhp-pyai',
       description='A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).',
       long_description=get_long_description(),
       url='http://www.jdhp.org/',
