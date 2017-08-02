@@ -41,7 +41,17 @@ try:
 except ImportError:
     from distutils.core import setup
 
+
+# SETUP VARIABLES #############################################################
+
 from pyai import __version__ as VERSION
+
+AUTHOR_NAME = 'Jeremie DECOCK'
+AUTHOR_EMAIL = 'jd.jdhp@gmail.com'
+
+PYTHON_PACKAGE_NAME = 'jdhp-pyai'
+PROJECT_SHORT_DESC = 'A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).'
+PROJECT_WEB_SITE_URL = 'http://www.jdhp.org/'
 
 # See :  http://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = ['Development Status :: 4 - Beta',
@@ -66,22 +76,24 @@ PACKAGES = ['pyai']
 
 # The following list contains all dependencies that Python will try to
 # install with this project
+# E.g. INSTALL_REQUIRES = ['pyserial >= 2.6']
 INSTALL_REQUIRES = []
 
 
+# E.g. SCRIPTS = ["examples/pyax12demo"]
 SCRIPTS = []
-#SCRIPTS = ["examples/pyaidemo"]
 
 
 # Entry point can be used to create plugins or to automatically generate
 # system commands to call specific functions.
 # Syntax: "name_of_the_command_to_make = package.module:function".
+# E.g.:
+#   ENTRY_POINTS = {
+#     'console_scripts': [
+#         'pyax12gui = pyax12.gui:run',
+#     ],
+#   }
 ENTRY_POINTS = {}
-#ENTRY_POINTS = {
-#  'console_scripts': [
-#      'pyaigui = pyai.gui:run',
-#  ],
-#}
 
 
 README_FILE = 'README.rst'
@@ -92,16 +104,18 @@ def get_long_description():
     return desc
 
 
-setup(author='Jeremie DECOCK',
-      author_email='jd.jdhp@gmail.com',
-      maintainer='Jeremie DECOCK',
-      maintainer_email='jd.jdhp@gmail.com',
+###############################################################################
 
-      name='jdhp-pyai',
-      description='A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).',
+setup(author=AUTHOR_NAME,
+      author_email=AUTHOR_EMAIL,
+      maintainer=AUTHOR_NAME,
+      maintainer_email=AUTHOR_EMAIL,
+
+      name=PYTHON_PACKAGE_NAME,
+      description=PROJECT_SHORT_DESC,
       long_description=get_long_description(),
-      url='http://www.jdhp.org/',
-      download_url='http://www.jdhp.org/',# Where the package can be downloaded
+      url=PROJECT_WEB_SITE_URL,
+      download_url=PROJECT_WEB_SITE_URL, # Where the package can be downloaded
 
       classifiers=CLASSIFIERS,
       #license='MIT',            # Useless if license is already in CLASSIFIERS
