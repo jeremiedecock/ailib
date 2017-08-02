@@ -47,9 +47,9 @@ Gnu/Linux
 You can install, upgrade, uninstall PyAI with these commands (in a
 terminal)::
 
-    pip install --pre pyai
-    pip install --upgrade pyai
-    pip uninstall pyai
+    pip install --pre jdhp-pyai
+    pip install --upgrade jdhp-pyai
+    pip uninstall jdhp-pyai
 
 Or, if you have downloaded the PyAI source code::
 
@@ -57,7 +57,7 @@ Or, if you have downloaded the PyAI source code::
 
 .. There's also a package for Debian/Ubuntu::
 .. 
-..     sudo apt-get install pyai
+..     sudo apt-get install jdhp-pyai
 
 Windows
 -------
@@ -71,9 +71,9 @@ Windows
 You can install, upgrade, uninstall PyAI with these commands (in a
 `command prompt`_)::
 
-    py -m pip install --pre pyai
-    py -m pip install --upgrade pyai
-    py -m pip uninstall pyai
+    py -m pip install --pre jdhp-pyai
+    py -m pip install --upgrade jdhp-pyai
+    py -m pip uninstall jdhp-pyai
 
 Or, if you have downloaded the PyAI source code::
 
@@ -91,9 +91,9 @@ MacOSX
 You can install, upgrade, uninstall PyAI with these commands (in a
 terminal)::
 
-    pip install --pre pyai
-    pip install --upgrade pyai
-    pip uninstall pyai
+    pip install --pre jdhp-pyai
+    pip install --upgrade jdhp-pyai
+    pip uninstall jdhp-pyai
 
 Or, if you have downloaded the PyAI source code::
 
