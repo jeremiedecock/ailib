@@ -4,14 +4,14 @@ AUTHOR_WEB_SITE="www.jdhp.org"
 
 COPYRIGHT_NOTICE="Copyright (c) 2016 ${AUTHOR_NAME} (${AUTHOR_WEB_SITE})"
 
-PROJECT_INITIAL_DATE="YYYY-MM-DD"          # TODO
-PROJECT_SHORT_DESC="TODO"                  # TODO one line
+PROJECT_INITIAL_DATE="2014-06-10"
+PROJECT_SHORT_DESC="A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization)."
 
-PROJECT_NAME="TODO"                        # TODO e.g. PyAX-12
-PYTHON_PACKAGE_NAME="TODO"                 # TODO e.g. pyax12 (all in lower case and without special character)
+PROJECT_NAME="PyAI"
+PYTHON_PACKAGE_NAME="pyai"
 
-PROJECT_GITHUB_ACCOUNT="jeremiedecock"     # TODO
-PROJECT_GITHUB_REPOSITORY_NAME="TODO"      # TODO
+PROJECT_GITHUB_ACCOUNT="jeremiedecock"
+PROJECT_GITHUB_REPOSITORY_NAME="pyai"
 
 PROJECT_GITHUB_URL="https://github.com/${PROJECT_GITHUB_ACCOUNT}/${PROJECT_GITHUB_REPOSITORY_NAME}"
 PROJECT_ISSUE_TRACKER_URL="https://github.com/${PROJECT_GITHUB_ACCOUNT}/${PROJECT_GITHUB_REPOSITORY_NAME}/issues"
