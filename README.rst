@@ -8,7 +8,7 @@ Copyright (c) 2014,2015,2016,2017 Jeremie DECOCK (http://www.jdhp.org)
 * Online documentation: http://pyai.readthedocs.org
 * Source code: https://github.com/jeremiedecock/pyai
 * Issue tracker: https://github.com/jeremiedecock/pyai/issues
-* pyai on PyPI: https://pypi.python.org/pypi/pyai
+* pyai on PyPI: https://pypi.python.org/pypi/jdhp-pyai
 
 
 Description

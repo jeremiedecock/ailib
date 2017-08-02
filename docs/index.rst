@@ -21,7 +21,7 @@ Contents:
 * Online documentation: http://pyai.readthedocs.org
 * Source code: https://github.com/jeremiedecock/pyai
 * Issue tracker: https://github.com/jeremiedecock/pyai/issues
-* pyai on PyPI: https://pypi.python.org/pypi/pyai
+* pyai on PyPI: https://pypi.python.org/pypi/jdhp-pyai
 
 Indices and tables
 ==================
