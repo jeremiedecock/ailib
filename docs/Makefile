@@ -91,9 +91,9 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/TODO_PYTHON_PACKAGE_NAME.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/pyai.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/TODO_PYTHON_PACKAGE_NAME.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/pyai.qhc"
 
 .PHONY: applehelp
 applehelp:
@@ -110,8 +110,8 @@ devhelp:
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/TODO_PYTHON_PACKAGE_NAME"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/TODO_PYTHON_PACKAGE_NAME"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/pyai"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/pyai"
 	@echo "# devhelp"
 
 .PHONY: epub

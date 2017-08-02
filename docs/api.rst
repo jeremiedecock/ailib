@@ -2,7 +2,7 @@
 API
 ===
 
-.. module:: TODO_PYTHON_PACKAGE_NAME
+.. module:: pyai
 
 The library provides classes which are usable by third party tools.
 
@@ -15,5 +15,5 @@ Modules:
 .. toctree::
    :maxdepth: 2
 
-   TODO_PYTHON_PACKAGE_NAME.TODO_MODULE_NAME <api_TODO_MODULE_NAME>
+   pyai.TODO_MODULE_NAME <api_TODO_MODULE_NAME>
 

@@ -62,14 +62,14 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'TODO_PROJECT_NAME'
-authors = u'TODO_AUTHOR_NAME'
-copyright = u'TODO_COPYRIGHT_NOTICE'
+project = 'PyAI'
+authors = u'Jérémie DECOCK'
+copyright = u'Copyright (c) 2016 Jérémie DECOCK (www.jdhp.org)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-project_version = __import__('TODO_PYTHON_PACKAGE_NAME').__version__.split('.')
+project_version = __import__('pyai').__version__.split('.')
 # The short X.Y version.
 version = '.'.join(project_version[:2])
 # The full version, including alpha/beta/rc tags.
@@ -251,7 +251,7 @@ html_static_path = ['_static']
 # html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TODO_PYTHON_PACKAGE_NAMEdoc'
+htmlhelp_basename = 'pyaidoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -277,7 +277,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'TODO_PYTHON_PACKAGE_NAME.tex', 'TODO_PROJECT_NAME Documentation',
+    (master_doc, 'pyai.tex', 'PyAI Documentation',
      authors, 'manual'),
 ]
 
@@ -319,7 +319,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'TODO_PYTHON_PACKAGE_NAME', 'TODO_PROJECT_NAME Documentation',
+    (master_doc, 'pyai', 'PyAI Documentation',
      [authors], 1)
 ]
 
@@ -334,8 +334,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'TODO_PYTHON_PACKAGE_NAME', 'TODO_PROJECT_NAME Documentation',
-     authors, 'TODO_PYTHON_PACKAGE_NAME', 'TODO_PROJECT_SHORT_DESC.',
+    (master_doc, 'pyai', 'PyAI Documentation',
+     authors, 'pyai', 'A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization)..',
      'Miscellaneous'),
 ]
 
