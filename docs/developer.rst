@@ -37,6 +37,13 @@ and/or doctest_.
 pylint_, `pep8 <https://github.com/PyCQA/pep8>`__ and pyflakes_ should also be
 used to check the quality of each module.
 
+Docstrings should be compatible with the
+`Sphinx "napoleon" extension <http://sphinxcontrib-napoleon.readthedocs.org/>`__
+and follow the Numpy style:
+
+- `Please follow this guide <https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt>`__
+- `Be inspired by these examples <http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html>`__
+
 Changes
 ~~~~~~~
 
