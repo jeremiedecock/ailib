@@ -2,7 +2,7 @@
 `Python Artificial Intelligence Framework`_
 ===========================================
 
-Copyright (c) 2014,2015,2016 Jeremie DECOCK (http://www.jdhp.org)
+Copyright (c) 2014,2015,2016,2017 Jeremie DECOCK (http://www.jdhp.org)
 
 * Web site: http://www.jdhp.org/software_en.html#pyai
 * Online documentation: http://pyai.readthedocs.org

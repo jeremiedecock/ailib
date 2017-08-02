@@ -2,7 +2,7 @@ AUTHOR_NAME="Jérémie DECOCK"
 AUTHOR_EMAIL="jd.jdhp@gmail.com"
 AUTHOR_WEB_SITE="www.jdhp.org"
 
-COPYRIGHT_NOTICE="Copyright (c) 2016 ${AUTHOR_NAME} (${AUTHOR_WEB_SITE})"
+COPYRIGHT_NOTICE="Copyright (c) 2014,2015,2016,2017 ${AUTHOR_NAME} (${AUTHOR_WEB_SITE})"
 
 PROJECT_INITIAL_DATE="2014-06-10"
 PROJECT_SHORT_DESC="A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization)."
