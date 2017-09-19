@@ -20,17 +20,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+__all__ = ['SAES']
+
 import math
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
 import random
 
-# TODO: improve this ?
-if __name__ == '__main__':
-    import optimizer
-else:
-    from . import optimizer
+from .optimizer import Optimizer
+
 
 """
 The individual class
@@ -46,12 +43,13 @@ class Individual():
     def __str__(self):
         return "{0} {1} {2}".format(self.x, self.sigma, self.y)
 
+
 """
 SAES
 http://www.scholarpedia.org/article/Evolution_strategies
 https://homepages.fhv.at/hgb/downloads/mu_mu_I_lambda-ES.oct
 """
-class Optimizer(optimizer.Optimizer):
+class SAES(Optimizer):
 
     def __init__(self, mu=3, lambda_=12, x_init=None, sigma_init=1, sigma_min=1e-5, num_evals_func=None):
 
@@ -86,7 +84,7 @@ class Optimizer(optimizer.Optimizer):
         recombinant = Individual(parents_y.mean(axis=0), parents_sigma.mean(), 0) # TODO
         return recombinant
 
-    def optimize(self, objective_function, num_gen=50):
+    def minimize(self, objective_function, num_gen=50):
 
         #if self.x_init is None:
         #    self.x_init = np.random.random(objective_function.ndim)
@@ -146,12 +144,3 @@ class Optimizer(optimizer.Optimizer):
 # Remark: Final approximation of the optimizer is in "parent_pop[0].x"
 #         corresponding fitness is in "parent_pop[0].y" and the final 
 #         mutation strength is in "parent_pop[0].sigma"
-
-# TEST ########################################################################
-
-def test():
-    pass
-
-if __name__ == '__main__':
-    test()
-

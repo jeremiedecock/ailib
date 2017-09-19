@@ -20,39 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+__all__ = ['Random']
+
 import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d
-import warnings
 
-# TODO: improve this ?
-if __name__ == '__main__':
-    import optimizer
-else:
-    from . import optimizer
+from .optimizer import Optimizer
 
-class Optimizer(optimizer.Optimizer):
+class Random(Optimizer):
     
-    def optimize(self, objective_function, num_samples=1000):
+    def minimize(self, objective_function, num_samples=1000, ndim=None, dmin=None, dmax=None):
 
-        dmin = objective_function.domain_min
-        dmax = objective_function.domain_max
+        if dmin is None:
+            dmin = objective_function.domain_min
+
+        if dmax is None:
+            dmax = objective_function.domain_max
+
+        if ndim is None:
+            ndim = objective_function.ndim
         
-        x_samples = np.random.uniform(dmin, dmax, [num_samples, objective_function.ndim])
+        x_samples = np.random.uniform(dmin, dmax, [ndim, num_samples])
         y_samples = objective_function(x_samples)
-        x_min = x_samples[y_samples.argmin(), :]
-
-        self.plotSamples(x_samples, y_samples, objective_function=objective_function)
-        self.plotCosts(y_samples)
+        x_min = x_samples[:, y_samples.argmin()]
 
         return x_min
-
-
-# TEST ########################################################################
-
-def test():
-    pass
-
-if __name__ == '__main__':
-    test()
-

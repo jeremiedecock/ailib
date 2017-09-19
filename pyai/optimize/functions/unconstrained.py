@@ -12,7 +12,7 @@
 #
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-#  
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,7 +22,8 @@
 # THE SOFTWARE.
 
 """
-Some classical test functions for optimization.
+This module contains some classical test functions for unconstrained continuous
+single-objective optimization.
 """
 
 __all__ = ['sphere',
@@ -34,7 +35,6 @@ __all__ = ['sphere',
            'holder']
 
 import numpy as np
-
 
 def sphere(x):
     r"""The Sphere function.
@@ -55,39 +55,39 @@ def sphere(x):
     $$
     \boldsymbol{x} \in \mathbb{R}^n
     $$
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> sphere( np.array([0, 0]) )
     0.0
-    
+
     The result should be $f(x) = 0$.
-    
+
     Example: single 3D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
-    
+
     >>> sphere( np.array([1, 1, 1]) )
     3.0
-    
+
     The result should be $f(x) = 3.0$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
-    
+
     >>> sphere( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   0.,    2.,  8.])
-    
+
     The result should be $f(x_1) = 0$, $f(x_2) = 1$ and $f(x_3) = 8$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -146,42 +146,42 @@ def rosen(x):
     The Rosenbrock function, its derivative (i.e. gradient) and its hessian matrix are also implemented in Scipy
     ([scipy.optimize.rosen](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen.html#scipy.optimize.rosen),
     [scipy.optimize.rosen_der](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen_der.html#scipy.optimize.rosen_der),
-    [scipy.optimize.rosen_hess](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen_hess.html#scipy.optimize.rosen_hess) and 
+    [scipy.optimize.rosen_hess](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen_hess.html#scipy.optimize.rosen_hess) and
     [scipy.optimize.rosen_hess_prod](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen_hess_prod.html#scipy.optimize.rosen_hess_prod)).
     See [Scipy documentation](https://docs.scipy.org/doc/scipy/reference/optimize.html#rosenbrock-function) for more information.
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> rosen( np.array([0, 0]) )
     1.0
-    
+
     The result should be $f(x) = 1$.
-    
+
     Example: single 3D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
-    
+
     >>> rosen( np.array([1, 1, 1]) )
     0.0
-    
+
     The result should be $f(x) = 0$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
-    
+
     >>> rosen( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   1.,    0.,  401.])
-    
+
     The result should be $f(x_1) = 1$, $f(x_2) = 0$ and $f(x_3) = 401$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -229,29 +229,29 @@ def himmelblau(x):
     *Applied Nonlinear Programming* (1972), McGraw-Hill, ISBN 0-07-028921-2.
 
     See https://en.wikipedia.org/wiki/Himmelblau%27s_function for more information.
-    
+
     Example: single point
     ---------------------
-    
+
     To evaluate $x = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$:
-    
+
     >>> himmelblau( np.array([3, 2]) )
     0.0
-    
+
     The result should be $f(x) = 1$.
-    
+
     Example: multiple points
     ------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
-    
+
     >>> himmelblau( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([ 170.,  106.,   26.])
-    
+
     The result should be $f(x_1) = 170$, $f(x_2) = 106$ and $f(x_3) = 26$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -299,39 +299,39 @@ def rastrigin(x):
     $$
 
     See https://en.wikipedia.org/wiki/Rastrigin_function for more information.
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> rastrigin( np.array([0, 0]) )
     0.0
-    
+
     The result should be $f(x) = 0$.
-    
+
     Example: single 3D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
-    
+
     >>> rastrigin( np.array([0, 0, 0]) )
     0.0
-    
+
     The result should be $f(x) = 0$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
-    
+
     >>> rastrigin( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   1.,    0.,  401.])
-    
+
     The result should be $f(x_1) = 1$, $f(x_2) = 0$ and $f(x_3) = 401$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -368,29 +368,29 @@ def easom(x):
     $$
 
     See https://www.sfu.ca/~ssurjano/easom.html for more information.
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> easom( np.array([np.pi, np.pi]) )
     -1.0
-    
+
     The result should be $f(x) = -1$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} \pi \\ \pi \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ at once:
-    
+
     >>> easom( np.array([[np.pi, 0, 1], [np.pi, 0, 1]]) )
     array([   -1.,    -2.67528799e-09,  -3.03082341e-05])
-    
+
     The result should be $f(x_1) = -1$, $f(x_2) \approx 0$ and $f(x_3) \approx 0$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -410,7 +410,7 @@ def crossintray(x):
     r"""The Cross-in-tray function.
 
     The Cross-in-tray function is a 2 dimensions **multimodal** function, with
-    four global minima. 
+    four global minima.
 
     $$
     f(x_1, x_2) = -0.0001 \left( \left| \sin(x_1) \sin(x_2) \exp \left( \left| 100 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right)\right| + 1 \right)^{0.1}
@@ -435,29 +435,29 @@ def crossintray(x):
 
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> crossintray( np.array([0, 0]) )
     -0.0001
-    
+
     The result should be $f(x) = -0.0001$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 1.34941 \\ 1.34941 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} -1.34941 \\ -1.34941 \end{pmatrix}$ at once:
-    
+
     >>> crossintray( np.array([[0, 1.34941, -1.34941], [0, 1.34941, -1.34941]]) )
     array([ -0.0001,    -2.06261,  -2.06261])
-    
+
     The result should be $f(x_1) = -0.0001$, $f(x_2) = -2.06261$ and $f(x_3) = -2.06261$.
-    
+
     Parameters
     ----------
     x : array_like
@@ -477,16 +477,16 @@ def holder(x):
     r"""The Hölder table function.
 
     The Hölder table function is a 2 dimensions **multimodal** function, with
-    four global minima. 
+    four global minima.
 
     $$
-    f(x_1, x_2) = 
+    f(x_1, x_2) =
     -\left| \sin(x_1) \cos(x_2) \exp \left( \left| 1 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right) \right|
     $$
 
     Global minima:
     $$
-    \text{Min} = 
+    \text{Min} =
     \begin{cases}
         f(8.05502, 9.66459)   &= -19.2085 \\
         f(-8.05502, 9.66459)  &= -19.2085 \\
@@ -502,29 +502,29 @@ def holder(x):
 
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
-    
+
     Example: single 2D point
     ------------------------
-    
+
     To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
-    
+
     >>> holder( np.array([0, 0]) )
     0.0
-    
+
     The result should be $f(x) = 0$.
-    
+
     Example: multiple 2D points
     ---------------------------
-    
+
     To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
     $x_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$ and
     $x_3 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$ at once:
-    
+
     >>> holder( np.array([[0., 0., 1.], [0., 1., 0.]]) )
     array([-0. , -0. , -1.66377043])
-    
+
     The result should be $f(x_1) = 0$, $f(x_2) = 0$ and $f(x_3) = -1.66377043$.
-    
+
     Parameters
     ----------
     x : array_like

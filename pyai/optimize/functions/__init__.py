@@ -1,9 +1,8 @@
-# PyAI
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-# The MIT License
-#
-# Copyright (c) 2014,2015,2016,2017 Jeremie DECOCK (http://www.jdhp.org)
-#
+# Copyright (c) 2017 Jeremie DECOCK (http://www.jdhp.org)
+
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -22,25 +21,29 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# PEP0440 compatible formatted version, see:
-# https://www.python.org/dev/peps/pep-0440/
-#
-# Generic release markers:
-# X.Y
-# X.Y.Z # For bugfix releases  
-# 
-# Admissible pre-release markers:
-# X.YaN # Alpha release
-# X.YbN # Beta release         
-# X.YrcN # Release Candidate   
-# X.Y # Final release
-#
-# Dev branch marker is: 'X.Y.dev' or 'X.Y.devN' where N is an integer.
-# 'X.Y.dev0' is the canonical version of 'X.Y.dev'
-#
-__version__ = '0.1.dev2'
+"""
+======================================
+PyAI - Test functions for optimization
+======================================
 
-__all__ = ['ml',
-           'mdp',
-           'optimize',
-           'signal']
+This package contains some classical test functions for optimization
+algorithms.
+
+.. currentmodule:: pyai.optimize.functions
+
+Test functions
+==============
+
+.. toctree::
+
+    optimize.functions.sphere
+
+"""
+
+# The following lines are inspired by https://github.com/scipy/scipy/blob/master/scipy/optimize/__init__.py
+
+from .unconstrained import *
+
+__all__ = [s for s in dir() if not s.startswith('_')]
+
+#print("pyai.optimize.functions.__init__.py:", __all__)

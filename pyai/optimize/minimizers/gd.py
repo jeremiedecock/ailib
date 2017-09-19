@@ -21,29 +21,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+__all__ = ['GradientDescent']
+
 import numpy as np
 
-# TODO: improve this ?
-if __name__ == '__main__':
-    import optimizer
-else:
-    from . import optimizer
+from .optimizer import Optimizer
 
-class Optimizer(optimizer.Optimizer):
+class GradientDescent(Optimizer):
 
     optimizer_name = "gradient descent"
 
-    def optimize(self, objective_function, num_iterations=1000):
+    def minimize(self, objective_function, num_iterations=1000, ndim=None, dmin=None, dmax=None):
 
-        dmin = objective_function.domain_min
-        dmax = objective_function.domain_max
+        if dmin is None:
+            dmin = objective_function.domain_min
+
+        if dmax is None:
+            dmax = objective_function.domain_max
+
+        if ndim is None:
+            ndim = objective_function.ndim
         
         # Get the first point
-        x = np.random.uniform(dmin, dmax, objective_function.ndim)
+        x = np.random.uniform(dmin, dmax, ndim)
 
         # Init history lists
-        x_history_array = np.zeros([num_iterations, objective_function.ndim])
-        nabla_history_array = np.zeros([num_iterations, objective_function.ndim])
+        x_history_array = np.zeros([num_iterations, ndim])
+        nabla_history_array = np.zeros([num_iterations, ndim])
 
         # Main loop: for each iteration do...
         for sample_index in range(num_iterations):
@@ -63,13 +67,3 @@ class Optimizer(optimizer.Optimizer):
         self.plotCosts(y_history_array)
 
         return x
-
-
-# TEST ########################################################################
-
-def test():
-    pass
-
-if __name__ == '__main__':
-    test()
-
