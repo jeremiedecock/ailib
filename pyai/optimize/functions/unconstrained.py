@@ -26,7 +26,7 @@ This module contains some classical test functions for unconstrained continuous
 single-objective optimization.
 """
 
-__all__ = ['sphere',
+__all__ = ['sphere', 'Sphere', 'sphere1d', 'sphere2d',     # TODO
            'rosen',
            'himmelblau',
            'rastrigin',
@@ -35,6 +35,139 @@ __all__ = ['sphere',
            'holder']
 
 import numpy as np
+
+# GENERIC OBJECTIVE FUNCTION ##################################################
+
+class _ObjectiveFunction(object):
+    """
+    Generic Objective Function.
+
+    TODO
+    """
+    def __init__(self):
+        self.reset_eval_counters()
+        self.reset_eval_logs()
+        self.do_eval_logs = False
+
+        self.ndim = None
+        self.bounds = None
+
+        self.unimodal = None
+        self.continuous = None
+        self.stochastic = None
+
+        self.function_name = None
+        self.function_formula = None
+
+        self.arg_min = None
+
+
+    def reset_eval_counters(self):
+        self.num_eval = 0
+        self.num_gradient_eval = 0
+        self.num_hessian_eval = 0
+
+
+    def reset_eval_logs(self):
+        self.eval_logs_dict = {'x': [], 'fx': []}  # TODO
+
+
+    def _eval(self, func, x):
+        """
+        TODO
+        """
+        # Check x shape #########################
+        if x.shape[0] != self.ndim:
+            raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
+
+        # Update the evaluations counter ########
+        if x.ndim == 1:
+            self.num_eval += 1
+        elif x.ndim == 2:
+            self.num_eval += x.shape[1]
+        else:
+            raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
+
+        # Eval x ################################
+        res = func(x)
+
+        # Update the evals log ##################
+        if self.do_eval_logs:
+            if res.ndim == 0:
+                self.eval_logs_dict['x'].append(x)       # TODO
+            elif res.ndim == 1:
+                self.eval_logs_dict['x'].extend(x.T)     # TODO
+            else:
+                raise Exception("Wrong output dimension.")
+
+            if res.ndim == 0:
+                self.eval_logs_dict['fx'].append(res)    # TODO
+            elif res.ndim == 1:
+                self.eval_logs_dict['fx'].extend(res)    # TODO
+            else:
+                raise Exception("Wrong output dimension.")
+
+        return res
+
+
+    def _eval_gradient(self, gradient_func, x):
+        """
+        TODO
+        """
+        # Check x shape #########################
+        if x.shape[0] != self.ndim:
+            raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
+
+        # Update the evaluations counter ########
+        if x.ndim == 1:
+            self.num_gradient_eval += 1
+        elif x.ndim == 2:
+            self.num_gradient_eval += x.shape[1]
+        else:
+            raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
+
+        # Eval x ################################
+        res = gradient_func(x)
+
+        return res
+
+
+    def _eval_hessian(self, hessian_func, x):
+        """
+        TODO
+        """
+        # Check x shape #########################
+        if x.shape[0] != self.ndim:
+            raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
+
+        # Update the evaluations counter ########
+        if x.ndim == 1:
+            self.num_hessian_eval += 1
+        elif x.ndim == 2:
+            self.num_hessian_eval += x.shape[1]
+        else:
+            raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
+
+        # Eval x ################################
+        res = hessian_func(x)
+
+        return res
+
+
+    def __str__(self):
+        name = r""
+
+        if self.function_name is not None:
+            name += self.function_name
+        else:
+            name += self.__class__.__name__
+
+        if self.function_formula is not None:
+            name += ": " + self.function_formula
+
+        return name
+
+# SPHERE FUNCTION #############################################################
 
 def sphere(x):
     r"""The Sphere function.
@@ -102,6 +235,64 @@ def sphere(x):
     # Remark: `sum(x**2.0)` is equivalent to `np.sum(x**2.0, axis=0)`
     return sum(x**2.0)
 
+
+def sphere_gradient(x):
+    """
+    TODO
+    """
+    return 2.0 * x
+
+
+def sphere_hessian(x):
+    """
+    TODO
+    """
+    return 2.0 * np.ones(x.shape)
+
+
+class Sphere(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self.ndim = ndim
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10.
+        self.bounds[1,:] =  10.
+
+        self.unimodal = True
+        self.continuous = True
+        self.stochastic = False
+
+        self.arg_min = np.zeros(self.ndim)
+
+    def __call__(self, x):
+        """
+        TODO
+        """
+        return super()._eval(sphere, x)
+
+    def gradient(self, x):
+        """
+        TODO
+        """
+        return super()._eval_gradient(sphere_gradient, x)
+
+    def hessian(self, x):
+        """
+        TODO
+        """
+        return super()._eval_hessian(sphere_hessian, x)
+
+
+sphere1d = Sphere(ndim=1)
+
+sphere2d = Sphere(ndim=2)
+
+# ROSENBROCK FUNCTION #########################################################
 
 def rosen(x):
     r"""The (extended) Rosenbrock function.
@@ -195,6 +386,7 @@ def rosen(x):
     """
     return sum(100.0*(x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0)
 
+# HIMMELBLAU'S FUNCTION #######################################################
 
 def himmelblau(x):
     r"""The Himmelblau's function.
@@ -266,6 +458,7 @@ def himmelblau(x):
     assert x.shape[0] == 2, x.shape
     return (x[0]**2.0 + x[1] - 11.0)**2.0 + (x[0] + x[1]**2.0 - 7.0)**2.0
 
+# RASTRIGIN FUNCTION ##########################################################
 
 def rastrigin(x):
     r"""The Rastrigin function.
@@ -347,6 +540,7 @@ def rastrigin(x):
     n = x.shape[0]
     return A * n + sum(x**2.0 - A * np.cos(2.0 * np.pi * x))
 
+# EASOM FUNCTION ##############################################################
 
 def easom(x):
     r"""The Easom function.
@@ -405,6 +599,7 @@ def easom(x):
     assert x.shape[0] == 2, x.shape
     return -np.cos(x[0]) * np.cos(x[1]) * np.exp(-((x[0]-np.pi)**2.0 + (x[1]-np.pi)**2.0))
 
+# CROSS-IN-TRAY FUNCTION ######################################################
 
 def crossintray(x):
     r"""The Cross-in-tray function.
@@ -472,6 +667,7 @@ def crossintray(x):
     assert x.shape[0] == 2, x.shape
     return -0.0001 * (np.abs(np.sin(x[0]) * np.sin(x[1]) * np.exp( np.abs( 100.0 - np.sqrt(x[0]**2.0 + x[1]**2.0)/np.pi ))) + 1.0)**0.1
 
+# HÖLDER TABLE FUNCTION #######################################################
 
 def holder(x):
     r"""The Hölder table function.
