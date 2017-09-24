@@ -232,8 +232,8 @@ def sphere(x):
     float or array_like
         The value(s) of the Sphere function for the given point(s) `x`.
     """
-    # Remark: `sum(x**2.0)` is equivalent to `np.sum(x**2.0, axis=0)`
-    return sum(x**2.0)
+    # Remark: `sum(x**2.0)` is equivalent to `np.sum(x**2.0, axis=0)` but only the latter works if x is a scallar (e.g. x = np.float(3)).
+    return np.sum(x**2.0)
 
 
 def sphere_gradient(x):
@@ -384,7 +384,7 @@ def rosen(x):
     float or array_like
         The value(s) of the Rosenbrock function for the given point(s) `x`.
     """
-    return sum(100.0*(x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0)
+    return np.sum(100.0*(x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0)
 
 # HIMMELBLAU'S FUNCTION #######################################################
 
@@ -538,7 +538,7 @@ def rastrigin(x):
     """
     A = 10.
     n = x.shape[0]
-    return A * n + sum(x**2.0 - A * np.cos(2.0 * np.pi * x))
+    return A * n + np.sum(x**2.0 - A * np.cos(2.0 * np.pi * x))
 
 # EASOM FUNCTION ##############################################################
 
