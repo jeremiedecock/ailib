@@ -77,11 +77,12 @@ class _ObjectiveFunction(object):
         TODO
         """
         # Check x shape #########################
-        if x.shape[0] != self.ndim:
-            raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
+        if x.ndim > 0:
+            if x.shape[0] != self.ndim:
+                raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
 
         # Update the evaluations counter ########
-        if x.ndim == 1:
+        if (x.ndim == 0) or (x.ndim == 1):
             self.num_eval += 1
         elif x.ndim == 2:
             self.num_eval += x.shape[1]
