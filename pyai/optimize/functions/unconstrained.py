@@ -49,12 +49,13 @@ class _ObjectiveFunction(object):
         self.reset_eval_logs()
         self.do_eval_logs = False
 
+        self.noise = None
+
         self.ndim = None
         self.bounds = None
 
         self.unimodal = None
         self.continuous = None
-        self.stochastic = None
 
         self.function_name = None
         self.function_formula = None
@@ -62,13 +63,20 @@ class _ObjectiveFunction(object):
         self.arg_min = None
 
 
+    @property
+    def stochastic(self):
+        return self.noise is not None
+
+
     def reset_eval_counters(self):
+        # TODO: make an external Log (or Counter) class
         self.num_eval = 0
         self.num_gradient_eval = 0
         self.num_hessian_eval = 0
 
 
     def reset_eval_logs(self):
+        # TODO: make an external Log class
         self.eval_logs_dict = {'x': [], 'fx': []}  # TODO
 
 
@@ -82,6 +90,7 @@ class _ObjectiveFunction(object):
                 raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
 
         # Update the evaluations counter ########
+        # TODO: make an external Log (or Counter) class
         if (x.ndim == 0) or (x.ndim == 1):
             self.num_eval += 1
         elif x.ndim == 2:
@@ -90,25 +99,30 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        res = func(x)
+        y = func(x)
+
+        # Apply noise ###########################
+        if self.noise is not None:
+            y = self.noise(x, y)
 
         # Update the evals log ##################
+        # TODO: make an external Log class
         if self.do_eval_logs:
-            if res.ndim == 0:
+            if y.ndim == 0:
                 self.eval_logs_dict['x'].append(x)       # TODO
-            elif res.ndim == 1:
+            elif y.ndim == 1:
                 self.eval_logs_dict['x'].extend(x.T)     # TODO
             else:
                 raise Exception("Wrong output dimension.")
 
-            if res.ndim == 0:
-                self.eval_logs_dict['fx'].append(res)    # TODO
-            elif res.ndim == 1:
-                self.eval_logs_dict['fx'].extend(res)    # TODO
+            if y.ndim == 0:
+                self.eval_logs_dict['fx'].append(y)    # TODO
+            elif y.ndim == 1:
+                self.eval_logs_dict['fx'].extend(y)    # TODO
             else:
                 raise Exception("Wrong output dimension.")
 
-        return res
+        return y
 
 
     def _eval_gradient(self, gradient_func, x):
@@ -120,6 +134,7 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
 
         # Update the evaluations counter ########
+        # TODO: make an external Log (or Counter) class
         if x.ndim == 1:
             self.num_gradient_eval += 1
         elif x.ndim == 2:
@@ -128,9 +143,9 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        res = gradient_func(x)
+        grad = gradient_func(x)
 
-        return res
+        return grad
 
 
     def _eval_hessian(self, hessian_func, x):
@@ -142,6 +157,7 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
 
         # Update the evaluations counter ########
+        # TODO: make an external Log (or Counter) class
         if x.ndim == 1:
             self.num_hessian_eval += 1
         elif x.ndim == 2:
@@ -150,13 +166,16 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        res = hessian_func(x)
+        hess = hessian_func(x)
 
-        return res
+        return hess
 
 
     def __str__(self):
         name = r""
+
+        if self.stochastic is not None:
+            name += "stochastic "
 
         if self.function_name is not None:
             name += self.function_name
@@ -266,7 +285,6 @@ class Sphere(_ObjectiveFunction):
 
         self.unimodal = True
         self.continuous = True
-        self.stochastic = False
 
         self.arg_min = np.zeros(self.ndim)
 

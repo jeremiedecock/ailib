@@ -43,6 +43,7 @@ Test functions
 # The following lines are inspired by https://github.com/scipy/scipy/blob/master/scipy/optimize/__init__.py
 
 from .unconstrained import *
+from .noise import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
 
