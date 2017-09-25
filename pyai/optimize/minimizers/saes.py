@@ -53,7 +53,7 @@ class SAES(Optimizer):
 
     def __init__(self, mu=3, lambda_=12, x_init=None, sigma_init=1, sigma_min=1e-5, num_evals_func=None):
 
-        optimizer.Optimizer.__init__(self)
+        super().__init__()
 
         self.mu = mu                    # number of parents
         self.lambda_ = lambda_          # number of offspring
