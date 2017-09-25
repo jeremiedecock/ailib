@@ -26,6 +26,7 @@ TODO
 """
 
 __all__ = ['GaussianNoise', 'additive_gaussian_noise', 'multiplicative_gaussian_noise',
+           'PoissonNoise', 'additive_poisson_noise', 'multiplicative_poisson_noise',
            'UniformNoise', 'additive_uniform_noise', 'multiplicative_uniform_noise']
 
 import numpy as np
@@ -57,7 +58,36 @@ class GaussianNoise:
         return y
 
 additive_gaussian_noise = GaussianNoise(loc=0., scale=1., noise_type='additive')
-multiplicative_gaussian_noise = GaussianNoise(loc=0., scale=1., noise_type='multiplicative')
+multiplicative_gaussian_noise = GaussianNoise(loc=0., scale=0.1, noise_type='multiplicative')
+
+
+class PoissonNoise:
+    """
+    Noise class for objective functions.
+
+    TODO
+    """
+    def __init__(self, lam=1., noise_type='additive'):
+        self.noise_type = noise_type
+        self.lam = lam
+
+    def __call__(self, x, y):
+        """
+        TODO
+        """
+        rvs = np.random.poisson(lam=self.lam, size=y.shape)
+
+        if self.noise_type == 'additive':
+            y += rvs
+        elif self.noise_type == 'multiplicative':
+            y += y * rvs
+        else:
+            raise ValueError("Unknown value {}.".format(self.noise_type))
+
+        return y
+
+additive_poisson_noise = PoissonNoise(lam=3., noise_type='additive')
+multiplicative_poisson_noise = PoissonNoise(lam=3., noise_type='multiplicative')
 
 
 class UniformNoise:
@@ -80,7 +110,7 @@ class UniformNoise:
         if self.noise_type == 'additive':
             y += rvs
         elif self.noise_type == 'multiplicative':
-            y += np.log(y * rvs)
+            y += y * rvs
         else:
             raise ValueError("Unknown value {}.".format(self.noise_type))
 
