@@ -32,8 +32,7 @@ __all__ = ['GaussianNoise', 'additive_gaussian_noise', 'multiplicative_gaussian_
 import numpy as np
 
 class GaussianNoise:
-    """
-    Noise class for objective functions.
+    """Noise class for objective functions.
 
     TODO
     """
@@ -62,8 +61,7 @@ multiplicative_gaussian_noise = GaussianNoise(loc=0., scale=0.1, noise_type='mul
 
 
 class PoissonNoise:
-    """
-    Noise class for objective functions.
+    """Noise class for objective functions.
 
     TODO
     """
@@ -91,8 +89,7 @@ multiplicative_poisson_noise = PoissonNoise(lam=3., noise_type='multiplicative')
 
 
 class UniformNoise:
-    """
-    Noise class for objective functions.
+    """Noise class for objective functions.
 
     TODO
     """
