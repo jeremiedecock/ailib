@@ -29,78 +29,139 @@ import random
 from .optimizer import Optimizer
 
 
-"""
-The individual class
-- x: the individual's value
-- sigma: the individual's sigma
-"""
-class Individual():
+class Individual:
+    """The individual class.
+
+    Parameters
+    ----------
+    x : ndarray
+        The individual's value (1D numpy array).
+    sigma : float
+        The individual's sigma (TODO).
+    y : float
+        The individual's cost.
+    """
+
     def __init__(self, x, sigma, y):
         self.x = x
         self.sigma = sigma
-        self.y = y           # cost or reward
+        self.y = y
 
     def __str__(self):
         return "{0} {1} {2}".format(self.x, self.sigma, self.y)
 
 
-"""
-SAES
-http://www.scholarpedia.org/article/Evolution_strategies
-https://homepages.fhv.at/hgb/downloads/mu_mu_I_lambda-ES.oct
-"""
 class SAES(Optimizer):
+    """SAES optimizer.
 
-    def __init__(self, mu=3, lambda_=12, x_init=None, sigma_init=1, sigma_min=1e-5, num_evals_func=None):
+    See:
+    * http://www.scholarpedia.org/article/Evolution_strategies
+    * https://homepages.fhv.at/hgb/downloads/mu_mu_I_lambda-ES.oct
 
+    Parameters
+    ----------
+    mu : int
+        The number of parents.
+    lambda_ : int
+        The number of offspring.
+    sigma_init : float
+        The initial global mutation strength sigma. 
+    sigma_min : float
+        The stop criterion: the optimization is stopped when `sigma` is smaller
+        than `sigma_min`.
+    sigma_init : int
+        The number of times the (noisy) objective functions should be called
+        at each evaluation (taking the average value of these calls).
+    """
+
+    def __init__(self,
+                 mu=3,                  # TODO: move that to `minimize` ?
+                 lambda_=12,            # TODO: move that to `minimize` ?
+                 sigma_init=1.,         # TODO: move that to `minimize` ?
+                 sigma_min=1e-5,        # TODO: move that to `minimize` ?
+                 num_evals_func=None):  # TODO: move that to `minimize` ?
         super().__init__()
 
-        self.mu = mu                    # number of parents
-        self.lambda_ = lambda_          # number of offspring
-        self.x_init = x_init            # initial parent vector 
-        self.sigma_init = sigma_init    # initial global mutation strength sigma 
-        self.sigma_min = sigma_min      # ES stops when sigma is smaller than sigma_min
-        self.num_evals_func = num_evals_func      # How many times noisy objective functions should be called for each evaluation (considere the average value of these calls)
+        self.mu = mu
+        self.lambda_ = lambda_
+        self.sigma_init = sigma_init
+        self.sigma_min = sigma_min
+        self.num_evals_func = num_evals_func
 
-        self.log.data["x"] = []
-        self.log.data["sigma"] = []
-        self.log.data["y"] = []
-
-    """
-    This sorts the population according to the individuals' fitnesses
-    - pop: a list of Individual objects
-    """
     def select_individuals(self, pop):
+        """This sorts the population according to the individuals' fitnesses.
+
+        Parameters
+        ----------
+        pop : list of Individual
+            The list of Individual objects to sort and select.
+
+        Returns
+        -------
+        list of Individual
+            The list of selected Individuals.
+        """
         pop.sort(key=lambda indiv: indiv.y, reverse=False)
         return pop[:self.mu]
 
-    """
-    This performs intermediate (multi-) recombination
-    - parents: a list of Individual objects
-    """
     def recombine_individuals(self, parents):
+        """This performs intermediate (multi-)recombination.
+
+        Parameters
+        ----------
+        parents : list of Individual
+            The list of Individual objects to recombine.
+
+        Returns
+        -------
+        list of Individual
+            The list of recombined Individuals.
+        """
         parents_y = np.array([indiv.x for indiv in parents])
         parents_sigma = np.array([indiv.sigma for indiv in parents])
         recombinant = Individual(parents_y.mean(axis=0), parents_sigma.mean(), 0) # TODO
         return recombinant
 
-    def minimize(self, objective_function, num_gen=50):
+    def minimize(self,
+                 objective_function,
+                 num_gen=50,
+                 x_init=None):
+        """TODO
 
-        #if self.x_init is None:
-        #    self.x_init = np.random.random(objective_function.ndim)
-        #    self.x_init -= (objective_function.domain_min + objective_function.domain_max) / 2.  # TODO
-        #    self.x_init *= (objective_function.domain_max - objective_function.domain_min)       # TODO
-        #else:
-        assert self.x_init.ndim == 1
-        assert self.x_init.shape[0] == objective_function.ndim
+        Parameters
+        ----------
+        x_init : ndarray
+            The initial parent vector (a 1D numpy array).
+
+        Returns
+        -------
+        ndarray
+            The optimal point found (a 1D numpy array).
+        """
+
+        self.log.data["x"] = []
+        self.log.data["sigma"] = []
+        self.log.data["y"] = []
+
+        if x_init is None:
+            x_init = np.random.random(objective_function.ndim)   # draw samples in [0.0, 1.0)
+
+            min_bounds = objective_function.bounds[0]
+            max_bounds = objective_function.bounds[1]
+
+            x_init *= (max_bounds - min_bounds)
+            x_init += min_bounds
+
+        assert x_init.ndim == 1
+        assert x_init.shape[0] == objective_function.ndim
 
         # Initialization
-        n = self.x_init.shape[0]         # determine search space dimensionality n   
+        n = x_init.shape[0]              # determine search space dimensionality n   
         tau = 1. / math.sqrt(2.*n)       # self-adaptation learning rate
 
         # Initializing individual population
-        y = objective_function(self.x_init)
-        parent_pop = [Individual(self.x_init, self.sigma_init, y) for i in range(self.mu)]
+        y = objective_function(x_init)
+        parent_pop = [Individual(x_init, self.sigma_init, y) for i in range(self.mu)]
 
         gen_index = 0
 
@@ -136,8 +197,8 @@ class SAES(Optimizer):
             self.log.data["y"].append(parent_pop[0].y)  # TODO
             print(parent_pop[0])
 
-        self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]), objective_function=objective_function)
-        self.plotCosts(np.array(self.log.data["y"]))
+        #self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]), objective_function=objective_function)
+        #self.plotCosts(np.array(self.log.data["y"]))
 
         return parent_pop[0].x
 
