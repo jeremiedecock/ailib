@@ -39,8 +39,7 @@ import numpy as np
 # GENERIC OBJECTIVE FUNCTION ##################################################
 
 class _ObjectiveFunction(object):
-    """
-    Generic Objective Function.
+    """Generic *objective function*.
 
     TODO
     """
@@ -81,8 +80,31 @@ class _ObjectiveFunction(object):
 
 
     def _eval(self, func, x):
-        """
-        TODO
+        """Evaluate one or several points.
+
+        This function is a wrapper that does several boring task aside the
+        evaluation of `func`: check arguments, log results, ...
+
+        Parameters
+        ----------
+        func : callable object
+            The function used to evaluate `x`.
+        y : ndarray
+            The 1D or 2D numpy array containing the points to evaluate.
+            If `x` is a 2D array, the coordinates of each points are
+            distributed along *the first dimension*.
+            For instance, to evaluate the three 2D points (0,0), (1,1) and
+            (2,2), `x` have to be coded as the following:
+            `x = np.array([[0, 1, 2], [0, 1, 2]])`
+            so that the first point is given by `x[:,0]`, the second point by
+            `x[:,1]`, ... (this makes functions definition much simpler).
+
+        Returns
+        -------
+        float or ndarray
+            The results of the evaluation: a scalar if only one point has been
+            evaluated or a 1D numpy array if several points have been
+            evaluated.
         """
         # Check x shape #########################
         if x.ndim > 0:
