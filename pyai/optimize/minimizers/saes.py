@@ -24,31 +24,8 @@ __all__ = ['SAES']
 
 import math
 import numpy as np
-import random
 
 from .optimizer import Optimizer
-
-
-class Individual:
-    """The individual class.
-
-    Parameters
-    ----------
-    x : ndarray
-        The individual's value (1D numpy array).
-    sigma : float
-        The individual's sigma (TODO).
-    y : float
-        The individual's cost.
-    """
-
-    def __init__(self, x, sigma, y):
-        self.x = x
-        self.sigma = sigma
-        self.y = y
-
-    def __str__(self):
-        return "{0} {1} {2}".format(self.x, self.sigma, self.y)
 
 
 class SAES(Optimizer):
@@ -56,7 +33,7 @@ class SAES(Optimizer):
 
     See:
     * http://www.scholarpedia.org/article/Evolution_strategies
-    * https://homepages.fhv.at/hgb/downloads/mu_mu_I_lambda-ES.oct
+    * Notebook "ai_optimization_saes_en.ipynb" on jdhp.org
 
     Parameters
     ----------
@@ -74,58 +51,15 @@ class SAES(Optimizer):
         at each evaluation (taking the average value of these calls).
     """
 
-    def __init__(self,
-                 mu=3,                  # TODO: move that to `minimize` ?
-                 lambda_=12,            # TODO: move that to `minimize` ?
-                 sigma_init=1.,         # TODO: move that to `minimize` ?
-                 sigma_min=1e-5,        # TODO: move that to `minimize` ?
-                 num_evals_func=None):  # TODO: move that to `minimize` ?
-        super().__init__()
-
-        self.mu = mu
-        self.lambda_ = lambda_
-        self.sigma_init = sigma_init
-        self.sigma_min = sigma_min
-        self.num_evals_func = num_evals_func
-
-    def select_individuals(self, pop):
-        """This sorts the population according to the individuals' fitnesses.
-
-        Parameters
-        ----------
-        pop : list of Individual
-            The list of Individual objects to sort and select.
-
-        Returns
-        -------
-        list of Individual
-            The list of selected Individuals.
-        """
-        pop.sort(key=lambda indiv: indiv.y, reverse=False)
-        return pop[:self.mu]
-
-    def recombine_individuals(self, parents):
-        """This performs intermediate (multi-)recombination.
-
-        Parameters
-        ----------
-        parents : list of Individual
-            The list of Individual objects to recombine.
-
-        Returns
-        -------
-        list of Individual
-            The list of recombined Individuals.
-        """
-        parents_y = np.array([indiv.x for indiv in parents])
-        parents_sigma = np.array([indiv.sigma for indiv in parents])
-        recombinant = Individual(parents_y.mean(axis=0), parents_sigma.mean(), 0) # TODO
-        return recombinant
-
     def minimize(self,
                  objective_function,
+                 init_pop_mu,
+                 init_pop_sigma,
                  num_gen=50,
-                 x_init=None):
+                 mu=3,
+                 lmb=6,
+                 rho=1,
+                 selection_operator='+'):
         """TODO
 
         Parameters
@@ -139,69 +73,71 @@ class SAES(Optimizer):
             The optimal point found (a 1D numpy array).
         """
 
-        self.log.data["x"] = []
-        self.log.data["sigma"] = []
-        self.log.data["y"] = []
+        d = objective_function.ndim
+        tau = 1./math.sqrt(2.*d)         # self-adaptation learning rate
 
-        if x_init is None:
-            x_init = np.random.random(objective_function.ndim)   # draw samples in [0.0, 1.0)
+        # Init the population ##########################
 
-            min_bounds = objective_function.bounds[0]
-            max_bounds = objective_function.bounds[1]
+        # "pop" array layout:
+        # - the first mu lines contain parents
+        # - the next lambda lines contain children
+        # - the first column contains the individual's strategy (sigma)
+        # - the last column contains the individual's assess (f(x))
+        # - the other columns contain the individual value (x)
 
-            x_init *= (max_bounds - min_bounds)
-            x_init += min_bounds
+        pop = np.full([mu+lmb, d+2], np.nan)
+        pop[:mu, 0] = 1.                                       # init the parents strategy to 1.0
+        pop[:mu, 1:-1] = np.random.normal(init_pop_mu,
+                                          init_pop_sigma,
+                                          size=[mu,d])         # init the parents value
+        pop[:mu, -1] = objective_function(pop[:mu, 1:-1].T)                  # evaluate parents
+        #print("Initial population:\n", pop)
 
-        assert x_init.ndim == 1
-        assert x_init.shape[0] == objective_function.ndim
+        ## Sort parents
+        #pop = pop[pop[:,-1].argsort()]
+        #print(pop)
 
-        # Initialization
-        n = x_init.shape[0]              # determine search space dimensionality n   
-        tau = 1. / math.sqrt(2.*n)       # self-adaptation learning rate
+        for gen in range(num_gen):
+            # Make children ################################
+            if rho == 1:
+                # Each child is made from one randomly selected parent
+                pop[mu:,:] = pop[np.random.randint(mu, size=lmb)]
+            elif rho == mu:
+                # Recombine all parents for each child
+                raise NotImplemented() # TODO
+            elif 1 < rho < mu:
+                # Recombine rho randomly selected parents for each child
+                raise NotImplemented() # TODO
+            else:
+                raise ValueError()
 
-        # Initializing individual population
-        y = objective_function(x_init)
-        parent_pop = [Individual(x_init, self.sigma_init, y) for i in range(self.mu)]
+            pop[mu:,-1] = np.nan
+            #print("Children:\n", pop)
 
-        gen_index = 0
+            # Mutate children's sigma ######################
+            pop[mu:,0] = pop[mu:,0] * np.exp(tau * np.random.normal(size=lmb))
+            #print("Mutated children (sigma):\n", pop)
 
-        # Evolution loop of the (mu/mu_I, lambda)-sigma-SA-ES
-        while parent_pop[0].sigma > self.sigma_min and gen_index < num_gen:
-            offspring_pop = []
-            recombinant = self.recombine_individuals(parent_pop) # TODO: BUG ? this statement may be in the next line
-            for offspring_index in range(1, self.lambda_):
-                offspring_sigma = recombinant.sigma * math.exp(tau * random.normalvariate(0,1))
-                offspring_x = recombinant.x + offspring_sigma * np.random.normal(size=n)
+            # Mutate children's value ######################
+            pop[mu:,1:-1] = pop[mu:,1:-1] + pop[mu:,1:-1] * np.random.normal(size=[lmb,d])
+            #print("Mutated children (value):\n", pop)
 
-                if self.num_evals_func is None:
-                    # If the objective function is deterministic
-                    offspring_y = objective_function(offspring_x)
-                else:
-                    # If the objective function is stochastic
-                    # TODO: move this in function or in optimizer (?) class so that it is available for all optimiser implementations...
-                    num_evals = self.num_evals_func(gen_index)
-                    offspring_y_list = np.zeros(num_evals)
-                    for eval_index in range(num_evals):
-                        offspring_y_list[eval_index] = float(objective_function(offspring_x))
-                    offspring_y = np.mean(offspring_y_list)
-                    # TODO: generate the confidence bounds of offspring_y and plot it
+            # Evaluate children ############################
+            pop[mu:, -1] = objective_function(pop[mu:, 1:-1].T)
+            #print("Evaluated children:\n", pop)
 
-                offspring = Individual(offspring_x, offspring_sigma, offspring_y)
-                offspring_pop.append(offspring)
-            parent_pop = self.select_individuals(offspring_pop)
-            #parent_pop = self.select_individuals(parent_pop + offspring_pop)
+            # Select the best individuals ##################
+            if selection_operator == '+':
+                # *plus-selection* operator
+                pop = pop[pop[:,-1].argsort()]
+            elif selection_operator == ',':
+                # *comma-selection* operator
+                pop[:lmb,:] = pop[pop[mu:,-1].argsort()]   # TODO: check this...
+            else:
+                raise ValueError()
 
-            gen_index += 1
+            pop[mu:, :] = np.nan
 
-            self.log.data["x"].append(parent_pop[0].x)  # TODO use a "log" object instead
-            self.log.data["y"].append(parent_pop[0].y)  # TODO
-            print(parent_pop[0])
+            #print("Selected individuals for the next generation:\n", pop)
 
-        #self.plotSamples(np.array(self.log.data["x"]), np.array(self.log.data["y"]), objective_function=objective_function)
-        #self.plotCosts(np.array(self.log.data["y"]))
-
-        return parent_pop[0].x
-
-# Remark: Final approximation of the optimizer is in "parent_pop[0].x"
-#         corresponding fitness is in "parent_pop[0].y" and the final 
-#         mutation strength is in "parent_pop[0].sigma"
+        return pop[0, 1:-1]
