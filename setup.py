@@ -49,7 +49,7 @@ from pyai import __version__ as VERSION
 AUTHOR_NAME = 'Jeremie DECOCK'
 AUTHOR_EMAIL = 'jd.jdhp@gmail.com'
 
-PYTHON_PACKAGE_NAME = 'jdhp-pyai'
+PYTHON_PACKAGE_NAME = 'ailib'
 PROJECT_SHORT_DESC = 'A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).'
 PROJECT_WEB_SITE_URL = 'http://www.jdhp.org/'
 
