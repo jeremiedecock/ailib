@@ -44,7 +44,7 @@ except ImportError:
 
 # SETUP VARIABLES #############################################################
 
-from pyai import __version__ as VERSION
+from ailib import __version__ as VERSION
 
 AUTHOR_NAME = 'Jeremie DECOCK'
 AUTHOR_EMAIL = 'jd.jdhp@gmail.com'
@@ -71,7 +71,7 @@ KEYWORDS = 'artificial intelligence ai machine learning optimization'
 # automatically with a recursive search (from the root directory of the
 # project).
 #PACKAGES = find_packages()
-PACKAGES = ['pyai']
+PACKAGES = ['ailib']
 
 
 # The following list contains all dependencies that Python will try to
