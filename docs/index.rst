@@ -1,6 +1,6 @@
-====
-PyAI
-====
+=====
+AILib
+=====
 
 A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).
 
@@ -17,11 +17,11 @@ Contents:
    API <api>
    developer
 
-* Web site: http://www.jdhp.org/software_en.html#pyai
-* Online documentation: http://pyai.readthedocs.org
-* Source code: https://github.com/jeremiedecock/pyai
-* Issue tracker: https://github.com/jeremiedecock/pyai/issues
-* pyai on PyPI: https://pypi.python.org/pypi/jdhp-pyai
+* Web site: http://www.ailib.io
+* Online documentation: http://ailib.readthedocs.org
+* Source code: https://github.com/jeremiedecock/ailib
+* Issue tracker: https://github.com/jeremiedecock/ailib/issues
+* ailib on PyPI: https://pypi.org/project/ailib/
 
 Indices and tables
 ==================

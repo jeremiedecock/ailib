@@ -1,4 +1,4 @@
-.. currentmodule:: pyai
+.. currentmodule:: ailib
 
 ============
 Introduction

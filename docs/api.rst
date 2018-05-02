@@ -2,7 +2,7 @@
 API
 ===
 
-.. module:: pyai
+.. module:: ailib
 
 The library provides classes which are usable by third party tools.
 
@@ -15,5 +15,5 @@ Modules:
 .. toctree::
    :maxdepth: 2
 
-   pyai.TODO_MODULE_NAME <api_TODO_MODULE_NAME>
+   ailib.TODO_MODULE_NAME <api_TODO_MODULE_NAME>
 
