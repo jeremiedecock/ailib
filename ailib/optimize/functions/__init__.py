@@ -22,29 +22,29 @@
 # THE SOFTWARE.
 
 """
-==============================
-PyAI - Optimization algorithms
-==============================
+======================================
+PyAI - Test functions for optimization
+======================================
 
-This package contains some optimization algorithms.
+This package contains some classical test functions for optimization
+algorithms.
 
-.. currentmodule:: pyai.optimize.minimizers
+.. currentmodule:: ailib.optimize.functions
 
-Algorithms
-==========
+Test functions
+==============
 
 .. toctree::
 
-    saes
+    optimize.functions.sphere
 
 """
 
 # The following lines are inspired by https://github.com/scipy/scipy/blob/master/scipy/optimize/__init__.py
 
-from .gd import *
-from .random import *
-from .saes import *
+from .unconstrained import *
+from .noise import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
 
-#print("pyai.optimize.minimizers.__init__.py:", __all__)
+#print("ailib.optimize.functions.__init__.py:", __all__)

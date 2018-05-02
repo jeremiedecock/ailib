@@ -22,29 +22,52 @@
 # THE SOFTWARE.
 
 """
-======================================
-PyAI - Test functions for optimization
-======================================
+=============================
+PyAI - Optimization Framework
+=============================
 
-This package contains some classical test functions for optimization
-algorithms.
+This package contains the PyAI Optimization Framework.
 
-.. currentmodule:: pyai.optimize.functions
+This package implements some optimization algorithms and some test case
+functions.
+The aim of optimization algorithms is to find the minimum (or maximum if
+stated) of a given function.
+
+
+.. currentmodule:: ailib.optimize
+
+Optimization
+============
+
+Local Optimization
+------------------
+
+.. toctree::
+
+    optimize.minimizers.gd
+
+
+Global Optimization
+-------------------
+
+.. toctree::
+
+    optimize.minimizers.saes
+
 
 Test functions
 ==============
 
-.. toctree::
-
-    optimize.functions.sphere
 
 """
 
+#__all__ = ['functions',
+#           'minimizers']
+
 # The following lines are inspired by https://github.com/scipy/scipy/blob/master/scipy/optimize/__init__.py
 
-from .unconstrained import *
-from .noise import *
+from .minimizers import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
 
-#print("pyai.optimize.functions.__init__.py:", __all__)
+#print("ailib.optimize.__init__.py:", __all__)
