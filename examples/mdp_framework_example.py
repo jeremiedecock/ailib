@@ -25,15 +25,15 @@
 A PyAI (Markov Decision Processes framework) demo.
 """
 
-from pyai.mdp.environment.maze import Environment
-#from pyai.mdp.environment.graph import Environment
-#from pyai.mdp.environment.maze import Agent
-#from pyai.mdp.agent.brute_force import Agent
-#from pyai.mdp.agent.value_iteration import Agent
-#from pyai.mdp.agent.value_iteration_gauss_seidel import Agent
-#from pyai.mdp.agent.value_iteration_error_rate import Agent
-from pyai.mdp.agent.policy_iteration import Agent
-#from pyai.mdp.agent.direct_utility_estimation import Agent
+from ailib.mdp.environment.maze import Environment
+#from ailib.mdp.environment.graph import Environment
+#from ailib.mdp.environment.maze import Agent
+#from ailib.mdp.agent.brute_force import Agent
+#from ailib.mdp.agent.value_iteration import Agent
+#from ailib.mdp.agent.value_iteration_gauss_seidel import Agent
+#from ailib.mdp.agent.value_iteration_error_rate import Agent
+from ailib.mdp.agent.policy_iteration import Agent
+#from ailib.mdp.agent.direct_utility_estimation import Agent
 
 def main():
     """Main function"""
