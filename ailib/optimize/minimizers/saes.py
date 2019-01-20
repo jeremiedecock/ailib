@@ -31,6 +31,8 @@ from .optimizer import Optimizer
 class SAES(Optimizer):
     """SAES optimizer.
 
+    ($\mu$/1+$\lambda$)-$\sigma$-Self-Adaptation-ES
+
     See:
     * http://www.scholarpedia.org/article/Evolution_strategies
     * Notebook "ai_optimization_saes_en.ipynb" on jdhp.org
@@ -53,12 +55,13 @@ class SAES(Optimizer):
 
     def minimize(self,
                  objective_function,
-                 init_pop_mu,
-                 init_pop_sigma,
+                 init_pop_mean,
+                 init_pop_std,
                  num_gen=50,
                  mu=3,
                  lmb=6,
                  rho=1,
+                 tau=None,
                  selection_operator='+'):
         """TODO
 
@@ -74,7 +77,9 @@ class SAES(Optimizer):
         """
 
         d = objective_function.ndim
-        tau = 1./math.sqrt(2.*d)         # self-adaptation learning rate
+
+        if tau is None:
+            tau = 1./math.sqrt(2.*d)         # self-adaptation learning rate
 
         # Init the population ##########################
 
@@ -87,18 +92,20 @@ class SAES(Optimizer):
 
         pop = np.full([mu+lmb, d+2], np.nan)
         pop[:mu, 0] = 1.                                       # init the parents strategy to 1.0
-        pop[:mu, 1:-1] = np.random.normal(init_pop_mu,
-                                          init_pop_sigma,
+        pop[:mu, 1:-1] = np.random.normal(init_pop_mean,
+                                          init_pop_std,
                                           size=[mu,d])         # init the parents value
-        pop[:mu, -1] = objective_function(pop[:mu, 1:-1].T)                  # evaluate parents
-        #print("Initial population:\n", pop)
+        pop[:mu, -1] = objective_function(pop[:mu, 1:-1].T)    # evaluate parents
+        #print("Initial population:\n", pop, "\n")
 
         ## Sort parents
         #pop = pop[pop[:,-1].argsort()]
         #print(pop)
 
         for gen in range(num_gen):
+
             # Make children ################################
+
             if rho == 1:
                 # Each child is made from one randomly selected parent
                 pop[mu:,:] = pop[np.random.randint(mu, size=lmb)]
@@ -112,21 +119,31 @@ class SAES(Optimizer):
                 raise ValueError()
 
             pop[mu:,-1] = np.nan
-            #print("Children:\n", pop)
+            #print("Children:\n", pop, "\n")
 
             # Mutate children's sigma ######################
+
             pop[mu:,0] = pop[mu:,0] * np.exp(tau * np.random.normal(size=lmb))
-            #print("Mutated children (sigma):\n", pop)
+            #print("Mutated children (sigma):\n", pop, "\n")
 
             # Mutate children's value ######################
-            pop[mu:,1:-1] = pop[mu:,1:-1] + pop[mu:,1:-1] * np.random.normal(size=[lmb,d])
-            #print("Mutated children (value):\n", pop)
+
+            sigma_array = np.tile(pop[mu:,0],[d,1]).T
+            #print("Sigma array:\n", sigma_array, "\n")
+
+            random_array = np.random.normal(size=[lmb,d])
+            #print("Random array:\n", random_array, "\n")
+
+            pop[mu:,1:-1] = pop[mu:,1:-1] + sigma_array * random_array
+            #print("Mutated children (value):\n", pop, "\n")
 
             # Evaluate children ############################
+
             pop[mu:, -1] = objective_function(pop[mu:, 1:-1].T)
-            #print("Evaluated children:\n", pop)
+            #print("Evaluated children:\n", pop, "\n")
 
             # Select the best individuals ##################
+
             if selection_operator == '+':
                 # *plus-selection* operator
                 pop = pop[pop[:,-1].argsort()]
@@ -138,6 +155,6 @@ class SAES(Optimizer):
 
             pop[mu:, :] = np.nan
 
-            #print("Selected individuals for the next generation:\n", pop)
+            #print("Selected individuals for the next generation:\n", pop, "\n")
 
         return pop[0, 1:-1]
