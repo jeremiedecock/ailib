@@ -1,0 +1,11 @@
+name: ailib-dev
+channels:
+  - jdhp
+  - conda-forge
+dependencies:
+  - matplotlib
+  - numba
+  - numpy
+  - pillow
+  - scipy
+  - scikit-image
