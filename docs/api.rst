@@ -1,6 +1,6 @@
-===
-API
-===
+=========
+AIlib API
+=========
 
 .. module:: ailib
 
@@ -10,10 +10,11 @@ The library provides classes which are usable by third party tools.
 
     This project is still in *beta* stage, so the API is not finalized yet.
 
-Modules:
+Optimization package:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   ailib.TODO_MODULE_NAME <api_TODO_MODULE_NAME>
+   ailib.optimize.functions.unconstrained <api_optimize_functions_unconstrained>
+   ailib.optimize.functions.noise <api_optimize_functions_noise>
 

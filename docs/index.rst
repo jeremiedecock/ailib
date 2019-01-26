@@ -6,7 +6,7 @@ A set of open source frameworks for Artificial Intelligence (mostly machine lear
 
 Note:
 
-    This project is still in beta stage, so the API is not finalized yet.
+    This project is in beta stage.
 
 Contents:
 
@@ -17,11 +17,11 @@ Contents:
    API <api>
    developer
 
-* Web site: http://www.ailib.io
-* Online documentation: http://ailib.readthedocs.org
+* Web site: http://www.ailib.io/
+* Online documentation: http://www.ailib.io/docs/
 * Source code: https://github.com/jeremiedecock/ailib
 * Issue tracker: https://github.com/jeremiedecock/ailib/issues
-* ailib on PyPI: https://pypi.org/project/ailib/
+* AIlib on PyPI: https://pypi.org/project/ailib/
 
 Indices and tables
 ==================
