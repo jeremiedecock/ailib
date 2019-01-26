@@ -5,7 +5,7 @@
 
 # The MIT License
 #
-# Copyright (c) 2014,2015,2016,2017 Jérémie DECOCK <jd.jdhp@gmail.com> (www.jdhp.org)
+# Copyright (c) 2014-2019 Jérémie DECOCK <jd.jdhp@gmail.com> (www.jdhp.org)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,14 +44,16 @@ except ImportError:
 
 # SETUP VARIABLES #############################################################
 
-from ailib import __version__ as VERSION
+from ailib import get_version
+
+VERSION = get_version()
 
 AUTHOR_NAME = 'Jeremie DECOCK'
 AUTHOR_EMAIL = 'jd.jdhp@gmail.com'
 
-PYTHON_PACKAGE_NAME = 'ailib'
+PYPI_PACKAGE_NAME = 'ailib'
 PROJECT_SHORT_DESC = 'A set of open source frameworks for Artificial Intelligence (mostly machine learning and optimization).'
-PROJECT_WEB_SITE_URL = 'http://www.jdhp.org/'
+PROJECT_WEB_SITE_URL = 'http://www.ailib.io/'
 
 # See :  http://pypi.python.org/pypi?%3Aaction=list_classifiers
 CLASSIFIERS = ['Development Status :: 4 - Beta',
@@ -77,7 +79,11 @@ PACKAGES = ['ailib']
 # The following list contains all dependencies that Python will try to
 # install with this project
 # E.g. INSTALL_REQUIRES = ['pyserial >= 2.6']
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = ['numpy >= 1.13.0',
+                    'scipy >= 1.0.0',
+                    'scikit-image >= 0.13.1',
+                    'pandas >= 0.22.0',
+                    'matplotlib >= 2.1.2']
 
 
 # E.g. SCRIPTS = ["examples/pyax12demo"]
@@ -111,7 +117,7 @@ setup(author=AUTHOR_NAME,
       maintainer=AUTHOR_NAME,
       maintainer_email=AUTHOR_EMAIL,
 
-      name=PYTHON_PACKAGE_NAME,
+      name=PYPI_PACKAGE_NAME,
       description=PROJECT_SHORT_DESC,
       long_description=get_long_description(),
       url=PROJECT_WEB_SITE_URL,
@@ -126,7 +132,7 @@ setup(author=AUTHOR_NAME,
 
       install_requires=INSTALL_REQUIRES,
       #platforms=['Linux'],
-      #requires=['pyserial'],
+      #requires=[],
 
       scripts=SCRIPTS,
       entry_points=ENTRY_POINTS,
