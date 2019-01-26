@@ -233,30 +233,34 @@ def sphere(x):
 
         \boldsymbol{x} \in \mathbb{R}^n
 
-    Example: single 2D point
-    ------------------------
+    .. image:: sphere_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: sphere.png
+
+    Example 
+    -------
+
+    To evaluate the single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> sphere( np.array([0, 0]) )
     0.0
 
     The result should be :math:`f(x) = 0`.
 
-    Example: single 3D point
-    ------------------------
+    Example
+    -------
 
-    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
+    To evaluate the single 3D point :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> sphere( np.array([1, 1, 1]) )
     3.0
 
     The result should be :math:`f(x) = 3.0`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
@@ -386,30 +390,34 @@ def rosen(x):
     [scipy.optimize.rosen_hess_prod](https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.rosen_hess_prod.html#scipy.optimize.rosen_hess_prod)).
     See [Scipy documentation](https://docs.scipy.org/doc/scipy/reference/optimize.html#rosenbrock-function) for more information.
 
-    Example: single 2D point
-    ------------------------
+    .. image:: rosenbrock_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: rosenbrock.png
+
+    Example
+    -------
+
+    To evaluate a single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> rosen( np.array([0, 0]) )
     1.0
 
     The result should be :math:`f(x) = 1`.
 
-    Example: single 3D point
-    ------------------------
+    Example
+    -------
 
-    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
+    To evaluate a single 3D point :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> rosen( np.array([1, 1, 1]) )
     0.0
 
     The result should be :math:`f(x) = 0`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
@@ -469,20 +477,24 @@ def himmelblau(x):
 
     See https://en.wikipedia.org/wiki/Himmelblau%27s_function for more information.
 
-    Example: single point
-    ---------------------
+    .. image:: himmelblau_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 3 \\ 2 \end{pmatrix}`:
+    .. image:: himmelblau.png
+
+    Example
+    -------
+
+    To evaluate a single point :math:`x = \begin{pmatrix} 3 \\ 2 \end{pmatrix}`:
 
     >>> himmelblau( np.array([3, 2]) )
     0.0
 
     The result should be :math:`f(x) = 1`.
 
-    Example: multiple points
-    ------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
@@ -543,30 +555,34 @@ def rastrigin(x):
 
     See https://en.wikipedia.org/wiki/Rastrigin_function for more information.
 
-    Example: single 2D point
-    ------------------------
+    .. image:: rastrigin_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: rastrigin.png
+
+    Example
+    -------
+
+    To evaluate a single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> rastrigin( np.array([0, 0]) )
     0.0
 
     The result should be :math:`f(x) = 0`.
 
-    Example: single 3D point
-    ------------------------
+    Example
+    -------
 
-    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
+    To evaluate a single 3D point :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> rastrigin( np.array([0, 0, 0]) )
     0.0
 
     The result should be :math:`f(x) = 0`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
@@ -615,20 +631,24 @@ def easom(x):
 
     See https://www.sfu.ca/~ssurjano/easom.html for more information.
 
-    Example: single 2D point
-    ------------------------
+    .. image:: easom_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: easom.png
+
+    Example
+    -------
+
+    To evaluate a single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> easom( np.array([np.pi, np.pi]) )
     -1.0
 
     The result should be :math:`f(x) = -1`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} \pi \\ \pi \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} \pi \\ \pi \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` at once:
 
@@ -684,20 +704,24 @@ def crossintray(x):
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
 
-    Example: single 2D point
-    ------------------------
+    .. image:: cross_in_tray_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: cross_in_tray.png
+
+    Example
+    -------
+
+    To evaluate a single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> crossintray( np.array([0, 0]) )
     -0.0001
 
     The result should be :math:`f(x) = -0.0001`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 1.34941 \\ 1.34941 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} -1.34941 \\ -1.34941 \end{pmatrix}` at once:
 
@@ -754,20 +778,24 @@ def holder(x):
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
 
-    Example: single 2D point
-    ------------------------
+    .. image:: holder_3d.png
 
-    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
+    .. image:: holder.png
+
+    Example
+    -------
+
+    To evaluate a single 2D point :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> holder( np.array([0, 0]) )
     0.0
 
     The result should be :math:`f(x) = 0`.
 
-    Example: multiple 2D points
-    ---------------------------
+    Example
+    -------
 
-    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    To evaluate multiple 2D points :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
     :math:`x_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}` and
     :math:`x_3 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}` at once:
 
