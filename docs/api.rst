@@ -1,5 +1,5 @@
 =========
-AIlib API
+AILib API
 =========
 
 .. module:: ailib

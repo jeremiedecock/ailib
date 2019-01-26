@@ -21,7 +21,7 @@ Contents:
 * Online documentation: http://www.ailib.io/docs/
 * Source code: https://github.com/jeremiedecock/ailib
 * Issue tracker: https://github.com/jeremiedecock/ailib/issues
-* AIlib on PyPI: https://pypi.org/project/ailib/
+* AILib on PyPI: https://pypi.org/project/ailib/
 
 Indices and tables
 ==================
