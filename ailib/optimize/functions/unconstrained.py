@@ -217,51 +217,53 @@ def sphere(x):
     The Sphere function is a famous **convex** function used to test the performance of optimization algorithms.
     This function is very easy to optimize and can be used as a first test to check an optimization algorithm.
 
-    $$
-    f(\boldsymbol{x}) = \sum_{i=1}^{n} x_{i}^2
-    $$
+    .. math::
+
+        f(\boldsymbol{x}) = \sum_{i=1}^{n} x_{i}^2
 
     Global minimum:
-    $$
-    f(\boldsymbol{0}) = 0
-    $$
+
+    .. math::
+
+        f(\boldsymbol{0}) = 0
 
     Search domain:
-    $$
-    \boldsymbol{x} \in \mathbb{R}^n
-    $$
+
+    .. math::
+
+        \boldsymbol{x} \in \mathbb{R}^n
 
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> sphere( np.array([0, 0]) )
     0.0
 
-    The result should be $f(x) = 0$.
+    The result should be :math:`f(x) = 0`.
 
     Example: single 3D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> sphere( np.array([1, 1, 1]) )
     3.0
 
-    The result should be $f(x) = 3.0$.
+    The result should be :math:`f(x) = 3.0`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> sphere( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   0.,    2.,  8.])
 
-    The result should be $f(x_1) = 0$, $f(x_2) = 1$ and $f(x_3) = 8$.
+    The result should be :math:`f(x_1) = 0`, :math:`f(x_2) = 1` and :math:`f(x_3) = 8`.
 
     Parameters
     ----------
@@ -340,32 +342,34 @@ def rosen(x):
 
     The Rosenbrock function is a famous **non-convex** function used to test
     the performance of optimization algorithms. The classical two-dimensional
-    version of this function is **unimodal** but its *extended* $n$-dimensional
-    version (with $n \geq 4$) is **multimodal**
+    version of this function is **unimodal** but its *extended* :math:`n`-dimensional
+    version (with :math:`n \geq 4`) is **multimodal**
     [[ref.](http://www.mitpressjournals.org/doi/abs/10.1162/evco.2006.14.1.119)].
 
-    $$
-    f(\boldsymbol{x}) = \sum_{i=1}^{n-1} \left[100 \left( x_{i+1} - x_{i}^{2} \right)^{2} + \left( x_{i} - 1 \right)^2 \right]
-    $$
+    .. math::
+
+        f(\boldsymbol{x}) = \sum_{i=1}^{n-1} \left[100 \left( x_{i+1} - x_{i}^{2} \right)^{2} + \left( x_{i} - 1 \right)^2 \right]
 
     Global minimum:
-    $$
-    \min =
-    \begin{cases}
-        n = 2 & \rightarrow \quad f(1,1) = 0, \\
-        n = 3 & \rightarrow \quad f(1,1,1) = 0, \\
-        n > 3 & \rightarrow \quad f(\underbrace{1,\dots,1}_{n{\text{ times}}}) = 0 \\
-    \end{cases}
-    $$
+
+    .. math::
+
+        \min =
+        \begin{cases}
+            n = 2 & \rightarrow \quad f(1,1) = 0, \\
+            n = 3 & \rightarrow \quad f(1,1,1) = 0, \\
+            n > 3 & \rightarrow \quad f(\underbrace{1,\dots,1}_{n{\text{ times}}}) = 0 \\
+        \end{cases}
 
     Search domain:
-    $$
-    \boldsymbol{x} \in \mathbb{R}^n
-    $$
 
-    The Rosenbrock has exactly one (global) minimum $(\underbrace{1, \dots,
-    1}_{n{\text{ times}}})^\top$ for $n \leq 3$ and an additional *local*
-    minimum for $n \geq 4$ near $(-1, 1, 1, \dots, 1)^\top$.
+    .. math::
+
+        \boldsymbol{x} \in \mathbb{R}^n
+
+    The Rosenbrock has exactly one (global) minimum :math:`(\underbrace{1, \dots,
+    1}_{n{\text{ times}}})^\top` for :math:`n \leq 3` and an additional *local*
+    minimum for :math:`n \geq 4` near :math:`(-1, 1, 1, \dots, 1)^\top`.
 
     See http://www.mitpressjournals.org/doi/abs/10.1162/evco.2006.14.1.119
     (freely available at http://dl.acm.org/citation.cfm?id=1118014) and
@@ -385,34 +389,34 @@ def rosen(x):
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> rosen( np.array([0, 0]) )
     1.0
 
-    The result should be $f(x) = 1$.
+    The result should be :math:`f(x) = 1`.
 
     Example: single 3D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> rosen( np.array([1, 1, 1]) )
     0.0
 
-    The result should be $f(x) = 0$.
+    The result should be :math:`f(x) = 0`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> rosen( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   1.,    0.,  401.])
 
-    The result should be $f(x_1) = 1$, $f(x_2) = 0$ and $f(x_3) = 401$.
+    The result should be :math:`f(x_1) = 1`, :math:`f(x_2) = 0` and :math:`f(x_3) = 401`.
 
     Parameters
     ----------
@@ -434,26 +438,28 @@ def himmelblau(x):
 
     The Himmelblau's function is a two-dimensional **multimodal** function.
 
-    $$
-    f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2
-    $$
+    .. math::
+
+        f(x_1, x_2) = (x_1^2 + x_2 - 11)^2 + (x_1 + x_2^2 - 7)^2
 
     The function has four global minima:
-    $$
-    \begin{eqnarray}
-        f(3, 2) = 0 \\
-        f(-2.805118, 3.131312) = 0 \\
-        f(-3.779310, -3.283186) = 0 \\
-        f(3.584428, -1.848126) = 0
-    \end{eqnarray}
-    $$
+
+    .. math::
+
+        \begin{eqnarray}
+            f(3, 2) = 0 \\
+            f(-2.805118, 3.131312) = 0 \\
+            f(-3.779310, -3.283186) = 0 \\
+            f(3.584428, -1.848126) = 0
+        \end{eqnarray}
 
     Search domain:
-    $$
-    \boldsymbol{x} \in \mathbb{R}^2
-    $$
 
-    It also has one local maximum at $f(-0.270845, -0.923039) = 181.617$.
+    .. math::
+
+        \boldsymbol{x} \in \mathbb{R}^2
+
+    It also has one local maximum at :math:`f(-0.270845, -0.923039) = 181.617`.
 
     The locations of all the minima can be found analytically (roots of cubic
     polynomials) but expressions are somewhat complicated.
@@ -466,24 +472,24 @@ def himmelblau(x):
     Example: single point
     ---------------------
 
-    To evaluate $x = \begin{pmatrix} 3 \\ 2 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 3 \\ 2 \end{pmatrix}`:
 
     >>> himmelblau( np.array([3, 2]) )
     0.0
 
-    The result should be $f(x) = 1$.
+    The result should be :math:`f(x) = 1`.
 
     Example: multiple points
     ------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> himmelblau( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([ 170.,  106.,   26.])
 
-    The result should be $f(x_1) = 170$, $f(x_2) = 106$ and $f(x_3) = 26$.
+    The result should be :math:`f(x_1) = 170`, :math:`f(x_2) = 106` and :math:`f(x_3) = 26`.
 
     Parameters
     ----------
@@ -511,60 +517,63 @@ def rastrigin(x):
     The classical two-dimensional version of this function has been introduced
     by L. A. Rastrigin in *Systems of extremal control* Mir, Moscow (1974).
 
-    Its *generalized* $n$-dimensional version has been proposed by H.
+    Its *generalized* :math:`n`-dimensional version has been proposed by H.
     Mühlenbein, D. Schomisch and J. Born in *The Parallel Genetic Algorithm as
     Function Optimizer* Parallel Computing, 17, pages 619–632, 1991.
 
     On an n-dimensional domain it is defined by:
 
-    $$
-    f(\boldsymbol{x}) = An + \sum_{i=1}^{n} \left[ x_{i}^{2} - A \cos(2 \pi x_{i}) \right]
-    $$
-    where $A = 10$.
+    .. math::
+
+        f(\boldsymbol{x}) = An + \sum_{i=1}^{n} \left[ x_{i}^{2} - A \cos(2 \pi x_{i}) \right]
+
+    where :math:`A = 10`.
 
     Global minimum:
-    $$
-    f(\boldsymbol{0}) = 0
-    $$
+
+    .. math::
+
+        f(\boldsymbol{0}) = 0
 
     Search domain:
-    $$
-    \boldsymbol{x} \in \mathbb{R}^n
-    $$
+
+    .. math::
+
+        \boldsymbol{x} \in \mathbb{R}^n
 
     See https://en.wikipedia.org/wiki/Rastrigin_function for more information.
 
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> rastrigin( np.array([0, 0]) )
     0.0
 
-    The result should be $f(x) = 0$.
+    The result should be :math:`f(x) = 0`.
 
     Example: single 3D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 1 \\ 1 \\ 1 \end{pmatrix}`:
 
     >>> rastrigin( np.array([0, 0, 0]) )
     0.0
 
-    The result should be $f(x) = 0$.
+    The result should be :math:`f(x) = 0`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> rastrigin( np.array([[0, 1, 2], [0, 1, 2]]) )
     array([   1.,    0.,  401.])
 
-    The result should be $f(x_1) = 1$, $f(x_2) = 0$ and $f(x_3) = 401$.
+    The result should be :math:`f(x_1) = 1`, :math:`f(x_2) = 0` and :math:`f(x_3) = 401`.
 
     Parameters
     ----------
@@ -588,43 +597,45 @@ def easom(x):
 
     The Easom function is a 2 dimensions **unimodal** function.
 
-    $$
-    f(x_1, x_2) = -\cos(x_1) \cos(x_2) \exp \left( -\left[ (x_1-\pi)^2 + (x_2-\pi)^2 \right] \right)
-    $$
+    .. math::
+
+        f(x_1, x_2) = -\cos(x_1) \cos(x_2) \exp \left( -\left[ (x_1-\pi)^2 + (x_2-\pi)^2 \right] \right)
 
     Global minimum:
-    $$
-    f(\pi, \pi) = -1
-    $$
+
+    .. math::
+
+        f(\pi, \pi) = -1
 
     Search domain:
-    $$
-    \boldsymbol{x} \in \mathbb{R}^2
-    $$
+
+    .. math::
+
+        \boldsymbol{x} \in \mathbb{R}^2
 
     See https://www.sfu.ca/~ssurjano/easom.html for more information.
 
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> easom( np.array([np.pi, np.pi]) )
     -1.0
 
-    The result should be $f(x) = -1$.
+    The result should be :math:`f(x) = -1`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} \pi \\ \pi \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} \pi \\ \pi \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` at once:
 
     >>> easom( np.array([[np.pi, 0, 1], [np.pi, 0, 1]]) )
     array([   -1.,    -2.67528799e-09,  -3.03082341e-05])
 
-    The result should be $f(x_1) = -1$, $f(x_2) \approx 0$ and $f(x_3) \approx 0$.
+    The result should be :math:`f(x_1) = -1`, :math:`f(x_2) \approx 0` and :math:`f(x_3) \approx 0`.
 
     Parameters
     ----------
@@ -648,26 +659,27 @@ def crossintray(x):
     The Cross-in-tray function is a 2 dimensions **multimodal** function, with
     four global minima.
 
-    $$
-    f(x_1, x_2) = -0.0001 \left( \left| \sin(x_1) \sin(x_2) \exp \left( \left| 100 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right)\right| + 1 \right)^{0.1}
-    $$
+    .. math::
+
+        f(x_1, x_2) = -0.0001 \left( \left| \sin(x_1) \sin(x_2) \exp \left( \left| 100 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right)\right| + 1 \right)^{0.1}
 
     Global minima:
 
-    $$
-    \text{Min} =
-    \begin{cases}
-        f(1.34941, -1.34941)  &= -2.06261 \\
-        f(1.34941, 1.34941)   &= -2.06261 \\
-        f(-1.34941, 1.34941)  &= -2.06261 \\
-        f(-1.34941, -1.34941) &= -2.06261 \\
-    \end{cases}
-    $$
+    .. math::
+
+        \text{Min} =
+        \begin{cases}
+            f(1.34941, -1.34941)  &= -2.06261 \\
+            f(1.34941, 1.34941)   &= -2.06261 \\
+            f(-1.34941, 1.34941)  &= -2.06261 \\
+            f(-1.34941, -1.34941) &= -2.06261 \\
+        \end{cases}
 
     Search domain:
-    $$
-    -10 \leq x_1, x_2 \leq 10
-    $$
+
+    .. math::
+
+        -10 \leq x_1, x_2 \leq 10
 
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
@@ -675,24 +687,24 @@ def crossintray(x):
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> crossintray( np.array([0, 0]) )
     -0.0001
 
-    The result should be $f(x) = -0.0001$.
+    The result should be :math:`f(x) = -0.0001`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 1.34941 \\ 1.34941 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} -1.34941 \\ -1.34941 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 1.34941 \\ 1.34941 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} -1.34941 \\ -1.34941 \end{pmatrix}` at once:
 
     >>> crossintray( np.array([[0, 1.34941, -1.34941], [0, 1.34941, -1.34941]]) )
     array([ -0.0001,    -2.06261,  -2.06261])
 
-    The result should be $f(x_1) = -0.0001$, $f(x_2) = -2.06261$ and $f(x_3) = -2.06261$.
+    The result should be :math:`f(x_1) = -0.0001`, :math:`f(x_2) = -2.06261` and :math:`f(x_3) = -2.06261`.
 
     Parameters
     ----------
@@ -716,26 +728,28 @@ def holder(x):
     The Hölder table function is a 2 dimensions **multimodal** function, with
     four global minima.
 
-    $$
-    f(x_1, x_2) =
-    -\left| \sin(x_1) \cos(x_2) \exp \left( \left| 1 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right) \right|
-    $$
+    .. math::
+
+        f(x_1, x_2) =
+        -\left| \sin(x_1) \cos(x_2) \exp \left( \left| 1 - \frac{\sqrt{x_1^2 + x_2^2}}{\pi} \right| \right) \right|
 
     Global minima:
-    $$
-    \text{Min} =
-    \begin{cases}
-        f(8.05502, 9.66459)   &= -19.2085 \\
-        f(-8.05502, 9.66459)  &= -19.2085 \\
-        f(8.05502, -9.66459)  &= -19.2085 \\
-        f(-8.05502, -9.66459) &= -19.2085
-    \end{cases}
-    $$
+
+    .. math::
+
+        \text{Min} =
+        \begin{cases}
+            f(8.05502, 9.66459)   &= -19.2085 \\
+            f(-8.05502, 9.66459)  &= -19.2085 \\
+            f(8.05502, -9.66459)  &= -19.2085 \\
+            f(-8.05502, -9.66459) &= -19.2085
+        \end{cases}
 
     Search domain:
-    $$
-    -10 \leq x_1, x_2 \leq 10
-    $$
+
+    .. math::
+
+        -10 \leq x_1, x_2 \leq 10
 
     **References**: *Test functions for optimization* (Wikipedia):
     https://en.wikipedia.org/wiki/Test_functions_for_optimization.
@@ -743,24 +757,24 @@ def holder(x):
     Example: single 2D point
     ------------------------
 
-    To evaluate $x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$:
+    To evaluate :math:`x = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`:
 
     >>> holder( np.array([0, 0]) )
     0.0
 
-    The result should be $f(x) = 0$.
+    The result should be :math:`f(x) = 0`.
 
     Example: multiple 2D points
     ---------------------------
 
-    To evaluate $x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}$,
-    $x_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}$ and
-    $x_3 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}$ at once:
+    To evaluate :math:`x_1 = \begin{pmatrix} 0 \\ 0 \end{pmatrix}`,
+    :math:`x_2 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}` and
+    :math:`x_3 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}` at once:
 
     >>> holder( np.array([[0., 0., 1.], [0., 1., 0.]]) )
     array([-0. , -0. , -1.66377043])
 
-    The result should be $f(x_1) = 0$, $f(x_2) = 0$ and $f(x_3) = -1.66377043$.
+    The result should be :math:`f(x_1) = 0`, :math:`f(x_2) = 0` and :math:`f(x_3) = -1.66377043`.
 
     Parameters
     ----------
