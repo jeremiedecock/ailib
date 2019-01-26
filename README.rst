@@ -1,20 +1,25 @@
-===========================================
-`Python Artificial Intelligence Framework`_
-===========================================
+.. image:: https://travis-ci.org/jeremiedecock/ailib.svg?branch=master
+    :target: https://travis-ci.org/jeremiedecock/ailib
 
-Copyright (c) 2014,2015,2016,2017 Jeremie DECOCK (http://www.jdhp.org)
+========================================
+Python Artificial Intelligence Framework
+========================================
+
+Copyright (c) 2014-2019 Jeremie DECOCK (http://www.jdhp.org)
 
 * Web site: http://www.ailib.io
-* Online documentation: http://ailib.readthedocs.org
+* Online documentation: http://www.ailib.io/docs/
+* Examples: http://www.ailib.io/docs/gallery/
+* Notebooks: https://github.com/jeremiedecock/ailib-notebooks
 * Source code: https://github.com/jeremiedecock/ailib
 * Issue tracker: https://github.com/jeremiedecock/ailib/issues
-* ailib on PyPI: https://pypi.python.org/pypi/ailib
-
+* AILib on PyPI: https://pypi.org/project/ailib/
+* AILib on Anaconda Cloud: https://anaconda.org/jdhp/ailib
 
 Description
 ===========
 
-This is a set of open source frameworks for Artificial Intelligence
+AILib is a set of open source frameworks for Artificial Intelligence
 (mostly machine learning and optimization).
 
 This contains (among others):
@@ -24,9 +29,9 @@ This contains (among others):
 -  a multistage optimization and Markov Decision Process framework
    (Markov Decision Processes).
 
-Note:
+.. warning::
 
-    This project is still in beta stage, so the API is not finalized yet.
+    This project is in beta stage.
 
 
 Dependencies
