@@ -26,8 +26,7 @@ plot_2d_solution_space(sphere,
                        xmax=2*np.ones(2),
                        xstar=np.zeros(2),
                        angle_view=(55, 83),
-                       title="Sphere function",
-                       output_file_name="sphere_3d.png")
+                       title="Sphere function")
 
 plt.tight_layout()
 
@@ -40,8 +39,7 @@ plot_2d_contour_solution_space(sphere,
                                xmin=-10*np.ones(2),
                                xmax=10*np.ones(2),
                                xstar=np.zeros(2),
-                               title="Sphere function",
-                               output_file_name="sphere.png")
+                               title="Sphere function")
 
 plt.tight_layout()
 
