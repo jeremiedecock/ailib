@@ -27,7 +27,7 @@ single-objective optimization.
 """
 
 __all__ = ['sphere', 'Sphere', 'sphere1d', 'sphere2d',     # TODO
-           'rosen',
+           'rosen', 'Rosenbrock', 'rosen2d',
            'himmelblau',
            'rastrigin',
            'easom',
@@ -347,8 +347,7 @@ def rosen(x):
     The Rosenbrock function is a famous **non-convex** function used to test
     the performance of optimization algorithms. The classical two-dimensional
     version of this function is **unimodal** but its *extended* :math:`n`-dimensional
-    version (with :math:`n \geq 4`) is **multimodal**
-    [[ref.](http://www.mitpressjournals.org/doi/abs/10.1162/evco.2006.14.1.119)].
+    version (with :math:`n \geq 4`) is **multimodal** [SHANG06]_.
 
     .. math::
 
@@ -394,6 +393,17 @@ def rosen(x):
 
     .. image:: rosenbrock.png
 
+    Parameters
+    ----------
+    x : array_like
+        One dimension Numpy array of the point at which the Rosenbrock function is to be computed
+        or a two dimension Numpy array of points at which the Rosenbrock function is to be computed.
+
+    Returns
+    -------
+    float or array_like
+        The value(s) of the Rosenbrock function for the given point(s) `x`.
+
     Example
     -------
 
@@ -426,18 +436,52 @@ def rosen(x):
 
     The result should be :math:`f(x_1) = 1`, :math:`f(x_2) = 0` and :math:`f(x_3) = 401`.
 
-    Parameters
+    References
     ----------
-    x : array_like
-        One dimension Numpy array of the point at which the Rosenbrock function is to be computed
-        or a two dimension Numpy array of points at which the Rosenbrock function is to be computed.
-
-    Returns
-    -------
-    float or array_like
-        The value(s) of the Rosenbrock function for the given point(s) `x`.
+    .. [SHANG06] `Shang, Y. W., & Qiu, Y. H. (2006). A note on the extended Rosenbrock function. Evolutionary Computation, 14(1), 119-126. <http://www.mitpressjournals.org/doi/abs/10.1162/evco.2006.14.1.119>`_
     """
     return np.sum(100.0*(x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0, axis=0)
+
+class Rosenbrock(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self.ndim = ndim
+        if self.ndim < 2:
+            raise ValueError("The rosenbrock function is defined for solution spaces having at least 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10.
+        self.bounds[1,:] =  10.
+
+        self.unimodal = True if self.ndim < 4 else False
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    def __call__(self, x):
+        """
+        TODO
+        """
+        return super()._eval(rosen, x)
+
+    def gradient(self, x):
+        """
+        TODO
+        """
+        raise NotImplementedError()
+
+    def hessian(self, x):
+        """
+        TODO
+        """
+        raise NotImplementedError()
+
+
+rosen2d = Rosenbrock(ndim=2)
 
 # HIMMELBLAU'S FUNCTION #######################################################
 
