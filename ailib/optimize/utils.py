@@ -243,7 +243,11 @@ def plot_contour_2d_solution_space(func,
 
     ############################
 
-    min_value = func(xstar)
+    if xstar is not None:
+        min_value = func(xstar)
+    else:
+        min_value = zz.min()
+
     max_value = zz.max()
 
     levels = np.logspace(0.1, 3., 5)          # TODO
