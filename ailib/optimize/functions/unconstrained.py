@@ -265,7 +265,8 @@ def sphere(x):
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> sphere( np.array([[0, 1, 2], [0, 1, 2]]) )
-    array([   0.,    2.,  8.])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    array([0., 2., 8.])
 
     The result should be :math:`f(x_1) = 0`, :math:`f(x_2) = 1` and :math:`f(x_3) = 8`.
 
@@ -279,6 +280,10 @@ def sphere(x):
     -------
     float or array_like
         The value(s) of the Sphere function for the given point(s) `x`.
+    
+    See Also
+    --------
+    sphere_gradient, sphere_hessian
     """
     # Remark: `sum(x**2.0)` is equivalent to `np.sum(x**2.0, axis=0)` but only the latter works if x is a scallar (e.g. x = np.float(3)).
     return np.sum(x**2.0, axis=0)
@@ -286,14 +291,43 @@ def sphere(x):
 
 def sphere_gradient(x):
     """
-    TODO
+    The derivative (i.e. gradient) of the Sphere function.
+
+    Parameters
+    ----------
+    x : array_like
+        One dimension Numpy array of the point at which the derivative is to be computed
+        or a two dimension Numpy array of points at which the derivatives are to be computed.
+
+    Returns
+    -------
+    float or array_like
+         gradient of the Sphere function at `x`.
+    
+    See Also
+    --------
+    sphere, sphere_hessian
     """
     return 2.0 * x
 
 
 def sphere_hessian(x):
     """
-    TODO
+    The Hessian matrix of the Sphere function.
+    
+    Parameters
+    ----------
+    x : array_like
+        1-D array of points at which the Hessian matrix is to be computed.
+
+    Returns
+    -------
+    rosen_hess : ndarray
+        The Hessian matrix of the Sphere function at `x`.
+
+    See Also
+    --------
+    sphere, sphere_gradient
     """
     return 2.0 * np.ones(x.shape)
 
@@ -432,7 +466,8 @@ def rosen(x):
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> rosen( np.array([[0, 1, 2], [0, 1, 2]]) )
-    array([   1.,    0.,  401.])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    array([ 1., 0., 401.])
 
     The result should be :math:`f(x_1) = 1`, :math:`f(x_2) = 0` and :math:`f(x_3) = 401`.
 
@@ -543,7 +578,8 @@ def himmelblau(x):
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> himmelblau( np.array([[0, 1, 2], [0, 1, 2]]) )
-    array([ 170.,  106.,   26.])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    array([170.,  106.,   26.])
 
     The result should be :math:`f(x_1) = 170`, :math:`f(x_2) = 106` and :math:`f(x_3) = 26`.
 
@@ -631,7 +667,8 @@ def rastrigin(x):
     :math:`x_3 = \begin{pmatrix} 2 \\ 2 \end{pmatrix}` at once:
 
     >>> rastrigin( np.array([[0, 1, 2], [0, 1, 2]]) )
-    array([   1.,    0.,  401.])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    array([ 1., 0., 401.])
 
     The result should be :math:`f(x_1) = 1`, :math:`f(x_2) = 0` and :math:`f(x_3) = 401`.
 
@@ -697,7 +734,8 @@ def easom(x):
     :math:`x_3 = \begin{pmatrix} 1 \\ 1 \end{pmatrix}` at once:
 
     >>> easom( np.array([[np.pi, 0, 1], [np.pi, 0, 1]]) )
-    array([   -1.,    -2.67528799e-09,  -3.03082341e-05])
+    ... # doctest: +NORMALIZE_WHITESPACE
+    array([-1., -2.67528799e-09, -3.03082341e-05])
 
     The result should be :math:`f(x_1) = -1`, :math:`f(x_2) \approx 0` and :math:`f(x_3) \approx 0`.
 
@@ -770,6 +808,7 @@ def crossintray(x):
     :math:`x_3 = \begin{pmatrix} -1.34941 \\ -1.34941 \end{pmatrix}` at once:
 
     >>> crossintray( np.array([[0, 1.34941, -1.34941], [0, 1.34941, -1.34941]]) )
+    ... # doctest: +NORMALIZE_WHITESPACE
     array([ -0.0001,    -2.06261,  -2.06261])
 
     The result should be :math:`f(x_1) = -0.0001`, :math:`f(x_2) = -2.06261` and :math:`f(x_3) = -2.06261`.
@@ -844,6 +883,7 @@ def holder(x):
     :math:`x_3 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}` at once:
 
     >>> holder( np.array([[0., 0., 1.], [0., 1., 0.]]) )
+    ... # doctest: +NORMALIZE_WHITESPACE
     array([-0. , -0. , -1.66377043])
 
     The result should be :math:`f(x_1) = 0`, :math:`f(x_2) = 0` and :math:`f(x_3) = -1.66377043`.
