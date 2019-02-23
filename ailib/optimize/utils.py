@@ -222,20 +222,29 @@ def plot_contour_2d_solution_space(func,
                                    xmax=np.ones(2),
                                    xstar=None,
                                    xvisited=None,
+                                   x1_grid_size=200,
+                                   x2_grid_size=200,
+                                   figsize=(12, 8),
+                                   x1_label=r"$x_1$",
+                                   x2_label=r"$x_2$",
+                                   xstar_label=r"$x^*$",
+                                   title_fontsize=12,
+                                   label_fontsize=12,
+                                   legend_fontsize=12,
                                    title=""):
     """Plot points visited during the execution of an optimization algorithm.
 
     TODO
     """
     if (fig is None) or (ax is None):                # TODO
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize=figsize)
 
     if xvisited is not None:
         xmin = np.amin(np.hstack([xmin.reshape([-1, 1]), xvisited]), axis=1)
         xmax = np.amax(np.hstack([xmax.reshape([-1, 1]), xvisited]), axis=1)
 
-    x1_space = np.linspace(xmin[0], xmax[0], 200)
-    x2_space = np.linspace(xmin[1], xmax[1], 200)
+    x1_space = np.linspace(xmin[0], xmax[0], x1_grid_size)
+    x2_space = np.linspace(xmin[1], xmax[1], x2_grid_size)
 
     x1_mesh, x2_mesh = np.meshgrid(x1_space, x2_space)
 
@@ -266,7 +275,7 @@ def plot_contour_2d_solution_space(func,
                      linestyles=('dotted', '-.', 'dashed', 'solid', 'solid'),
                      alpha=0.5,
                      colors='white')
-    ax.clabel(cs, inline=False, fontsize=12)
+    ax.clabel(cs, inline=False, fontsize=label_fontsize)
 
     ############################
 
@@ -283,17 +292,17 @@ def plot_contour_2d_solution_space(func,
         sc = ax.scatter(xstar[0],
                    xstar[1],
                    c='red',
-                   label="$x^*$")
+                   label=xstar_label)
         sc.set_zorder(10)        # put this point above every thing else
 
     ############################
 
-    ax.set_title(title)
+    ax.set_title(title, fontsize=title_fontsize)
 
-    ax.set_xlabel(r"$x_1$")
-    ax.set_ylabel(r"$x_2$")
+    ax.set_xlabel(x1_label, fontsize=label_fontsize)
+    ax.set_ylabel(x2_label, fontsize=label_fontsize)
 
-    ax.legend(fontsize=12)
+    ax.legend(fontsize=legend_fontsize)
 
     if show:
         plt.show()
@@ -310,20 +319,30 @@ def plot_2d_solution_space(func,
                            xstar=None,
                            xvisited=None,
                            angle_view=None,
+                           x1_grid_size=100,
+                           x2_grid_size=100,
+                           figsize=(12, 8),
+                           x1_label=r"$x_1$",
+                           x2_label=r"$x_2$",
+                           zlabel=r"$f(x_1, x_2)$",
+                           xstar_label=r"$x^*$",
+                           title_fontsize=12,
+                           label_fontsize=12,
+                           legend_fontsize=12,
                            title=""):
     """Plot points visited during the execution of an optimization algorithm.
 
     TODO
     """
     if fig is None or ax is None:                # TODO
-        fig = plt.figure(figsize=(12, 8))
+        fig = plt.figure(figsize=figsize)
         ax = axes3d.Axes3D(fig)
 
     if angle_view is not None:
         ax.view_init(angle_view[0], angle_view[1])
 
-    x1_space = np.linspace(xmin[0], xmax[0], 100)
-    x2_space = np.linspace(xmin[1], xmax[1], 100)
+    x1_space = np.linspace(xmin[0], xmax[0], x1_grid_size)
+    x2_space = np.linspace(xmin[1], xmax[1], x2_grid_size)
 
     x1_mesh, x2_mesh = np.meshgrid(x1_space, x2_space)
 
@@ -341,7 +360,7 @@ def plot_2d_solution_space(func,
                            #color='b',
                            shade=False)
 
-    ax.set_zlabel(r"$f(x_1, x_2)$")
+    ax.set_zlabel(zlabel, fontsize=label_fontsize)
 
     fig.colorbar(surf, shrink=0.5, aspect=5)
 
@@ -354,14 +373,14 @@ def plot_2d_solution_space(func,
                    #s=50,          # TODO
                    c='red',
                    alpha=1,
-                   label="$x^*$")
+                   label=xstar_label)
 
-    ax.set_title(title)
+    ax.set_title(title, fontsize=title_fontsize)
 
-    ax.set_xlabel(r"$x_1$")
-    ax.set_ylabel(r"$x_2$")
+    ax.set_xlabel(x1_label, fontsize=label_fontsize)
+    ax.set_ylabel(x2_label, fontsize=label_fontsize)
 
-    ax.legend(fontsize=12)
+    ax.legend(fontsize=legend_fontsize)
 
     if show:
         plt.show()
