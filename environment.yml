@@ -3,9 +3,35 @@ channels:
   - jdhp
   - conda-forge
 dependencies:
-  - matplotlib
-  - numba
-  - numpy
+  - docutils=0.14=py37_0
+  - ipython=7.2.0=py37h39e3cac_0
+  - ipywidgets=7.4.2=py37_0
+  - jupyter=1.0.0=py37_7
+  - jupyterlab=0.35.3=py37_0
+  - matplotlib=3.0.2=py37h5429711_0
+  - notebook=5.7.4=py37_0
+  - numba=0.41.0=py37h962f231_0
+  - numpy=1.15.4=py37h7e9f1db_0
+  - pandas=0.23.4=py37h04863e7_0
   - pillow
-  - scipy
+  - pylint=2.2.2=py37_0
+  - pytest-arraydiff=0.3=py37h39e3cac_0
+  - pytest-doctestplus=0.2.0=py37_0
+  - python=3.7.1=h0371630_7
   - scikit-image
+  - scikit-learn=0.20.1=py37hd81dba3_0
+  - scipy=1.1.0=py37h7c811a0_2
+  - seaborn=0.9.0=py37_0
+  - setuptools=40.6.3=py37_0
+  - sphinx=1.8.2=py37_0
+  - sphinxcontrib=1.0=py37_1
+  - sphinxcontrib-websupport=1.1.0=py37_1
+  - sphinx_rtd_theme
+  - statsmodels=0.9.0=py37h035aef0_0
+  - sympy=1.3=py37_0
+  - websocket-client=0.54.0=py37_1000
+  - widgetsnbextension=3.4.2=py37_0
+  - yaml=0.1.7=had09818_2
+  - pip:
+    - nbutils==0.1.dev0
+    - sphinx-gallery
