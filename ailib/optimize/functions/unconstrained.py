@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2017 Jeremie DECOCK (http://www.jdhp.org)
+# Copyright (c) 2017,2018,2019 Jeremie DECOCK (http://www.jdhp.org)
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -38,12 +38,16 @@ import numpy as np
 
 # GENERIC OBJECTIVE FUNCTION ##################################################
 
-class _ObjectiveFunction(object):
+class _ObjectiveFunction:
     """Generic *objective function*.
 
     TODO
     """
     def __init__(self):
+        self._objective_function = None
+        self._gradient_function = None    # TODO: use a generic numeric derivative function by default
+        self._hessian_function = None     # TODO: use a generic numeric derivative function by default
+
         self.reset_eval_counters()
         self.reset_eval_logs()
         self.do_eval_logs = False
@@ -79,7 +83,7 @@ class _ObjectiveFunction(object):
         self.eval_logs_dict = {'x': [], 'fx': []}  # TODO
 
 
-    def _eval(self, func, x):
+    def __call__(self, x):
         """Evaluate one or several points.
 
         This function is a wrapper that does several boring task aside the
@@ -106,6 +110,10 @@ class _ObjectiveFunction(object):
             evaluated or a 1D numpy array if several points have been
             evaluated.
         """
+        # Check self._objective_function ########
+        assert self._objective_function is not None
+        assert callable(self._objective_function)
+
         # Check x shape #########################
         if x.ndim > 0:
             if x.shape[0] != self.ndim:
@@ -121,7 +129,7 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        y = func(x)
+        y = self._objective_function(x)
 
         # Apply noise ###########################
         if self.noise is not None:
@@ -147,10 +155,25 @@ class _ObjectiveFunction(object):
         return y
 
 
-    def _eval_gradient(self, gradient_func, x):
+    def gradient(self, x):
         """
-        TODO
+        The derivative (i.e. gradient) of the objective function.
+
+        Parameters
+        ----------
+        x : array_like
+            One dimension Numpy array of the point at which the derivative is to be computed
+            or a two dimension Numpy array of points at which the derivatives are to be computed.
+
+        Returns
+        -------
+        float or array_like
+            gradient of the objective function at `x`.
         """
+        # Check self._gradient_function #########
+        assert self._gradient_function is not None
+        assert callable(self._gradient_function)
+
         # Check x shape #########################
         if x.shape[0] != self.ndim:
             raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
@@ -165,15 +188,29 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        grad = gradient_func(x)
+        grad = self._gradient_function(x)
 
         return grad
 
 
-    def _eval_hessian(self, hessian_func, x):
+    def hessian(self, x):
         """
-        TODO
+        The Hessian matrix of the objective function.
+        
+        Parameters
+        ----------
+        x : array_like
+            1-D array of points at which the Hessian matrix is to be computed.
+
+        Returns
+        -------
+        rosen_hess : ndarray
+            The Hessian matrix of the objective function at `x`.
         """
+        # Check self._gradient_function #########
+        assert self._hessian_function is not None
+        assert callable(self._hessian_function)
+
         # Check x shape #########################
         if x.shape[0] != self.ndim:
             raise Exception('Wrong number of dimension: x has {} rows instead of {}.'.format(x.shape[0], self.ndim))
@@ -188,7 +225,7 @@ class _ObjectiveFunction(object):
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
         # Eval x ################################
-        hess = hessian_func(x)
+        hess = self._hessian_function(x)
 
         return hess
 
@@ -339,6 +376,10 @@ class Sphere(_ObjectiveFunction):
     def __init__(self, ndim):
         super().__init__()
 
+        self._objective_function = sphere
+        self._gradient_function = sphere_gradient
+        self._hessian_function = sphere_hessian
+
         self.ndim = ndim
 
         self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
@@ -349,25 +390,6 @@ class Sphere(_ObjectiveFunction):
         self.continuous = True
 
         self.arg_min = np.zeros(self.ndim)
-
-    def __call__(self, x):
-        """
-        TODO
-        """
-        return super()._eval(sphere, x)
-
-    def gradient(self, x):
-        """
-        TODO
-        """
-        return super()._eval_gradient(sphere_gradient, x)
-
-    def hessian(self, x):
-        """
-        TODO
-        """
-        return super()._eval_hessian(sphere_hessian, x)
-
 
 sphere1d = Sphere(ndim=1)
 
@@ -484,6 +506,8 @@ class Rosenbrock(_ObjectiveFunction):
     def __init__(self, ndim):
         super().__init__()
 
+        self._objective_function = rosen
+
         self.ndim = ndim
         if self.ndim < 2:
             raise ValueError("The rosenbrock function is defined for solution spaces having at least 2 dimensions.")
@@ -496,24 +520,6 @@ class Rosenbrock(_ObjectiveFunction):
         self.continuous = True
 
         self.arg_min = np.ones(self.ndim)
-
-    def __call__(self, x):
-        """
-        TODO
-        """
-        return super()._eval(rosen, x)
-
-    def gradient(self, x):
-        """
-        TODO
-        """
-        raise NotImplementedError()
-
-    def hessian(self, x):
-        """
-        TODO
-        """
-        raise NotImplementedError()
 
 
 rosen2d = Rosenbrock(ndim=2)
