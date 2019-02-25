@@ -60,6 +60,8 @@ class _ObjectiveFunction:
         self.unimodal = None
         self.continuous = None
 
+        self.translation_vector = np.zeros(shape=self.ndim)
+
         self.function_name = None
         self.function_formula = None
 
@@ -128,8 +130,11 @@ class _ObjectiveFunction:
         else:
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
+        # Apply translation #####################
+        x_translated = (x.T - self.translation_vector).T
+
         # Eval x ################################
-        y = self._objective_function(x)
+        y = self._objective_function(x_translated)
 
         # Apply noise ###########################
         if self.noise is not None:
@@ -187,8 +192,11 @@ class _ObjectiveFunction:
         else:
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
+        # Apply translation #####################
+        x_translated = (x.T - self.translation_vector).T
+
         # Eval x ################################
-        grad = self._gradient_function(x)
+        grad = self._gradient_function(x_translated)
 
         return grad
 
@@ -224,8 +232,11 @@ class _ObjectiveFunction:
         else:
             raise Exception('Wrong number of dimension: x is a {} dimensions numpy array ; 1 or 2 dimensions are expected.'.format(x.ndim))
 
+        # Apply translation #####################
+        x_translated = (x.T - self.translation_vector).T
+
         # Eval x ################################
-        hess = self._hessian_function(x)
+        hess = self._hessian_function(x_translated)
 
         return hess
 
