@@ -28,11 +28,11 @@ single-objective optimization.
 
 __all__ = ['sphere', 'Sphere', 'sphere1d', 'sphere2d',     # TODO
            'rosen', 'Rosenbrock', 'rosen2d',
-           'himmelblau',
-           'rastrigin',
-           'easom',
-           'crossintray',
-           'holder']
+           'himmelblau', 'Himmelblau', 'himmelblau2d',
+           'rastrigin', 'Rastrigin', 'rastrigin2d',
+           'easom', 'Easom', 'easom2d',
+           'crossintray', 'Crossintray', 'crossintray2d',
+           'holder', 'Holder', 'holder2d']
 
 import numpy as np
 
@@ -57,7 +57,6 @@ class _ObjectiveFunction:
         self.ndim = None
         self.bounds = None
 
-        self.unimodal = None
         self.continuous = None
 
         self.translation_vector = np.zeros(shape=self.ndim)
@@ -71,6 +70,10 @@ class _ObjectiveFunction:
     @property
     def stochastic(self):
         return self.noise is not None
+
+    @property
+    def unimodal(self):
+        raise NotImplementedError
 
 
     def reset_eval_counters(self):
@@ -397,10 +400,14 @@ class Sphere(_ObjectiveFunction):
         self.bounds[0,:] = -10.
         self.bounds[1,:] =  10.
 
-        self.unimodal = True
         self.continuous = True
 
         self.arg_min = np.zeros(self.ndim)
+
+    @property
+    def unimodal(self):
+        return True
+
 
 sphere1d = Sphere(ndim=1)
 
@@ -510,6 +517,7 @@ def rosen(x):
     """
     return np.sum(100.0*(x[1:] - x[:-1]**2.0)**2.0 + (1 - x[:-1])**2.0, axis=0)
 
+
 class Rosenbrock(_ObjectiveFunction):
     """
     TODO
@@ -520,20 +528,24 @@ class Rosenbrock(_ObjectiveFunction):
         self._objective_function = rosen
 
         self.ndim = ndim
-        if self.ndim < 2:
+        if self.ndim < 2: # TODO
             raise ValueError("The rosenbrock function is defined for solution spaces having at least 2 dimensions.")
 
         self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
-        self.bounds[0,:] = -10.
-        self.bounds[1,:] =  10.
+        self.bounds[0,:] = -10. # TODO
+        self.bounds[1,:] =  10. # TODO
 
-        self.unimodal = True if self.ndim < 4 else False
         self.continuous = True
 
         self.arg_min = np.ones(self.ndim)
 
+    @property
+    def unimodal(self):
+        return True if self.ndim < 4 else False
+
 
 rosen2d = Rosenbrock(ndim=2)
+
 
 # HIMMELBLAU'S FUNCTION #######################################################
 
@@ -613,6 +625,36 @@ def himmelblau(x):
     """
     assert x.shape[0] == 2, x.shape
     return (x[0]**2.0 + x[1] - 11.0)**2.0 + (x[0] + x[1]**2.0 - 7.0)**2.0
+
+
+class Himmelblau(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self._objective_function = himmelblau
+
+        self.ndim = ndim
+        if self.ndim != 2:
+            raise ValueError("The himmelblau function is defined for solution spaces having 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10. # TODO
+        self.bounds[1,:] =  10. # TODO
+
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    @property
+    def unimodal(self):
+        return False
+
+
+himmelblau2d = Himmelblau(ndim=2)
+
 
 # RASTRIGIN FUNCTION ##########################################################
 
@@ -704,6 +746,36 @@ def rastrigin(x):
     n = x.shape[0]
     return A * n + np.sum(x**2.0 - A * np.cos(2.0 * np.pi * x), axis=0)
 
+
+class Rastrigin(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self._objective_function = rastrigin
+
+        self.ndim = ndim
+        if self.ndim < 2: # TODO
+            raise ValueError("The rastrigin function is defined for solution spaces having at least 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10. # TODO
+        self.bounds[1,:] =  10. # TODO
+
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    @property
+    def unimodal(self):
+        return False
+
+
+rastrigin2d = Rastrigin(ndim=2)
+
+
 # EASOM FUNCTION ##############################################################
 
 def easom(x):
@@ -769,6 +841,36 @@ def easom(x):
     """
     assert x.shape[0] == 2, x.shape
     return -np.cos(x[0]) * np.cos(x[1]) * np.exp(-((x[0]-np.pi)**2.0 + (x[1]-np.pi)**2.0))
+
+
+class Easom(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self._objective_function = easom
+
+        self.ndim = ndim
+        if self.ndim != 2:
+            raise ValueError("The easom function is defined for solution spaces having 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10. # TODO
+        self.bounds[1,:] =  10. # TODO
+
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    @property
+    def unimodal(self):
+        return True
+
+
+easom2d = Easom(ndim=2)
+
 
 # CROSS-IN-TRAY FUNCTION ######################################################
 
@@ -843,6 +945,36 @@ def crossintray(x):
     """
     assert x.shape[0] == 2, x.shape
     return -0.0001 * (np.abs(np.sin(x[0]) * np.sin(x[1]) * np.exp( np.abs( 100.0 - np.sqrt(x[0]**2.0 + x[1]**2.0)/np.pi ))) + 1.0)**0.1
+
+
+class Crossintray(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self._objective_function = crossintray
+
+        self.ndim = ndim
+        if self.ndim != 2:
+            raise ValueError("The crossintray function is defined for solution spaces having 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10.
+        self.bounds[1,:] =  10.
+
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    @property
+    def unimodal(self):
+        return False
+
+
+crossintray2d = Crossintray(ndim=2)
+
 
 # HÖLDER TABLE FUNCTION #######################################################
 
@@ -919,3 +1051,31 @@ def holder(x):
     assert x.shape[0] == 2, x.shape
     return -np.abs(np.sin(x[0]) * np.cos(x[1]) * np.exp(np.abs(1.0 - np.sqrt(x[0]**2.0 + x[1]**2.0)/np.pi )))
 
+
+class Holder(_ObjectiveFunction):
+    """
+    TODO
+    """
+    def __init__(self, ndim):
+        super().__init__()
+
+        self._objective_function = holder
+
+        self.ndim = ndim
+        if self.ndim != 2:
+            raise ValueError("The holder function is defined for solution spaces having 2 dimensions.")
+
+        self.bounds = np.ones((2, self.ndim))    # TODO: take this or the transpose of this ?
+        self.bounds[0,:] = -10.
+        self.bounds[1,:] =  10.
+
+        self.continuous = True
+
+        self.arg_min = np.ones(self.ndim)
+
+    @property
+    def unimodal(self):
+        return False
+
+
+holder2d = Holder(ndim=2)
