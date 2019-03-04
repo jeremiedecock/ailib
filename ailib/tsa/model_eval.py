@@ -38,7 +38,7 @@ import sys
 def rolling_forecast(data,
                      endog,
                      exog,
-                     model,
+                     fit_function,
                      periods_length,
                      num_periods_learned,
                      num_periods_predicted=1,
@@ -84,8 +84,8 @@ def rolling_forecast(data,
         print(start_learn_index, end_learn_index, start_predict_index, end_predict_index)
 
         try:
-            model_fit = model.fit(endog=df.loc[start_learn_index:end_learn_index, endog],
-                                  exog=df.loc[start_learn_index:end_learn_index, exog])
+            model_fit = fit_function(endog=df.loc[start_learn_index:end_learn_index, endog],
+                                     exog=df.loc[start_learn_index:end_learn_index, exog])
 
             model_forecast = model_fit.forecast(periods_length * num_periods_predicted,
                                                 exog=df.loc[start_predict_index:end_predict_index, exog].values.reshape(-1, 1))
